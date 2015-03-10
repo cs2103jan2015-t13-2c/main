@@ -1,3 +1,7 @@
 *.opensdf
 *.idb
 *.sdf
+*.mdf
+*.tlog
+*.ipch
+*.ldf
