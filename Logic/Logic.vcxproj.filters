@@ -21,9 +21,6 @@
     <ClInclude Include="MainLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FloatingTask.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DeadlineTask.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -33,9 +30,12 @@
     <ClInclude Include="Command.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="CommandCreate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+=======
+>>>>>>> e877c09a0cb727bbc7f1e7496308ad9fe8c50260
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Task.cpp">
@@ -47,13 +47,7 @@
     <ClCompile Include="TaskkyMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FloatingTask.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DeadlineTask.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TimedTask.cpp">
+    <ClCompile Include="Command.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Command.cpp">
