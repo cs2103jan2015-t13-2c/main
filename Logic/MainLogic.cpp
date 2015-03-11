@@ -1,52 +1,49 @@
 #include "MainLogic.h"
 
+using namespace std;
+
 /*******************
 Message declarations
 *******************/
-const std::string MainLogic::MESSAGE_INVALID_FORMAT = "Invalid command format: %s";
+const string MainLogic::MESSAGE_INVALID_FORMAT = "Invalid command format.";
 char MainLogic::buffer[BUFFER_SIZE];
-using namespace std;
 
 
-/*********
-Logic Main
-*********/
-void MainLogic::main(std::string command) {
+
+/**************
+Command Parsers
+**************/
+string MainLogic::processUserInput(string command) {
 	//determine which command
 	while (command != ""){
 
 		COMMAND_TYPE commandType = determineCommandType(getFirstWord(command));
-		command = removeFirstWord(command);
-		std::string content = determineContent(command);
+		return processCommand(commandType, command);
 
-		std::string result = processCommand(commandType, content);
-
-		command = removeWords(command, content);
-
-		cout << "leftover: " << command;
 	}
-
 }
 
-std::string MainLogic::processCommand(MainLogic::COMMAND_TYPE commandType, std::string content){
+
+
+string MainLogic::processCommand(MainLogic::COMMAND_TYPE commandType, string command){
 	switch (commandType) {
 	case CREATE:
-		return addTask(content);
+		return createTask(command);
 	case READ:
-		return checkTask(content);
+		return readTask(command);
 	case UPDATE:
-		return updateTask(content);
+		return updateTask(command);
 	case DELETE:
-		return deleteTask(content);
+		return deleteTask(command);
 	case CLEAR:
 		return clear();
 	case SORT:
 		return sortTask();
 	case SEARCH:
-		return searchTask(content);
+		return searchTask(command);
 	case INVALID:
 	{
-		sprintf_s(buffer, MESSAGE_INVALID_FORMAT.c_str(), content.c_str()); //COME BACK TO THIS, I ANYHOW haha
+		sprintf_s(buffer, MESSAGE_INVALID_FORMAT.c_str());
 		return buffer;
 	}
 	case EXIT:
@@ -55,28 +52,6 @@ std::string MainLogic::processCommand(MainLogic::COMMAND_TYPE commandType, std::
 }
 
 
-/**************
-Command Parsers
-**************/
-string MainLogic::getFirstWord(string userCommand){
-	string commandTypeString = splitParameters(userCommand)[0];
-	return commandTypeString;
-}
-
-string MainLogic::removeFirstWord(string userCommand){
-	return trim(replace(userCommand, getFirstWord(userCommand), ""));
-}
-
-// This method only split string based on delimiter space
-vector<string> MainLogic::splitParameters(string commandParametersString){
-	vector<string> tokens;
-	istringstream iss(commandParametersString);
-	copy(istream_iterator<string>(iss),
-		istream_iterator<string>(),
-		back_inserter<vector<string> >(tokens));
-
-	return tokens;
-}
 
 MainLogic::COMMAND_TYPE MainLogic::determineCommandType(string commandTypeString) {
 
@@ -105,13 +80,78 @@ MainLogic::COMMAND_TYPE MainLogic::determineCommandType(string commandTypeString
 	else if (equalsIgnoreCase(commandTypeString, "search")) {
 		return COMMAND_TYPE::SEARCH;
 	}
+	else if (equalsIgnoreCase(commandTypeString, "deadline")) {
+		return COMMAND_TYPE::DEADLINE;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "priority")) {
+		return COMMAND_TYPE::PRIORITY;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "recurrence")) {
+		return COMMAND_TYPE::RECURRENCE;
+	}
 	else {
 		return COMMAND_TYPE::INVALID;
 	}
 }
 
+/*
+
+
+string MainLogic::removeWords(string command, string content){
+	size_t pos;
+
+	if ((pos = command.find(content)) != string::npos) {
+		command.erase(pos, content.length());
+	}
+
+	return command;
+}
+*/
+
+/*******************
+Processing Functions
+*******************/
+string MainLogic::createTask(string command) {
+
+	/* User can enter task in 3 different formats:
+
+	1. timed tasks
+	e.g. add chinese new year deadline from 19 February to 21 February
+
+	2. tasks with deadlines
+	e.g add project meeting deadline 10 July 5pm
+
+	3. floating tasks
+	e.g add finish coding assignment
+	*/
+
+	/*
+	Task newTask;
+	//newTask.setNumber(taskList.size());
+	string text = Logic::removeFirstWord(userCommand);
+
+	vector<string> info = Logic::splitParameters(text);
+
+	vector<string>::iterator iter;
+	for (iter = info.begin(); iter != info.end(); iter++) {
+	string keyWord = Logic::getFirstWord(*iter);
+
+	}
+	*/
+
+	command = removeFirstWord(command);
+	string taskname = determineContent(command);
+
+
+
+	return "0";
+}
+
 string MainLogic::determineContent(string command){
 	ostringstream oss;
+
+	command = removeFirstWord(command);
+
 	bool isCommandWord = false;
 	while (isCommandWord == false) {
 		if (determineCommandType(getFirstWord(command)) == MainLogic::COMMAND_TYPE::INVALID) {
@@ -132,50 +172,7 @@ string MainLogic::determineContent(string command){
 	return oss.str();
 }
 
-string MainLogic::removeWords(string command, string content){
-	size_t pos;
-
-	if ((pos = command.find(content)) != string::npos) {
-		command.erase(pos, content.length());
-	}
-
-	return command;
-}
-
-/*******************
-Processing Functions
-*******************/
-string MainLogic::addTask(string userCommand) {
-
-	/* User can enter task in 3 different formats:
-
-	1. timed tasks
-	e.g. add 19 February, to 21 February, chinese new year
-
-	2. tasks with deadlines
-	e.g add 10 July, 5pm-6pm, project meeting
-
-	3. floating tasks
-	e.g add finish coding assignment
-	*/
-	/*
-	Task newTask;
-	//newTask.setNumber(taskList.size());
-	string text = Logic::removeFirstWord(userCommand);
-
-	vector<string> info = Logic::splitParameters(text);
-
-	vector<string>::iterator iter;
-	for (iter = info.begin(); iter != info.end(); iter++) {
-	string keyWord = Logic::getFirstWord(*iter);
-
-	}
-	*/
-
-	return "0";
-}
-
-string MainLogic::checkTask(string userCommand) {
+string MainLogic::readTask(string userCommand) {
 	return "0";
 }
 
@@ -202,6 +199,27 @@ string MainLogic::searchTask(string userCommand) {
 /***************
 Useful Functions
 ***************/
+
+string MainLogic::getFirstWord(string userCommand){
+	string commandTypeString = splitParameters(userCommand)[0];
+	return commandTypeString;
+}
+
+string MainLogic::removeFirstWord(string userCommand){
+	return trim(replace(userCommand, getFirstWord(userCommand), ""));
+}
+
+// This method only split string based on delimiter space
+vector<string> MainLogic::splitParameters(string commandParametersString){
+	vector<string> tokens;
+	istringstream iss(commandParametersString);
+	copy(istream_iterator<string>(iss),
+		istream_iterator<string>(),
+		back_inserter<vector<string> >(tokens));
+
+	return tokens;
+}
+
 bool MainLogic::equalsIgnoreCase(const string& str1, const string& str2) {
 	if (str1.size() != str2.size()) {
 		return false;

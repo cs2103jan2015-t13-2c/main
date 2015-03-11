@@ -12,10 +12,12 @@ using namespace std;
 class MainLogic {
 public:
 	enum COMMAND_TYPE {
-		CREATE, READ, UPDATE, DELETE, CLEAR, SORT, SEARCH, EXIT, INVALID	//Add on to this as we expand our project
+		CREATE, READ, UPDATE, DELETE, CLEAR, SORT, SEARCH, EXIT, INVALID,	//Main commands
+		DEADLINE, PRIORITY, RECURRENCE										//Create sub-commands
 	};
+	
 
-	static void main(string command);
+	static string processUserInput(string command);
 
 private:
 	//Command Parsers
@@ -29,8 +31,8 @@ private:
 	static string processCommand(COMMAND_TYPE commandType, string content);
 
 	//Processing Functions
-	static string addTask(string userCommand);
-	static string checkTask(string userCommand);
+	static string createTask(string userCommand);
+	static string readTask(string userCommand);
 	static string updateTask(string userCommand);
 	static string deleteTask(string userCommand);
 	static string clear();
