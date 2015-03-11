@@ -65,19 +65,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Command.h" />
     <ClInclude Include="DeadlineTask.h" />
-    <ClInclude Include="FloatingTask.h" />
     <ClInclude Include="MainLogic.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="TimedTask.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DeadlineTask.cpp" />
-    <ClCompile Include="FloatingTask.cpp" />
+    <ClCompile Include="Command.cpp" />
     <ClCompile Include="MainLogic.cpp" />
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="TaskkyMain.cpp" />
-    <ClCompile Include="TimedTask.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
