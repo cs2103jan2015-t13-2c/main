@@ -14,14 +14,14 @@ using namespace std;
 class MainLogic {
 public:
 	enum COMMAND_TYPE {
-		CREATE, READ, UPDATE, DELETE, CLEAR, SORT, SEARCH, EXIT, INVALID,	//Main commands
+		CREATE, READ, UPDATE, DELETE, CLEAR, DISPLAY, SORT, SEARCH, EXIT, INVALID,	//Main commands
 		DEADLINE, PRIORITY, RECURRENCE										//Create sub-commands
 	};
 
 
 	static string processUserInput(string command);
 
-	static vector<Task> TaskList;
+	//static vector<Task> TaskList;
 
 private:
 	//The Vector
@@ -46,6 +46,7 @@ private:
 	static string updateTask(string userCommand);
 	static string deleteTask(string userCommand);
 	static string clear();
+	static string display();
 	static string sortTask();
 	static string searchTask(string userCommand);
 

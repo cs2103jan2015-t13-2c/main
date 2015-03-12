@@ -1,4 +1,5 @@
 #include "MainLogic.h"
+#include <vector>
 
 using namespace std;
 
@@ -37,6 +38,8 @@ string MainLogic::processCommand(MainLogic::COMMAND_TYPE commandType, string com
 		return deleteTask(command);
 	case CLEAR:
 		return clear();
+	case DISPLAY:
+		return display();
 	case SORT:
 		return sortTask();
 	case SEARCH:
@@ -74,6 +77,9 @@ MainLogic::COMMAND_TYPE MainLogic::determineCommandType(string commandTypeString
 	else if (equalsIgnoreCase(commandTypeString, "clear")) {
 		return COMMAND_TYPE::CLEAR;
 	}
+	else if (equalsIgnoreCase(commandTypeString, "display")) {
+		return COMMAND_TYPE::DISPLAY;
+	}
 	else if (equalsIgnoreCase(commandTypeString, "sort")) {
 		return COMMAND_TYPE::SORT;
 	}
@@ -86,7 +92,7 @@ MainLogic::COMMAND_TYPE MainLogic::determineCommandType(string commandTypeString
 	else if (equalsIgnoreCase(commandTypeString, "priority")) {
 		return COMMAND_TYPE::PRIORITY;
 	}
-	else if (equalsIgnoreCase(commandTypeString, "recurrence")) {
+	else if (equalsIgnoreCase(commandTypeString, "every")) {
 		return COMMAND_TYPE::RECURRENCE;
 	}
 	else {
@@ -125,34 +131,30 @@ string MainLogic::createTask(string command) {
 	}
 	*/
 
-	command = removeFirstWord(command);
 	string taskname = determineContent(command);
+	command = removeFirstWord(command);
 	command = removeWords(command, taskname);
 	
 	Task::Priority priority = Task::Priority::NORMAL;
 	Task::Recurrence recurrence = Task::Recurrence::NONE;
-	chrono::system_clock::time_point start_time = makeTimePoint(1111, 0, 0, 0, 0);
-	chrono::system_clock::time_point end_time = makeTimePoint(1111, 0, 0, 0, 0);
-	chrono::system_clock::time_point deadline_time = makeTimePoint(1111, 0, 0, 0, 0);
-	chrono::system_clock::time_point time_reference = makeTimePoint(1111, 0, 0, 0, 0);
+	chrono::system_clock::time_point start_time = makeTimePoint(1971, 1, 1, 0, 0);
+	chrono::system_clock::time_point end_time = makeTimePoint(1971, 1, 1, 0, 0);
+	chrono::system_clock::time_point deadline_time = makeTimePoint(1971, 1, 1, 0, 0);
+	chrono::system_clock::time_point time_reference = makeTimePoint(1971, 1, 1, 0, 0);
 
 	while (command != "") {
 		COMMAND_TYPE subCreate = determineCommandType(getFirstWord(command));
-		switch (subCreate) {
-		case PRIORITY:
-		{
+		if (subCreate == COMMAND_TYPE::PRIORITY) {
 			Task::Priority priority = determinePriority(command);
 			command = removeFirstWord(command);
 			command = removeFirstWord(command);
 		}
-		case RECURRENCE:
-		{
+		else if (subCreate == COMMAND_TYPE::RECURRENCE) {
 			Task::Recurrence recurrence = determineRecurrence(command);
 			command = removeFirstWord(command);
 			command = removeFirstWord(command);
 		}
-		case DEADLINE:
-		{
+		else if (subCreate == COMMAND_TYPE::DEADLINE) {
 			if (getFirstWord(command) == "from") {
 				start_time = determineTime(command);
 				while (getFirstWord(command) != "to") {
@@ -164,25 +166,27 @@ string MainLogic::createTask(string command) {
 			}
 			else {
 				deadline_time = determineTime(command);
+				string timeString = determineContent(command);
+				command = removeFirstWord(command);
+				command = removeWords(command, timeString);
 			}
-		}
 		}
 	}
 
 	if (start_time == time_reference) {
 		if (deadline_time == time_reference) {
 			Task newTask = Task::Task(taskname, priority);
-			TaskVector.push_back(newTask);
+			MainLogic::TaskVector.push_back(newTask);
 		}
 		else {
 			Task newTask = Task::Task(taskname, priority, recurrence, deadline_time);
-			TaskVector.push_back(newTask);
+			MainLogic::TaskVector.push_back(newTask);
 		}
 	}
 	else
 	{
 		Task newTask = Task::Task(taskname, priority, recurrence, start_time, end_time);
-		TaskVector.push_back(newTask);
+		MainLogic::TaskVector.push_back(newTask);
 	}
 
 	return "added task " + taskname + " to Taskky\n";
@@ -235,15 +239,23 @@ chrono::system_clock::time_point MainLogic::determineTime(string command) {
 	command = removeFirstWord(command);
 	string year_str = getFirstWord(command);
 	int year_int = atoi(year_str.c_str());
-
 	command = removeFirstWord(command);
-	string time_str = getFirstWord(command);
-	int time_int = atoi(time_str.c_str());
-	int hours = time_int / 100;
-	int minutes = time_int % 100;
 
-	chrono::system_clock::time_point timepoint = makeTimePoint(year_int, month, date_int, hours, minutes);
-	return timepoint;
+	if (command != "") {
+		string time_str = getFirstWord(command);
+		int time_int = atoi(time_str.c_str());
+		int hours = time_int / 100;
+		int minutes = time_int % 100;
+
+		chrono::system_clock::time_point timepoint = makeTimePoint(year_int, month, date_int, hours, minutes);
+		return timepoint;
+	}
+	else {
+		int hours = 0;
+		int minutes = 0;
+		chrono::system_clock::time_point timepoint = makeTimePoint(year_int, month, date_int, hours, minutes);
+		return timepoint;
+	}
 
 }
 
@@ -325,6 +337,17 @@ string MainLogic::deleteTask(string userCommand) {
 
 string MainLogic::clear() {
 	return "0";
+}
+
+string MainLogic::display() {
+	ostringstream oss;
+
+	for (int i = 0; i < MainLogic::TaskVector.size(); ++i) {
+		oss << i + 1 << ". " << MainLogic::TaskVector[i].getTaskDetails() << endl;
+	}
+
+
+	return oss.str();
 }
 
 string MainLogic::sortTask() {
