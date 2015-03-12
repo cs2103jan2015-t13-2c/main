@@ -2,12 +2,14 @@
 
 using namespace std;
 
+//boo
+
 /*******************
 Message declarations
 *******************/
 const string MainLogic::MESSAGE_INVALID_FORMAT = "Invalid command format.";
 char MainLogic::buffer[BUFFER_SIZE];
-
+vector<Task> MainLogic::TaskVector;
 
 
 /**************
@@ -15,12 +17,10 @@ Command Parsers
 **************/
 string MainLogic::processUserInput(string command) {
 	//determine which command
-	while (command != ""){
 
-		COMMAND_TYPE commandType = determineCommandType(getFirstWord(command));
-		return processCommand(commandType, command);
+	COMMAND_TYPE commandType = determineCommandType(getFirstWord(command));
+	return processCommand(commandType, command);
 
-	}
 }
 
 
@@ -94,20 +94,6 @@ MainLogic::COMMAND_TYPE MainLogic::determineCommandType(string commandTypeString
 	}
 }
 
-/*
-
-
-string MainLogic::removeWords(string command, string content){
-	size_t pos;
-
-	if ((pos = command.find(content)) != string::npos) {
-		command.erase(pos, content.length());
-	}
-
-	return command;
-}
-*/
-
 /*******************
 Processing Functions
 *******************/
@@ -116,10 +102,10 @@ string MainLogic::createTask(string command) {
 	/* User can enter task in 3 different formats:
 
 	1. timed tasks
-	e.g. add chinese new year deadline from 19 February to 21 February
+	e.g. add chinese new year deadline from 19 February 2015 to 21 February 2015
 
 	2. tasks with deadlines
-	e.g add project meeting deadline 10 July 5pm
+	e.g add project meeting deadline 10 July 2015 5pm
 
 	3. floating tasks
 	e.g add finish coding assignment
@@ -141,10 +127,163 @@ string MainLogic::createTask(string command) {
 
 	command = removeFirstWord(command);
 	string taskname = determineContent(command);
+	command = removeWords(command, taskname);
+	
+	Task::Priority priority = Task::Priority::NORMAL;
+	Task::Recurrence recurrence = Task::Recurrence::NONE;
+	chrono::system_clock::time_point start_time = makeTimePoint(1111, 0, 0, 0, 0);
+	chrono::system_clock::time_point end_time = makeTimePoint(1111, 0, 0, 0, 0);
+	chrono::system_clock::time_point deadline_time = makeTimePoint(1111, 0, 0, 0, 0);
+	chrono::system_clock::time_point time_reference = makeTimePoint(1111, 0, 0, 0, 0);
 
+	while (command != "") {
+		COMMAND_TYPE subCreate = determineCommandType(getFirstWord(command));
+		switch (subCreate) {
+		case PRIORITY:
+		{
+			Task::Priority priority = determinePriority(command);
+			command = removeFirstWord(command);
+			command = removeFirstWord(command);
+		}
+		case RECURRENCE:
+		{
+			Task::Recurrence recurrence = determineRecurrence(command);
+			command = removeFirstWord(command);
+			command = removeFirstWord(command);
+		}
+		case DEADLINE:
+		{
+			if (getFirstWord(command) == "from") {
+				start_time = determineTime(command);
+				while (getFirstWord(command) != "to") {
+					removeFirstWord(command);
+				}
+				end_time = determineTime(command);
+				command = removeFirstWord(command);
+				command = removeWords(command, determineContent(command));
+			}
+			else {
+				deadline_time = determineTime(command);
+			}
+		}
+		}
+	}
 
+	if (start_time == time_reference) {
+		if (deadline_time == time_reference) {
+			Task newTask = Task::Task(taskname, priority);
+			TaskVector.push_back(newTask);
+		}
+		else {
+			Task newTask = Task::Task(taskname, priority, recurrence, deadline_time);
+			TaskVector.push_back(newTask);
+		}
+	}
+	else
+	{
+		Task newTask = Task::Task(taskname, priority, recurrence, start_time, end_time);
+		TaskVector.push_back(newTask);
+	}
 
-	return "0";
+	return "added task " + taskname + " to Taskky\n";
+}
+
+chrono::system_clock::time_point MainLogic::determineTime(string command) {
+	command = removeFirstWord(command);
+	string date_str = getFirstWord(command);
+	int date_int = atoi(date_str.c_str());
+
+	int month;
+	command = removeFirstWord(command);
+	if (getFirstWord(command) == "january") {
+		month = 0;
+	}
+	else if (getFirstWord(command) == "february") {
+		month = 1;
+	}
+	else if (getFirstWord(command) == "march") {
+		month = 2;
+	}
+	else if(getFirstWord(command) == "april") {
+		month = 3;
+	}
+	else if (getFirstWord(command) == "may") {
+		month = 4;
+	}
+	else if (getFirstWord(command) == "june") {
+		month = 5;
+	}
+	else if (getFirstWord(command) == "july") {
+		month = 6;
+	}
+	else if (getFirstWord(command) == "august") {
+		month = 7;
+	}
+	else if (getFirstWord(command) == "september") {
+		month = 8;
+	}
+	else if (getFirstWord(command) == "october") {
+		month = 9;
+	}
+	else if (getFirstWord(command) == "november") {
+		month = 10;
+	}
+	else if (getFirstWord(command) == "december") {
+		month = 11;
+	}
+
+	command = removeFirstWord(command);
+	string year_str = getFirstWord(command);
+	int year_int = atoi(year_str.c_str());
+
+	command = removeFirstWord(command);
+	string time_str = getFirstWord(command);
+	int time_int = atoi(time_str.c_str());
+	int hours = time_int / 100;
+	int minutes = time_int % 100;
+
+	chrono::system_clock::time_point timepoint = makeTimePoint(year_int, month, date_int, hours, minutes);
+	return timepoint;
+
+}
+
+Task::Priority MainLogic::determinePriority(string command) {
+	command = removeFirstWord(command);
+	if (getFirstWord(command) == "high") {
+		return Task::Priority::HIGH;
+	}
+	else if (getFirstWord(command) == "normal") {
+		return Task::Priority::NORMAL;
+	}
+	else if (getFirstWord(command) == "low") {
+		return Task::Priority::LOW;
+	}
+}
+
+Task::Recurrence MainLogic::determineRecurrence(string command) {
+	command = removeFirstWord(command);
+	if (getFirstWord(command) == "day") {
+		return Task::Recurrence::DAY;
+	}
+	else if (getFirstWord(command) == "week") {
+		return Task::Recurrence::WEEK;
+	}
+	else if (getFirstWord(command) == "month") {
+		return Task::Recurrence::MONTH;
+	}
+	else {
+		return Task::Recurrence::NONE;
+	}
+}
+
+string MainLogic::removeWords(string command, string content){
+	size_t pos;
+
+	if ((pos = command.find(content)) != string::npos) {
+		command.erase(pos, content.length());
+	}
+
+	return command;
 }
 
 string MainLogic::determineContent(string command){
@@ -274,4 +413,36 @@ inline string MainLogic::trim(const string& s, const string& delimiters) {
 template <typename T, size_t N> inline size_t
 MainLogic::sizeOfArray(const T(&)[N]) {
 	return N;
+}
+
+/**********
+Time Parser
+**********/
+
+std::string MainLogic::asString(const std::chrono::system_clock::time_point& tp)
+{
+	// convert to system time:
+	std::time_t t = std::chrono::system_clock::to_time_t(tp);
+	std::string ts = ctime(&t);   // convert to calendar time
+	ts.resize(ts.size() - 1);       // skip trailing newline
+	return ts;
+}
+// convert calendar time to timepoint of system clock
+chrono::system_clock::time_point MainLogic::makeTimePoint(int year, int mon, int day, int hour, int min)
+{
+	int sec = 0;
+
+	struct std::tm t;
+	t.tm_sec = sec;        // second of minute (0 .. 59 and 60 for leap seconds)
+	t.tm_min = min;        // minute of hour (0 .. 59)
+	t.tm_hour = hour;      // hour of day (0 .. 23)
+	t.tm_mday = day;       // day of month (0 .. 31)
+	t.tm_mon = mon - 1;      // month of year (0 .. 11)
+	t.tm_year = year - 1900; // year since 1900
+	t.tm_isdst = -1;       // determine whether daylight saving time
+	std::time_t tt = std::mktime(&t);
+	if (tt == -1) {
+		throw "no valid system time";
+	}
+	return std::chrono::system_clock::from_time_t(tt);
 }

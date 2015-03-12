@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 #include "Task.cpp"
+#include "MainLogic.cpp"
 #include <chrono>
 #include <ctime>
 
@@ -55,6 +56,25 @@ namespace LogicTests
 			//std::chrono::system_clock::duration timeDuration = tp.time_since_epoch();
 
 		}
+
+	};
+
+	TEST_CLASS(MainLogicTest)
+	{
+
+	public:
+
+		TEST_METHOD(FloatingTaskTest)
+		{
+
+			Task newFloatingTask = Task::Task("Do Something", Task::Priority::HIGH);
+			Assert::AreEqual<std::string>("Do Something", newFloatingTask.getTaskDetails());
+			//dunno how to check priority
+			//Assert::AreEqual<Task::Priority>(Task::Priority::HIGH, newTask.getTaskPriority());
+			Assert::AreEqual<bool>(true, newFloatingTask.isFloatingTask());
+
+		}
+
 
 	};
 }

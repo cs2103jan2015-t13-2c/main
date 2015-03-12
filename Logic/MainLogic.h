@@ -5,6 +5,8 @@
 #include <vector>
 #include <algorithm>
 #include <sstream>
+#include <chrono>
+#include <ctime>
 #include "Task.h"
 
 using namespace std;
@@ -15,11 +17,16 @@ public:
 		CREATE, READ, UPDATE, DELETE, CLEAR, SORT, SEARCH, EXIT, INVALID,	//Main commands
 		DEADLINE, PRIORITY, RECURRENCE										//Create sub-commands
 	};
-	
+
 
 	static string processUserInput(string command);
 
+	static vector<Task> TaskList;
+
 private:
+	//The Vector
+	static vector<Task> TaskVector;
+
 	//Command Parsers
 	static COMMAND_TYPE determineCommandType(string commandTypeString);
 	static string determineContent(string command);
@@ -32,6 +39,9 @@ private:
 
 	//Processing Functions
 	static string createTask(string userCommand);
+	static Task::Priority determinePriority(string command);
+	static Task::Recurrence determineRecurrence(string command);
+	static chrono::system_clock::time_point determineTime(string command);
 	static string readTask(string userCommand);
 	static string updateTask(string userCommand);
 	static string deleteTask(string userCommand);
@@ -56,4 +66,8 @@ private:
 	static string replace(string a, string b, string c);
 	template <typename T, size_t N> inline static size_t sizeOfArray(const T(&)[N]);
 
+	static string asString(const std::chrono::system_clock::time_point& tp);
+	static chrono::system_clock::time_point makeTimePoint(int year, int mon, int day, int hour, int min);
+
 };
+

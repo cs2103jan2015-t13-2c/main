@@ -8,7 +8,7 @@ int main() {
 
 	string command;
 	getline(cin, command);
-	MainLogic::main(command);
+	MainLogic::processUserInput(command);
 	cin.get();
 	return 0;
 }

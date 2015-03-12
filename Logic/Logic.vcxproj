@@ -66,23 +66,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Command.h" />
-<<<<<<< HEAD
-    <ClInclude Include="CommandCreate.h" />
-=======
->>>>>>> e877c09a0cb727bbc7f1e7496308ad9fe8c50260
-    <ClInclude Include="DeadlineTask.h" />
     <ClInclude Include="MainLogic.h" />
     <ClInclude Include="Task.h" />
-    <ClInclude Include="TimedTask.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Command.cpp" />
-<<<<<<< HEAD
-    <ClCompile Include="CommandCreate.cpp" />
-    <ClCompile Include="DeadlineTask.cpp" />
-    <ClCompile Include="FloatingTask.cpp" />
-=======
->>>>>>> e877c09a0cb727bbc7f1e7496308ad9fe8c50260
     <ClCompile Include="MainLogic.cpp" />
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="TaskkyMain.cpp" />
