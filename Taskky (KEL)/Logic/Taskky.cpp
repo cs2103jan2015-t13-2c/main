@@ -1,6 +1,18 @@
 #include "Taskky.h"
 
 /*
+Need addtional things to handle:
+1. task does not differentiate floating, timed, deadline task
+2. print to user also does not differentiate the different types of tasks
+3. tolower everything?
+4. error messages - wrong command lines?
+
+
+*/
+
+
+
+/*
  * ====================================================================
  *  Main program
  * ====================================================================
@@ -93,7 +105,7 @@ string Taskky::executeCommand(string userCommand, vector<Task> &tempSave, string
 		return CommandType::Add;	
 	}
 	else if (equalsIgnoreCase(commandTypeString, "display")) {
-		return CommandType::Display;	
+		return CommandType::Display;
 	}
 	else if (equalsIgnoreCase(commandTypeString, "update")) {
 		return CommandType::Update;	
@@ -188,80 +200,291 @@ string Taskky::executeCommand(string userCommand, vector<Task> &tempSave, string
 
  string Taskky::displayTask(string userCommand, vector<Task> &tempSave) {
 
+	 ostringstream oss;
 	 vector<Task>::iterator iter;
 
 	 //Prints Task Number
 	 for (iter = tempSave.begin(); iter != tempSave.end(); ++iter) {
-		 cout << "=============================" << endl;
-		 cout << "Task #" << setw(8) << setfill('0') << (*iter).getTaskNumber() << endl;
-		 cout << "=============================" << endl;
+		 oss << printTaskToUser(*iter);
+	}
+	return oss.str();
+}
 
-		 cout << (*iter).getTaskDetails() << endl;
-		 
-		//Prints Task Start/End Time or Deadline (if any)
-		Task::Type checkType = (*iter).getTaskType();
-		switch (checkType) {
-			case Task::TIMED: {
-				cout << "START: " << Taskky::asString((*iter).getTaskStartTime()) << endl;
-				cout << "END: " << Taskky::asString((*iter).getTaskEndTime()) << endl;
-				break;
-				}
-			case Task::DEADLINE: {
-				cout << "DEADLINE: " << Taskky::asString((*iter).getTaskDeadline()) << endl;
-				break;
-			}
-			default:
-				break;
-			}
+ string Taskky::printTaskToUser(Task toPrint) {
+	 
+	 ostringstream oss;
+	 
+	 //Prints Task Number
+	 oss << "=============================" << endl;
+	 oss << "Task #" << setw(8) << setfill('0') << (toPrint).getTaskNumber() << endl;
+	 oss << "=============================" << endl;
 
-		//Prints Task Recurrence (if any)
-		Task::Recurrence checkRec = (*iter).getTaskRecurrence();
-		switch (checkRec) {
-			case Task::DAY: {
-				cout << "EVERY DAY" << endl;
-				break;
-			}
-			case Task::WEEK: {
-				cout << "EVERY WEEK" << endl;
-				break;
-			}
-			case Task::MONTH: {
-				cout << "EVERY MONTH" << endl;
-				break;
-			}
-			default:
-				break;
-			}
+	 oss << (toPrint).getTaskDetails() << endl;
 
-		//Prints Task Priority
-		Task::Priority checkPri = (*iter).getTaskPriority();
-		switch (checkPri) {
-			case Task::LOW: {
-				cout << "PRIORITY: LOW" << endl;
-				break;
-			}
-			case Task::HIGH: {
-				cout << "PRIORITY: HIGH" << endl;
-				break;
-			}
-			default: {
-				cout << "PRIORITY: NORMAL" << endl;
-				break;
+	 //Prints Task Start/End Time or Deadline (if any)
+	 Task::Type checkType = (toPrint).getTaskType();
+	 switch (checkType) {
+	 case Task::TIMED: {
+		 oss << "START: " << Taskky::asString((toPrint).getTaskStartTime()) << endl;
+		 oss << "END: " << Taskky::asString((toPrint).getTaskEndTime()) << endl;
+		 break;
+	 }
+	 case Task::DEADLINE: {
+		 oss << "DEADLINE: " << Taskky::asString((toPrint).getTaskDeadline()) << endl;
+		 break;
+	 }
+	 default:
+		 break;
+	 }
+
+	 //Prints Task Recurrence (if any)
+	 Task::Recurrence checkRec = (toPrint).getTaskRecurrence();
+	 switch (checkRec) {
+	 case Task::DAY: {
+		 oss << "EVERY DAY" << endl;
+		 break;
+	 }
+	 case Task::WEEK: {
+		 oss << "EVERY WEEK" << endl;
+		 break;
+	 }
+	 case Task::MONTH: {
+		 oss << "EVERY MONTH" << endl;
+		 break;
+	 }
+	 default:
+		 break;
+	 }
+
+	 //Prints Task Priority
+	 Task::Priority checkPri = (toPrint).getTaskPriority();
+	 switch (checkPri) {
+	 case Task::LOW: {
+		 oss << "PRIORITY: LOW" << endl;
+		 break;
+	 }
+	 case Task::HIGH: {
+		 oss << "PRIORITY: HIGH" << endl;
+		 break;
+	 }
+	 default: {
+		 oss << "PRIORITY: NORMAL" << endl;
+		 break;
+	 }
+	 }
+	 
+	 return oss.str();
+
+ }
+
+string Taskky::updateTask(string userCommand, vector<Task> &tempSave) {
+	/*
+	command for update will be:
+	"update _tasknumber detail (change task details) from (change start time) to (change end time) 
+	 by (change deadline time) every (change recurrence) priority (change priority)"
+	 hence keywords:
+	 1. details
+	 2. from - to
+	 3. by
+	 4. every / no recurrence
+	 5. priority
+
+	 each info can be omitted, whichever included will be changed, otherwise it will remain the same
+	*/
+
+	ostringstream oss;
+	string text = removeFirstWord(userCommand);
+
+	string task_number_str = getFirstWord(text);
+	text = removeFirstWord(text);
+	int task_number_int = atoi(task_number_str.c_str());
+
+	vector<string> textVec = splitParameters(text);
+	vector<Task>::iterator toUpdate = tempSave.begin() + task_number_int - 1;
+	vector<string>::iterator iter = textVec.begin();
+
+	//Check for details
+	iter = textVec.begin();
+	string details = (*toUpdate).getTaskDetails();
+	while (iter != textVec.end()) {
+		if (*iter == "details") {
+			details = "";
+			++iter;
+			while (*iter != "from" && *iter != "by" && *iter != "every" && *iter != "priority") {
+				details = details + " " + *iter;
+				++iter;
 			}
 		}
+		++iter;
 	}
-	return "";
+	(*toUpdate).setTaskDetails(details);
+
+	//Check for start time
+	iter = textVec.begin();
+	chrono::system_clock::time_point start_time = (*toUpdate).getTaskStartTime();
+	string time_str = asString(start_time);
+	while (iter != textVec.end()) {
+		if (*iter == "from") {
+			while (*iter != "to") {
+				time_str = time_str + " " + *iter;
+				++iter;
+			}
+		}
+		++iter;
+	}
+	start_time = parseTime(time_str);
+	(*toUpdate).setTaskStartTime(start_time);
+
+	//Check for end time
+	iter = textVec.begin();
+	chrono::system_clock::time_point end_time = (*toUpdate).getTaskEndTime();
+	time_str = asString(end_time);
+	while (iter != textVec.end()) {
+		if (*iter == "to") {
+			while (*iter != "details" && *iter != "by" && *iter != "every" && *iter != "priority") {
+				time_str = time_str + " " + *iter;
+				++iter;
+			}
+		}
+		++iter;
+	}
+	end_time = parseTime(time_str);
+	(*toUpdate).setTaskEndTime(end_time);
+
+	//Check for deadline
+	iter = textVec.begin();
+	chrono::system_clock::time_point deadline = (*toUpdate).getTaskDeadline();
+	time_str = asString(deadline);
+	if (*iter == "by") {
+		while (*iter != "from" && *iter != "details" && *iter != "every" && *iter != "priority") {
+			time_str = time_str + " " + *iter;
+			++iter;
+		}
+		++iter;
+	}
+	deadline = parseTime(time_str);
+	(*toUpdate).setTaskDeadline(deadline);
+
+	//Check for recurrence
+	iter = textVec.begin();
+	Task::Recurrence recurrence = (*toUpdate).getTaskRecurrence();
+	while (iter != textVec.end()) {
+		if (*iter == "every") {
+			++iter;
+			if (*iter == "day") {
+				recurrence = Task::Recurrence::DAY;
+			}
+			else if (*iter == "week") {
+				recurrence = Task::Recurrence::WEEK;
+			}
+			else if (*iter == "month") {
+				recurrence = Task::Recurrence::MONTH;
+			}
+		}
+		else if (*iter == "everyday") {
+			recurrence = Task::Recurrence::DAY;
+		}
+		else if (*iter == "no" || *iter == "not") {
+			++iter;
+			if (*iter == "recurrence" || *iter == "recurring" || *iter == "repeating") {
+				recurrence = Task::Recurrence::NONE;
+			}
+		}
+		++iter;
+	}
+	(*toUpdate).setTaskRecurrence(recurrence);
+
+	//Check for priority
+	iter = textVec.begin();
+	Task::Priority priority = (*toUpdate).getTaskPriority();
+	while (iter != textVec.end()) {
+		if (*iter == "priority") {
+			++iter;
+			if (*iter == "high") {
+				priority = Task::Priority::HIGH;
+			}
+			else if (*iter == "normal") {
+				priority = Task::Priority::NORMAL;
+			}
+			else if (*iter == "low") {
+				priority = Task::Priority::LOW;
+			}
+		}
+		++iter;
+	}
+	(*toUpdate).setTaskPriority(priority);
+
+
+	return "Task Updated\n";	
 }
 
- string Taskky::updateTask(string userCommand, vector<Task> &tempSave) {
-	return "0";	
-}
+string Taskky::deleteTask(string userCommand, vector<Task> &tempSave) {
+	/*
+	command for delete will be "delete /task_name"
+	keep as comment in case we wanna change to this kind of delete ^^
+	-adi-
+	*/
+	
+	/*
+	string text = removeFirstWord(userCommand);
+	ostringstream oss;
 
- string Taskky::deleteTask(string userCommand, vector<Task> &tempSave) {
-	return "0";
-}
+	vector<Task>::iterator toDelete = determineTaskPosition(text, tempSave);
+	if (toDelete != tempSave.end()) {
+		tempSave.erase(toDelete);
+		oss << "Deleted task " << (*toDelete).getTaskDetails << "from Taskky.\n";
+	}
+	else {
+		oss << "Task not Found.\n";
+	}
 
- void Taskky::loadfromFile(vector<Task> &tempSave, string fileName) {
+
+	return oss.str();
+	*/
+
+	/*
+	for delete command "delete /task_number"
+	*/
+
+	ostringstream oss;
+
+	string task_number_str = removeFirstWord(userCommand);
+	int task_number_int = atoi(task_number_str.c_str());
+
+	vector<Task>::iterator iter = tempSave.begin();
+	iter = iter + task_number_int - 1;
+	string deleted_task_name = (*iter).getTaskDetails();
+	tempSave.erase(iter);
+
+	oss << "Deleted task " << task_number_int << " (" << deleted_task_name << ") from Taskky.\n";
+
+	return oss.str();
+
+}
+/*
+
+//This function only useful for the other kind of delete command line,so only implement this with the other delete function
+vector<Task>::iterator Taskky::determineTaskPosition(string taskname, vector<Task> &tempSave) {
+
+	vector<Task>::iterator iter;
+	bool isPresent = false;
+
+	for (iter = tempSave.begin(); iter != tempSave.end(); ++iter) {
+		string item = (*iter).getTaskDetails;
+		size_t found = item.find(taskname);
+		if (found != string::npos) {
+			isPresent = true;
+			return iter;
+		}
+	}
+
+	if (isPresent == false) {
+		return tempSave.end();
+	}
+
+}
+*/
+void Taskky::loadfromFile(vector<Task> &tempSave, string fileName) {
 	 ifstream file;
 	 file.open(fileName.c_str());
 
@@ -278,7 +501,7 @@ string Taskky::executeCommand(string userCommand, vector<Task> &tempSave, string
 	 }
  }
 
- void Taskky::writetoFile(vector<Task> tempSave, string fileName) {
+void Taskky::writetoFile(vector<Task> tempSave, string fileName) {
 	 ofstream file;
 	 file.open(fileName.c_str(), fstream::trunc);
 
@@ -307,7 +530,7 @@ string Taskky::executeCommand(string userCommand, vector<Task> &tempSave, string
  *  Additional functions
  * ====================================================================
  */
- string Taskky::removeFirstWord(string userCommand) {
+string Taskky::removeFirstWord(string userCommand) {
 	return trim(replace(userCommand, getFirstWord(userCommand), ""));	
 }
 

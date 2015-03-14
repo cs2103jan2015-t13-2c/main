@@ -32,8 +32,10 @@ private:
 	static string displayTask(string userCommand, vector<Task> &tempSave);
 	static string updateTask(string userCommand, vector<Task> &tempSave);
 	static string deleteTask(string userCommand, vector<Task> &tempSave);
+	static vector<Task>::iterator determineTaskPosition(string userCommand, vector<Task> &tempSave);
 	static void loadfromFile(vector<Task> &tempSave, string fileName);
 	static void writetoFile(vector<Task> tempSave, string fileName);
+	static string Taskky::printTaskToUser(Task toPrint);
 			
 	static string removeFirstWord(string userCommand);
 	static string getFirstWord(string userCommand);
