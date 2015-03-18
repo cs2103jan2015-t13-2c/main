@@ -21,12 +21,18 @@
     <ClInclude Include="Taskky.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Date.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Task.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Taskky.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Date.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
