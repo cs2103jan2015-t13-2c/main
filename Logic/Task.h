@@ -1,67 +1,67 @@
 #pragma once
-#pragma once
+#ifndef TASK_H_
+#define TASK_H_
 
 #include <string>
 #include <chrono>
+#include "Date.h"
+
+using namespace std;
 
 class Task{
 
 public:
+	enum Type {
+		TIMED, DEADLINE, FLOATING
+	};
 
 	enum Priority {
 		LOW, NORMAL, HIGH
 	};
 
-	enum class Recurrence {
+	enum Recurrence {
 		NONE, DAY, WEEK, MONTH
 	};
 
-	//Constructing Floating tasks
-	Task::Task(std::string taskDetails);
-	Task::Task(std::string taskDetails, Task::Priority taskPriority);
-
-	//Constructing Deadline tasks
-	Task::Task(std::string taskDetails, Task::Priority taskPriority, 
-		Task::Recurrence taskRecurrence, std::chrono::system_clock::time_point taskDeadline);
-
-	//Constructing Timed Task
-	Task::Task(std::string taskDetails, 
-					 Task::Priority taskPriority, 
-					 Task::Recurrence taskRecurrence, 
-					 std::chrono::system_clock::time_point taskStartTime,
-					 std::chrono::system_clock::time_point taskEndTime);
+	//Constructor
+	Task::Task(string taskDetails,
+		Date *taskStartTime,
+		Date *taskEndTime,
+		Date *taskDeadline,
+		Task::Recurrence taskRecurrence,
+		Task::Priority taskPriority);
 
 	//Destructor
 	Task::~Task();
 
 	//Modifiers
-	void Task::setTaskDetails(std::string taskDetails);
-	void Task::setTaskPriority(Priority taskPriority);
-	void Task::setTaskDeadline(std::chrono::system_clock::time_point taskDeadline);
+	void Task::setTaskDetails(string taskDetails);
+	void Task::setTaskStartTime(Date taskStartTime);
+	void Task::setTaskEndTime(Date taskEndTime);
+	void Task::setTaskDeadline(Date taskDeadline);
 	void Task::setTaskRecurrence(Task::Recurrence taskRecurrence);
-	void Task::setTaskStartTime(std::chrono::system_clock::time_point taskStartTime);
-	void Task::setTaskEndTime(std::chrono::system_clock::time_point taskEndTime);
+	void Task::setTaskPriority(Priority taskPriority);
+	void Task::setTaskMarked(bool taskMarked);
 
 	//Accessors
-	std::string Task::getTaskDetails();
-	Task::Priority Task::getTaskPriority();
-	std::chrono::system_clock::time_point Task::getTaskDeadline();
+	Task::Type Task::getTaskType();
+	string Task::getTaskDetails();
+	Date Task::getTaskStartTime();
+	Date Task::getTaskEndTime();
+	Date Task::getTaskDeadline();
 	Task::Recurrence Task::getTaskRecurrence();
-	std::chrono::system_clock::time_point Task::getTaskStartTime();
-	std::chrono::system_clock::time_point Task::getTaskEndTime();
-
-	//checking type of task
-	bool Task::isFloatingTask();
-	bool Task::isDeadlineTask();
-	bool Task::isTimedTask();
-	bool Task::isValidTask();
+	Task::Priority Task::getTaskPriority();
+	bool Task::getTaskMarked();
 
 private:
-	//Default initialize time_point to epoch values
-	std::string _taskDetails;
-	Task::Priority _taskPriority;
-	std::chrono::system_clock::time_point _taskDeadline;
+	Task::Type _taskType;
+	string _taskDetails;
+	Date *_taskStartTime;
+	Date *_taskEndTime;
+	Date *_taskDeadline;
 	Task::Recurrence _taskRecurrence;
-	std::chrono::system_clock::time_point _taskStartTime;
-	std::chrono::system_clock::time_point _taskEndTime;
+	Task::Priority _taskPriority;
+	bool _taskMarked;
 };
+
+#endif

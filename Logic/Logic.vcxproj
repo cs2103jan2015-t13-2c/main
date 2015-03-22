@@ -66,14 +66,30 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Command.h" />
-    <ClInclude Include="MainLogic.h" />
+    <ClInclude Include="CommandAdd.h" />
+    <ClInclude Include="CommandBuilder.h" />
+    <ClInclude Include="CommandDisplay.h" />
+    <ClInclude Include="CommandInvalid.h" />
+    <ClInclude Include="CommandUpdate.h" />
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="Date.h" />
+    <ClInclude Include="Parser.h" />
     <ClInclude Include="Task.h" />
+    <ClInclude Include="TaskManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Command.cpp" />
-    <ClCompile Include="MainLogic.cpp" />
+    <ClCompile Include="CommandAdd.cpp" />
+    <ClCompile Include="CommandBuilder.cpp" />
+    <ClCompile Include="CommandDisplay.cpp" />
+    <ClCompile Include="CommandInvalid.cpp" />
+    <ClCompile Include="CommandUpdate.cpp" />
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="Date.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Task.cpp" />
-    <ClCompile Include="TaskkyMain.cpp" />
+    <ClCompile Include="TaskManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

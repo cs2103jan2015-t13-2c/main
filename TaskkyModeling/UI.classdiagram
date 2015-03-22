@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner" dslVersion="1.0.0.0" Id="c0981eb6-d328-479e-8157-fb9eab1ccf55" name="UI" linkedPackageId="0cfe8265-47b1-4bf5-a13c-1a925970e2fe" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <profileInstances>
+    <packageHasProfileInstances Id="c9fd36a5-4036-42de-bd3e-b9b2584ba9f3">
+      <profileInstance Id="76b8521d-7cd2-4068-88c3-cb5f5a83560f" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="8eebe973-38fe-4d71-9543-9dea141a3149">
+      <profileInstance Id="80e113cb-678b-4f7b-ab13-de3873f29e92" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="02f969c7-0762-4995-ab24-041359522474" name="MainUI" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="599715e7-6237-4d9f-b0c0-51c3211a6717" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+  </packagedElements>
+  <package Id="0cfe8265-47b1-4bf5-a13c-1a925970e2fe" name="TaskkyModeling">
+    <elementDefinition Id="4c52c1c8-8d7d-44ec-8e5d-6905b7a0b994" />
+  </package>
+</logicalClassDesignerModel>

@@ -1,11 +1,11 @@
 #include "Command.h"
 
 
-Command::Command(void)
+Command::Command()
 {
 }
 
 
-Command::~Command(void)
+Command::~Command()
 {
 }

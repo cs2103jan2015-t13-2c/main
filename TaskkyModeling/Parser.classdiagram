@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner" dslVersion="1.0.0.0" Id="bcf86702-b98a-47fe-8256-b2f21d518f78" name="UMLClassDiagram1" linkedPackageId="bad185d1-39cf-43cf-b2e9-f6bb9a299c92" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <profileInstances>
+    <packageHasProfileInstances Id="901b7398-de4c-45df-8bbb-23a601f685d1">
+      <profileInstance Id="f90e48cb-5e3c-41f1-8c8c-43ec3242a829" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="991f91db-ea2e-4cb8-80f0-2b723fd79990">
+      <profileInstance Id="1e1a9d51-ef0f-4e84-91a3-e0d13e7830bb" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="6b2e1313-9499-4d03-b6ec-d0eab337e433" name="MainParser" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="9d23fc6c-2ecd-4a98-8259-0179f758224e" />
+        <targetEnds>
+          <association Id="7916cc24-ea2e-478b-9711-084c77adb49a" isDerived="false" sourceEndRoleName="MainParser" targetEndRoleName="InputParser" isLeaf="false" isAbstract="false">
+            <classMoniker Id="faadd7e5-ffe1-45ad-a443-cdfccb925fa5" LastKnownName="InputParser" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="105a0b1f-0f06-4868-b002-eeca32c4baae" name="MainParser" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="0011c1aa-a79e-4f4d-b45c-dca4c5fec8b7" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="363495ae-de5d-497d-9371-b4998be6064c" name="InputParser" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="00d242f2-a45f-494a-9d1d-781d6b62598c" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="c8639b76-5208-4a8f-80a5-2eba99811810" />
+          </association>
+          <association Id="cff39630-93fd-494d-8fbc-dc55ab026404" isDerived="false" sourceEndRoleName="MainParser" targetEndRoleName="DateParser" isLeaf="false" isAbstract="false">
+            <classMoniker Id="1c54fb3e-a34d-4bcd-9185-e8516b970271" LastKnownName="DateParser" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="ad406d00-9de0-4e5f-bb78-5d80f3895273" name="MainParser" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="7bc199f8-9545-4d89-97d0-160892b0fc0a" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="25fd165c-2f8b-493d-9fd4-d183bd9e4690" name="DateParser" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="bde296c4-d7bc-4da7-8c89-c43bd87cc289" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="a0b9b941-0663-4e04-a7f9-25261d3cc40d" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="faadd7e5-ffe1-45ad-a443-cdfccb925fa5" name="InputParser" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="f9899e99-81c8-4da1-9f1f-d922b2b45a43" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="1c54fb3e-a34d-4bcd-9185-e8516b970271" name="DateParser" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="d0fd2ecb-1bf4-4600-bf7c-3ba3c67747ae" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+  </packagedElements>
+  <package Id="bad185d1-39cf-43cf-b2e9-f6bb9a299c92" name="TaskkyModeling">
+    <elementDefinition Id="4c52c1c8-8d7d-44ec-8e5d-6905b7a0b994" />
+  </package>
+</logicalClassDesignerModel>
