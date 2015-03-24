@@ -143,6 +143,13 @@ void Parser::parseCommandAdd(string userCommand) {
 			int hour = 0, min = 0;
 
 			iter++;
+			if (iter == textVec.end()) {
+				_taskDeadline = new Date(Date().getYear(),
+					Date().getMonth(),
+					Date().getDay() + 1, 0, 0);
+				return;
+			}
+
 			if (*iter == "at") {
 				iter++;
 				string temp = *iter;
@@ -199,6 +206,11 @@ void Parser::parseCommandAdd(string userCommand) {
 					break;
 			}
 
+			if (iter == textVec.end()) {
+				_taskDeadline = (parseTime(temp.str()));
+				return;
+			}
+
 			if (*iter == "to") {
 				_taskStartTime = (parseTime(temp.str()));
 				temp.str("");
@@ -212,9 +224,6 @@ void Parser::parseCommandAdd(string userCommand) {
 						break;
 				}
 				_taskEndTime = (parseTime(temp.str()));
-			}
-			else {
-				_taskDeadline = (parseTime(temp.str()));
 			}
 		}
 	
@@ -245,7 +254,6 @@ void Parser::parseCommandAdd(string userCommand) {
 	if (iter == textVec.end())
 		return;
 		
-	iter++;
 	if (*iter == "#impt") {
 		_taskPriority = Task::Priority::HIGH;
 	}

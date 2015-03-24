@@ -45,14 +45,14 @@ namespace LogicTests
 		TEST_METHOD(DateTest)
 		{
 			//constructor and toString test
-			Date nowDate = Date(2015,10,13,17,00);
+			Date nowDate = Date(2015,9,13,17,00);
 			Assert::AreEqual<std::string>("Tue Oct 13 17:00:00 2015", nowDate.toString());
 
 			//comparator test
-			Date earlierDate = Date(2015, 10, 13, 17, 00);
-			Date middleDate = Date(2015, 10, 13, 18, 00);
-			Date middleDate2 = Date(2015, 10, 13, 18, 00);
-			Date laterDate = Date(2015, 10, 13, 19, 00);
+			Date earlierDate = Date(2015, 9, 13, 17, 00);
+			Date middleDate = Date(2015, 9, 13, 18, 00);
+			Date middleDate2 = Date(2015, 9, 13, 18, 00);
+			Date laterDate = Date(2015, 9, 13, 19, 00);
 			Assert::AreEqual<int>(60, middleDate.diffInMinutes(laterDate));
 			Assert::AreEqual<int>(0, middleDate.isEarlierThan(middleDate2));
 			Assert::AreEqual<int>(1, middleDate.isEarlierThan(laterDate));
@@ -60,7 +60,7 @@ namespace LogicTests
 
 			//getting year, month, date test
 			Assert::AreEqual<int>(2015, nowDate.getYear());
-			Assert::AreEqual<int>(10, nowDate.getMonth());
+			Assert::AreEqual<int>(9, nowDate.getMonth());
 			Assert::AreEqual<int>(13, nowDate.getDay());
 			Assert::AreEqual<int>(17, nowDate.getHour());
 			Assert::AreEqual<int>(00, nowDate.getMinute());
@@ -93,6 +93,159 @@ namespace LogicTests
 
 		}
 
+		TEST_METHOD(ParserTest)
+		{   /*-----------------------------------------------
+			  Floating Tasks
+			-----------------------------------------------*/
+			Parser::parseCommandAdd("add task");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
 
+
+			/*-----------------------------------------------
+			  Deadline Tasks
+			-----------------------------------------------*/
+			Parser::parseCommandAdd("add task by 23 mar");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Mon Mar 23 00:00:00 2015");
+
+			Parser::parseCommandAdd("add task by 23 mar 5.30am");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Mon Mar 23 05:30:00 2015");
+			
+			Parser::parseCommandAdd("add task by 23 mar 2016");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Wed Mar 23 00:00:00 2016");
+			
+			Parser::parseCommandAdd("add task by 23 mar 2016 5.30am");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Wed Mar 23 05:30:00 2016");
+
+			Parser::parseCommandAdd("add task by 23 mar 2016 6pm");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Wed Mar 23 18:00:00 2016");
+
+			Parser::parseCommandAdd("add task by 23 mar 2016 1830hrs");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Wed Mar 23 18:30:00 2016");
+
+			//This test will have to be updated each week
+			Parser::parseCommandAdd("add task by this monday");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Mon Mar 23 00:00:00 2015");
+
+			//This test will have to be updated each week
+			Parser::parseCommandAdd("add task by this mon");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Mon Mar 23 00:00:00 2015");
+
+			//This test will have to be updated each week
+			Parser::parseCommandAdd("add task by this mon 5.30am");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Mon Mar 23 05:30:00 2015");
+
+
+			/*-----------------------------------------------
+			  Timed Tasks
+			-----------------------------------------------*/
+			Parser::parseCommandAdd("add task from 23 mar to 27 mar");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "Mon Mar 23 00:00:00 2015");
+			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "Fri Mar 27 00:00:00 2015");
+
+			Parser::parseCommandAdd("add task from 23 mar 5.30am to 27 mar 6pm");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "Mon Mar 23 05:30:00 2015");
+			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "Fri Mar 27 18:00:00 2015");
+
+			Parser::parseCommandAdd("add task from 23 mar 0530hrs to 27 mar 1800hrs");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "Mon Mar 23 05:30:00 2015");
+			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "Fri Mar 27 18:00:00 2015");
+
+			//This test will have to be updated each week
+			Parser::parseCommandAdd("add task from this monday to next tuesday");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "Mon Mar 23 00:00:00 2015");
+			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "Tue Mar 31 00:00:00 2015");
+
+			//This test will have to be updated each week
+			Parser::parseCommandAdd("add task from this monday to next tue");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "Mon Mar 23 00:00:00 2015");
+			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "Tue Mar 31 00:00:00 2015");
+
+			//This test will have to be updated each week
+			Parser::parseCommandAdd("add task from this monday to next tues");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "Mon Mar 23 00:00:00 2015");
+			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "Tue Mar 31 00:00:00 2015");
+
+			//This test will have to be updated each week
+			Parser::parseCommandAdd("add task from this mon 3.30pm to next tue 5pm");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "Mon Mar 23 15:30:00 2015");
+			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "Tue Mar 31 17:00:00 2015");
+
+			//This test will have to be updated each week
+			Parser::parseCommandAdd("add task from this mon 0100hrs to next tue 2359hrs");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "Mon Mar 23 01:00:00 2015");
+			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "Tue Mar 31 23:59:00 2015");
+
+			
+			/*-----------------------------------------------
+			  Recurring(DAY) Tasks
+			-----------------------------------------------*/
+			//This test will have to be updated each DAY
+			Parser::parseCommandAdd("add task every day");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Wed Mar 25 00:00:00 2015");
+			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::DAY);
+
+			//This test will have to be updated each DAY
+			Parser::parseCommandAdd("add task every day at 8am");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Wed Mar 25 08:00:00 2015");
+			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::DAY);
+
+
+			/*-----------------------------------------------
+			Recurring(WEEK) Tasks
+			-----------------------------------------------*/
+			//This test will have to be updated each week
+			Parser::parseCommandAdd("add task every mon");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Mon Mar 23 00:00:00 2015");
+			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::WEEK);
+
+			//This test will have to be updated each week
+			Parser::parseCommandAdd("add task every mon 8.30am");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Mon Mar 23 08:30:00 2015");
+			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::WEEK);
+
+			//This test will have to be updated each week
+			Parser::parseCommandAdd("add task every mon 8.30am to fri 5pm");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "Mon Mar 23 08:30:00 2015");
+			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "Fri Mar 27 17:00:00 2015");
+			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::WEEK);
+
+
+			/*-----------------------------------------------
+			Recurring(MONTH) Tasks
+			-----------------------------------------------*/
+			//This test will have to be updated each month
+			Parser::parseCommandAdd("add task every nov");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Sun Nov 01 00:00:00 2015");
+			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::WEEK);
+
+			//This test will have to be updated each month
+			Parser::parseCommandAdd("add task every november");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Sun Nov 01 00:00:00 2015");
+			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::WEEK);
+		}
 	};
 }
