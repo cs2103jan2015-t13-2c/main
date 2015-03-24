@@ -239,13 +239,13 @@ namespace LogicTests
 			Parser::parseCommandAdd("add task every nov");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
 			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Sun Nov 01 00:00:00 2015");
-			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::WEEK);
+			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::MONTH);
 
 			//This test will have to be updated each month
 			Parser::parseCommandAdd("add task every november");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
 			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Sun Nov 01 00:00:00 2015");
-			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::WEEK);
+			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::MONTH);
 		}
 	};
 }
