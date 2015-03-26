@@ -107,6 +107,10 @@ string CommandDisplay::printTaskToUser(Task toPrint, int taskNumber) {
 		oss << "MARKED: " << "NO" << endl;
 		break;
 	}
+	default:
+		break;
+	}
+
 	return oss.str();
 
 }

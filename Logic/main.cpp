@@ -37,10 +37,10 @@ void main() {
 	cout << "Please enter your username: ";
 	cin >> userName;
 	cout << "\nWelcome back, " << userName << "!\n";
-
-	string fileName = userName + "Save.txt";
+	//userName + 
+	string fileName = "Save.txt";
 	//vector<Task> tempSave;
-	TaskManager::setAllCurrentTasks(Storage::readFromFile());
+	//TaskManager::setAllCurrentTasks(Storage::readFromFile());
 
 	cin.ignore();
 	while (true) {

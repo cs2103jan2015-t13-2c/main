@@ -99,6 +99,25 @@ namespace LogicTests
 			CommandBuilder commandBuilder = CommandBuilder::CommandBuilder();
 			Assert::AreEqual<bool>(true, commandBuilder.getTaskDetails() == "");
 			Assert::AreEqual<bool>(true, commandBuilder.getTaskDeadline() == nullptr);
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskStartTime() == nullptr);
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskEndTime() == nullptr);
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskRecurrence() == Task::NONE);
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskPriority() == Task::NORMAL);
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskMarked() == false);
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskNumber() == -1);
+
+			//Checking constructing of a add command properly
+			Command* addCommand = commandBuilder.parseCommand("add hello");
+			//Assert::AreEqual<std::string>("CommandAdd", typeid(addCommand).name());
+			Assert::AreEqual<std::string>("Task has been added!", addCommand->execute());
+
+			//Checking constructing of a delete command properly
+			//Command* deleteCommand = commandBuilder.parseCommand("delete 1");
+			//Assert::AreEqual<std::string>("Deleted Task #%d", deleteCommand->execute());
+			
+			//Checking constructing of an update command properly
+			//Command* updateCommand = commandBuilder.parseCommand("update 1");
+			//Assert::AreEqual<std::string>("Deleted Task #%d", updateCommand->execute());
 		}
 
 		TEST_METHOD(CommandAddTest)
@@ -212,13 +231,13 @@ namespace LogicTests
 			//This test will have to be updated each DAY
 			Parser::parseCommandAdd("add task every day");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
-			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Thu Mar 26 00:00:00 2015");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Fri Mar 27 00:00:00 2015");
 			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::DAY);
 
 			//This test will have to be updated each DAY
 			Parser::parseCommandAdd("add task every day at 8am");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
-			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Thu Mar 26 08:00:00 2015");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Fri Mar 27 08:00:00 2015");
 			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::DAY);
 
 
