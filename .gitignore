@@ -1,0 +1,4 @@
+*.tlog
+*.ipch
+*.vcxproj
+*.idb
