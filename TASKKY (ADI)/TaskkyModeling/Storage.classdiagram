@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<logicalClassDesignerModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm4="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm5="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner" dslVersion="1.0.0.0" Id="6e9e4ffa-e3a3-45da-90a3-64eaab7708cf" name="UMLClassDiagram2" linkedPackageId="b2033a11-01ea-486c-a33e-3c3fcb9722e4" xmlns="http://schemas.microsoft.com/dsltools/LogicalClassDesigner">
+  <profileInstances>
+    <packageHasProfileInstances Id="5bc7724b-d4d8-46a2-be81-555bb9082e9f">
+      <profileInstance Id="a688c739-74e0-4a3d-a7ba-f4579682aee9" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="b6ab39b6-2beb-40a7-8f21-566c0bdfb078">
+      <profileInstance Id="b64921d1-ec48-424d-9aed-5d0bc454955f" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="cb4a6662-0456-4557-8a6e-4840d7293f4b" name="StorageFacade" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="a274bb03-44b9-476e-a664-2d031a6b5eb7" />
+        <targetEnds>
+          <association Id="f11e5b05-9033-4fbf-8cfd-8414ddaaa50d" isDerived="false" sourceEndRoleName="StorageFacade" targetEndRoleName="StorageLogic" isLeaf="false" isAbstract="false">
+            <classMoniker Id="36087899-6ae6-4380-ae12-9f4d9c497edb" LastKnownName="StorageLogic" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="2e61c208-d9c8-4a99-bdd1-889c9776ab48" name="StorageFacade" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="3ad2db35-2db1-4a81-89f8-8f68a9eb25af" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="bffb0b1f-bbc1-4f34-b4b2-1db7f4b28743" name="StorageLogic" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="af9c2f1e-a90e-4d3e-a1de-e705144d0925" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="9267eb97-ec45-4d5f-b242-90a3cca716ff" />
+          </association>
+          <association Id="d8266665-2160-4b66-a848-e892f54dde15" isDerived="false" sourceEndRoleName="StorageFacade" targetEndRoleName="ReaderWriter" isLeaf="false" isAbstract="false">
+            <classMoniker Id="4c4ee0e1-8b85-490e-bafa-911d7d1ab5dd" LastKnownName="ReaderWriter" />
+            <relationshipOwnedElementsInternal>
+              <associationHasOwnedEnds>
+                <memberEnd Id="3511e0c5-ccf8-4888-a0c5-7f4633cb5066" name="StorageFacade" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false" isNavigableOwned="false">
+                  <elementDefinition Id="17617136-a533-4eae-8665-48d61a5fc747" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+              <associationHasOwnedEnds>
+                <memberEnd Id="b636fbb9-b74a-4223-bdbd-317a847b0b37" name="ReaderWriter" isLeaf="false" isStatic="false" isReadOnly="false" isDerived="false" isDerivedUnion="false" aggregation="None" isComposite="false">
+                  <elementDefinition Id="a6d0e570-5f0c-4aeb-92a8-40d750647e3f" />
+                </memberEnd>
+              </associationHasOwnedEnds>
+            </relationshipOwnedElementsInternal>
+            <elementDefinition Id="7acc5ab6-652e-41d0-bbbf-9e29cb6f532a" />
+          </association>
+        </targetEnds>
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="36087899-6ae6-4380-ae12-9f4d9c497edb" name="StorageLogic" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="3fa662dd-d773-4dd9-8b4b-c08ed4b76842" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+    <logicalClassDesignerModelHasTypes>
+      <class Id="4c4ee0e1-8b85-490e-bafa-911d7d1ab5dd" name="ReaderWriter" isAbstract="false" isLeaf="false" isActiveClass="false">
+        <elementDefinition Id="597e336c-39bd-410e-b920-cf644a80b89e" />
+      </class>
+    </logicalClassDesignerModelHasTypes>
+  </packagedElements>
+  <package Id="b2033a11-01ea-486c-a33e-3c3fcb9722e4" name="TaskkyModeling">
+    <elementDefinition Id="4c52c1c8-8d7d-44ec-8e5d-6905b7a0b994" />
+  </package>
+</logicalClassDesignerModel>
