@@ -178,6 +178,8 @@ vector<Task> Storage::readFromFile() {
 		//Task Details
 		taskname = d[i]["taskname"].GetString();
 
+		cout << d[i]["recurrence"].GetString() << endl;
+
 		//Task Time
 		if (d[i]["startTime"].IsNull()) {
 			if (d[i]["deadline"].IsNull())
@@ -199,6 +201,9 @@ vector<Task> Storage::readFromFile() {
 			endTime = &Date::toDate(endTime_str);
 		}
 
+		
+		/*
+		cout << "test\n";
 		//Task Recurrence
 		if (d[i]["recurrence"].GetString() == "NONE") {
 			recurrence = Task::Recurrence::NONE;
@@ -211,7 +216,7 @@ vector<Task> Storage::readFromFile() {
 		}
 		else if (d[i]["recurrence"].GetString() == "MONTH") {
 			recurrence = Task::Recurrence::MONTH;
-		}
+		}*/
 
 		//Task Priority
 		if (d[i]["priority"].GetString() == "LOW") {

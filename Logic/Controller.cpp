@@ -32,6 +32,8 @@ string Controller::processUserInput(string userInput){
 		getUndoStack()->push_back(undoCommand);
 	}
 
+	
+
 	string feedback = command->execute();
 	return feedback;
 }
