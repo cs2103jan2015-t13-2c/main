@@ -2,3 +2,4 @@
 *.ipch
 *.vcxproj
 *.idb
+*.opensdf
