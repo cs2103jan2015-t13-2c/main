@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
+
+
 #include "Task.cpp"
-#include "Taskky.cpp"
 #include "Date.cpp"
 #include "TaskManager.cpp"
 #include "Controller.cpp"
@@ -11,6 +12,14 @@
 #include "CommandInvalid.cpp"
 #include "CommandDisplay.cpp"
 #include "Parser.cpp"
+#include "CommandUpdate.cpp"
+#include "CommandDelete.cpp"
+#include "CommandExit.cpp"
+#include "Storage.cpp"
+#include "CommandUndo.cpp"
+#include "CommandMark.cpp"
+#include "CommandUnmark.cpp"
+
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -23,10 +32,11 @@ namespace LogicTests
 		TEST_METHOD(TaskTest)
 		{
 			//testing floating task
-			Task newFloatingTask = Task::Task("Do Something", NULL, NULL, NULL, Task::Recurrence::NONE, Task::Priority::HIGH);
+			Task newFloatingTask = Task::Task("Do Something", nullptr, nullptr, nullptr, Task::Recurrence::NONE, Task::Priority::HIGH);
 			Assert::AreEqual<std::string>("Do Something", newFloatingTask.getTaskDetails());
-			//Assert::AreEqual<bool>(true, &newFloatingTask.getTaskStartTime() == NULL);
-			//Assert::AreEqual<bool>(true, &newFloatingTask.getTaskEndTime() == NULL);
+			Assert::AreEqual<bool>(true, newFloatingTask.getTaskDeadline() == nullptr);
+			Assert::AreEqual<bool>(true, newFloatingTask.getTaskStartTime() == nullptr);
+			Assert::AreEqual<bool>(true, newFloatingTask.getTaskEndTime() == nullptr);
 			Assert::AreEqual<bool>(true, newFloatingTask.getTaskType() == Task::FLOATING);
 			Assert::AreEqual<bool>(true, Task::Priority::HIGH == newFloatingTask.getTaskPriority());
 			Assert::AreEqual<bool>(true, newFloatingTask.getTaskRecurrence() == Task::NONE);
@@ -37,9 +47,9 @@ namespace LogicTests
 			Task newTimedTask = Task::Task("Do Something", &earlierDate, &laterDate, NULL, Task::Recurrence::NONE, Task::Priority::HIGH);
 			Assert::AreEqual<std::string>("Do Something", newTimedTask.getTaskDetails());
 			Assert::AreEqual<bool>(true, newTimedTask.getTaskType() == Task::TIMED);
-			Assert::AreEqual<int>(0, newTimedTask.getTaskStartTime().isEarlierThan(newTimedTask.getTaskStartTime()));
-			Assert::AreEqual<int>(1, newTimedTask.getTaskStartTime().isEarlierThan(newTimedTask.getTaskEndTime()));
-			Assert::AreEqual<int>(-1, newTimedTask.getTaskEndTime().isEarlierThan(newTimedTask.getTaskStartTime()));
+			Assert::AreEqual<int>(0, newTimedTask.getTaskStartTime()->isEarlierThan(*newTimedTask.getTaskStartTime()));
+			Assert::AreEqual<int>(1, newTimedTask.getTaskStartTime()->isEarlierThan(*newTimedTask.getTaskEndTime()));
+			Assert::AreEqual<int>(-1, newTimedTask.getTaskEndTime()->isEarlierThan(*newTimedTask.getTaskStartTime()));
 		}
 
 		TEST_METHOD(DateTest)
@@ -66,7 +76,6 @@ namespace LogicTests
 			Assert::AreEqual<int>(00, nowDate.getMinute());
 			//Assert::AreEqual<string>("Tue", nowDate.getDayName());
 
-
 		}
 		TEST_METHOD(TaskManagerTest)
 		{
@@ -86,6 +95,10 @@ namespace LogicTests
 
 		TEST_METHOD(CommandBuilderTest)
 		{
+			//checking that commandBuilder is cleared properly to be used by the next iteration
+			CommandBuilder commandBuilder = CommandBuilder::CommandBuilder();
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskDetails() == "");
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskDeadline() == nullptr);
 		}
 
 		TEST_METHOD(CommandAddTest)
@@ -95,14 +108,14 @@ namespace LogicTests
 
 		TEST_METHOD(ParserTest)
 		{   /*-----------------------------------------------
-			  Floating Tasks
+			Floating Tasks
 			-----------------------------------------------*/
 			Parser::parseCommandAdd("add task");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
 
 
 			/*-----------------------------------------------
-			  Deadline Tasks
+			Deadline Tasks
 			-----------------------------------------------*/
 			Parser::parseCommandAdd("add task by 23 mar");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
@@ -111,11 +124,11 @@ namespace LogicTests
 			Parser::parseCommandAdd("add task by 23 mar 5.30am");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
 			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Mon Mar 23 05:30:00 2015");
-			
+
 			Parser::parseCommandAdd("add task by 23 mar 2016");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
 			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Wed Mar 23 00:00:00 2016");
-			
+
 			Parser::parseCommandAdd("add task by 23 mar 2016 5.30am");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
 			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Wed Mar 23 05:30:00 2016");
@@ -145,7 +158,7 @@ namespace LogicTests
 
 
 			/*-----------------------------------------------
-			  Timed Tasks
+			Timed Tasks
 			-----------------------------------------------*/
 			Parser::parseCommandAdd("add task from 23 mar to 27 mar");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
@@ -192,9 +205,9 @@ namespace LogicTests
 			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "Mon Mar 23 01:00:00 2015");
 			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "Tue Mar 31 23:59:00 2015");
 
-			
+
 			/*-----------------------------------------------
-			  Recurring(DAY) Tasks
+			Recurring(DAY) Tasks
 			-----------------------------------------------*/
 			//This test will have to be updated each DAY
 			Parser::parseCommandAdd("add task every day");
@@ -247,5 +260,10 @@ namespace LogicTests
 			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "Sun Nov 01 00:00:00 2015");
 			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::MONTH);
 		}
+
+
+
+		
 	};
+
 }

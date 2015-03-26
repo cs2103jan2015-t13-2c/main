@@ -16,5 +16,9 @@ string CommandInvalid::execute(){
 	return buffer;
 }
 
+Command* CommandInvalid::getInverseCommand(){
+	return nullptr;
+}
+
 char CommandInvalid::buffer[255];
 const string CommandInvalid::INVALID_MESSAGE_FORMAT = "Invalid command format: %s";

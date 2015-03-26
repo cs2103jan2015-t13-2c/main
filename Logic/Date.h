@@ -2,6 +2,9 @@
 #include <chrono>
 #include <ctime>
 #include <string>
+#include <vector>
+#include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -17,6 +20,7 @@ public:
 	std::chrono::system_clock::time_point getTimePoint();
 
 	string toString();
+	static Date toDate(string date_str);
 
 	int getYear();
 	int getMonth();
@@ -27,5 +31,20 @@ public:
 
 private:
 	std::chrono::system_clock::time_point _currentDate;
+	//For toDate time-date Parsing
+	static string removeFirstWord(string userCommand);
+	static string getFirstWord(string userCommand);
+	static vector<string> splitParameters(string commandParametersString);
+	static string trim_right(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static string trim_left(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static string trim(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static bool equalsIgnoreCase(const string& str1, const string& str2);
+	static int parseInt(string str);
+	static string replace(string a, string b, string c);
+	static int parseMonthName(string monthName);
+
+	static char buffer[255];
+	static const int INVALID_NUMBER_FORMAT = -1;
+
 };
 

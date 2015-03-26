@@ -36,9 +36,9 @@ public:
 
 	//Modifiers
 	void Task::setTaskDetails(string taskDetails);
-	void Task::setTaskStartTime(Date taskStartTime);
-	void Task::setTaskEndTime(Date taskEndTime);
-	void Task::setTaskDeadline(Date taskDeadline);
+	void Task::setTaskStartTime(Date* taskStartTime);
+	void Task::setTaskEndTime(Date* taskEndTime);
+	void Task::setTaskDeadline(Date* taskDeadline);
 	void Task::setTaskRecurrence(Task::Recurrence taskRecurrence);
 	void Task::setTaskPriority(Priority taskPriority);
 	void Task::setTaskMarked(bool taskMarked);
@@ -46,9 +46,9 @@ public:
 	//Accessors
 	Task::Type Task::getTaskType();
 	string Task::getTaskDetails();
-	Date Task::getTaskStartTime();
-	Date Task::getTaskEndTime();
-	Date Task::getTaskDeadline();
+	Date* Task::getTaskStartTime();
+	Date* Task::getTaskEndTime();
+	Date* Task::getTaskDeadline();
 	Task::Recurrence Task::getTaskRecurrence();
 	Task::Priority Task::getTaskPriority();
 	bool Task::getTaskMarked();

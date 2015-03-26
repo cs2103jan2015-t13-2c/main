@@ -1,6 +1,8 @@
-/* HELLO THIS IS JUST A TEST TO SEE IF I CAN EDIT AND PUSH THE FILE INTO GITHUB*/
-/* THERE IS NO CHANGE TO THE CODE IN THIS FILE*/
-
+/*
+* ====================================================================
+*  Main program
+* ====================================================================
+*/
 
 #include <iostream>
 #include <iomanip>
@@ -9,8 +11,9 @@
 #include <fstream>
 #include <vector>
 #include "Task.h"
-#include "Taskky.h"
 #include "Controller.h"
+#include "Storage.h"
+#include "TaskManager.h"
 
 using namespace std;
 
@@ -37,7 +40,7 @@ void main() {
 
 	string fileName = userName + "Save.txt";
 	//vector<Task> tempSave;
-	//loadfromFile(tempSave, fileName);
+	TaskManager::setAllCurrentTasks(Storage::readFromFile());
 
 	cin.ignore();
 	while (true) {

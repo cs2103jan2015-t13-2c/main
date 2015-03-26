@@ -15,6 +15,7 @@ public:
 	CommandDisplay();
 	~CommandDisplay();
 	virtual string execute();
-	string CommandDisplay::printTaskToUser(Task toPrint);
+	virtual Command* getInverseCommand();
+	string CommandDisplay::printTaskToUser(Task toPrint, int taskNumber);
 };
 

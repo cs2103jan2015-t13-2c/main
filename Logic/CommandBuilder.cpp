@@ -27,16 +27,16 @@ string CommandBuilder::getTaskDetails(){
 	return _taskDetails;
 }
 
-Date CommandBuilder::getTaskStartTime(){
-	return *_taskStartTime;
+Date* CommandBuilder::getTaskStartTime(){
+	return _taskStartTime;
 }
 
-Date CommandBuilder::getTaskEndTime(){
-	return *_taskEndTime;
+Date* CommandBuilder::getTaskEndTime(){
+	return _taskEndTime;
 }
 
-Date CommandBuilder::getTaskDeadline(){
-	return *_taskDeadline;
+Date* CommandBuilder::getTaskDeadline(){
+	return _taskDeadline;
 }
 
 Task::Recurrence CommandBuilder::getTaskRecurrence(){
@@ -80,7 +80,7 @@ Command* CommandBuilder::parseCommand(string userInput){
 
 	switch (commandType){
 
-	case CommandType::Add:
+	case CommandType::Add:{
 
 		//parser parses in the userInput into its attributes
 		parser.parseCommandAdd(userInput);
@@ -90,11 +90,13 @@ Command* CommandBuilder::parseCommand(string userInput){
 
 		return new CommandAdd(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
 			_taskRecurrence, _taskPriority);
+	}
 
-	case CommandType::Display:
+	case CommandType::Display:{
 		return new CommandDisplay();
+	}
 
-	/*case CommandType::Update:
+	case CommandType::Update:{
 
 		parser.parseCommandUpdate(userInput);
 
@@ -102,13 +104,45 @@ Command* CommandBuilder::parseCommand(string userInput){
 
 		return new CommandUpdate(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
 			_taskRecurrence, _taskPriority, _taskNumber);
-*/
+	}
+
+	case CommandType::Delete:{
+
+		parser.parseCommandDelete(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandDelete(_taskNumber);
+	}
+
+	case CommandType::Undo:
+
+		return new CommandUndo();
+
+	case CommandType::Mark:
+
+		parser.parseCommandMark(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandMark(_taskNumber);
+
+	case CommandType::Unmark:
+
+		parser.parseCommandUnmark(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandUnmark(_taskNumber);
+
+	case CommandType::Exit:
+
+		return new CommandExit();
+
 	default:
 		return new CommandInvalid(userInput);
 	}
 }
-
-//Update, Delete, Exit, Invalid
 
 
 //This operation determines which of the supported command types the user
@@ -128,6 +162,15 @@ CommandBuilder::CommandType CommandBuilder::determineCommandType(string commandT
 	}
 	else if (equalsIgnoreCase(commandTypeString, "exit")) {
 		return CommandType::Exit;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "undo")) {
+		return CommandType::Undo;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "mark")) {
+		return CommandType::Mark;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "unmark")) {
+		return CommandType::Unmark;
 	}
 	else {
 		return CommandType::Invalid;

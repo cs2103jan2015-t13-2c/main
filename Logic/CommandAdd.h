@@ -5,6 +5,7 @@
 #include "Task.h"
 #include "TaskManager.h"
 #include <vector>
+#include "CommandDelete.h"
 
 using namespace std;
 class CommandAdd: public Command
@@ -19,6 +20,7 @@ public:
 
 	~CommandAdd();
 	virtual string execute();
+	virtual Command* getInverseCommand();
 
 private:
 	string _taskDetails;

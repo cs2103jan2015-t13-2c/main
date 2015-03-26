@@ -18,6 +18,10 @@ public:
 		int taskNumber);
 	~CommandUpdate();
 	virtual string execute();
+	virtual Command* getInverseCommand();
+
+	static const string CommandUpdate::MESSAGE_UPDATED;
+	static char CommandUpdate::buffer[255];
 
 private:
 	string _taskDetails;

@@ -19,6 +19,10 @@ public:
 	static void clearPreviousParse();
 
 	static void parseCommandAdd(string userCommand);
+	static void parseCommandUpdate(string userCommand);
+	static void parseCommandDelete(string userCommand);
+	static void parseCommandMark(string userCommand);
+	static void parseCommandUnmark(string userCommand);
 
 	static string getTaskDetails();
 	static Date* getTaskStartTime();
@@ -38,7 +42,7 @@ public:
 	static bool equalsIgnoreCase(const string& str1, const string& str2);
 	static int parseInt(string str);
 	static string replace(string a, string b, string c);
-	static Date *Parser::parseTime(string timeStr);
+	static Date* Parser::parseTime(string timeStr);
 	static int parseDayName(string dayName);
 	static int parseMonthName(string monthName);
 
