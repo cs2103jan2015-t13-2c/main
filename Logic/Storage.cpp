@@ -94,6 +94,12 @@ void Storage::writeToFile(){
 
 			recurrence.SetString(recur, length, allocator);
 		}
+		else {
+			char recur[1024];
+			int length = sprintf(recur, "NONE");
+
+			recurrence.SetString(recur, length, allocator);
+		}
 
 		//Check Task Priority
 		if (iter->getTaskPriority() == Task::Priority::HIGH) {
@@ -111,6 +117,12 @@ void Storage::writeToFile(){
 		else if (iter->getTaskPriority() == Task::Priority::LOW) {
 			char prior[1024];
 			int leng = sprintf(prior, "LOW");
+
+			priority.SetString(prior, leng, allocator);
+		}
+		else {
+			char prior[1024];
+			int leng = sprintf(prior, "NORMAL");
 
 			priority.SetString(prior, leng, allocator);
 		}
@@ -178,8 +190,6 @@ vector<Task> Storage::readFromFile() {
 		//Task Details
 		taskname = d[i]["taskname"].GetString();
 
-		cout << d[i]["recurrence"].GetString() << endl;
-
 		//Task Time
 		if (d[i]["startTime"].IsNull()) {
 			if (d[i]["deadline"].IsNull())
@@ -202,8 +212,8 @@ vector<Task> Storage::readFromFile() {
 		}
 
 		
-		/*
-		cout << "test\n";
+		
+		
 		//Task Recurrence
 		if (d[i]["recurrence"].GetString() == "NONE") {
 			recurrence = Task::Recurrence::NONE;
@@ -216,7 +226,7 @@ vector<Task> Storage::readFromFile() {
 		}
 		else if (d[i]["recurrence"].GetString() == "MONTH") {
 			recurrence = Task::Recurrence::MONTH;
-		}*/
+		}
 
 		//Task Priority
 		if (d[i]["priority"].GetString() == "LOW") {
