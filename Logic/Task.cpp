@@ -37,16 +37,16 @@ void Task::setTaskDetails(string taskDetails){
 	_taskDetails = taskDetails;
 }
 
-void Task::setTaskStartTime(Date taskStartTime){
-	_taskStartTime = &taskStartTime;
+void Task::setTaskStartTime(Date* taskStartTime){
+	_taskStartTime = taskStartTime;
 }
 
-void Task::setTaskEndTime(Date taskEndTime){
-	_taskEndTime = &taskEndTime;
+void Task::setTaskEndTime(Date* taskEndTime){
+	_taskEndTime = taskEndTime;
 }
 
-void Task::setTaskDeadline(Date taskDeadline){
-	_taskDeadline = &taskDeadline;
+void Task::setTaskDeadline(Date* taskDeadline){
+	_taskDeadline = taskDeadline;
 }
 
 void Task::setTaskRecurrence(Task::Recurrence taskRecurrence){
@@ -70,16 +70,16 @@ string Task::getTaskDetails(){
 	return _taskDetails;
 }
 
-Date Task::getTaskStartTime(){
-	return *_taskStartTime;
+Date* Task::getTaskStartTime(){
+	return _taskStartTime;
 }
 
-Date Task::getTaskEndTime(){
-	return *_taskEndTime;
+Date* Task::getTaskEndTime(){
+	return _taskEndTime;
 }
 
-Date Task::getTaskDeadline(){
-	return *_taskDeadline;
+Date* Task::getTaskDeadline(){
+	return _taskDeadline;
 }
 
 Task::Recurrence Task::getTaskRecurrence(){

@@ -4,6 +4,7 @@
 #include "Command.h"
 #include "CommandBuilder.h"
 #include "TaskManager.h"
+#include "Storage.h"
 
 using namespace std;
 
@@ -13,6 +14,8 @@ public:
 
 	static Controller* getInstance();
 
+	static vector<Command*>* getUndoStack();
+
 	static string processUserInput(string userInput);
 
 private:
@@ -21,6 +24,8 @@ private:
 	Controller& operator=(Controller const&){};
 
 	static Controller *_instance;
+
+	static vector<Command*>* _undoStack;
 	
 	Controller();
 	

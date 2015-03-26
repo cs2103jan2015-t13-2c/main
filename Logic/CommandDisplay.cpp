@@ -15,22 +15,32 @@ string CommandDisplay::execute(){
 	vector<Task>::iterator iter;
 	
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
-	vector<Task> allTasks = taskManagerInstance->getAllCurrentTasks();
+	vector<Task>* allTasksPtr = taskManagerInstance->getAllCurrentTasks();
+	if (allTasksPtr->size()==0){
+		return "There are no tasks to display!";
+	}
+	vector<Task> allTasks = *allTasksPtr;
 
 	//Prints Task Number
+	int taskNumber=1;
 	for (iter = allTasks.begin(); iter != allTasks.end(); ++iter) {
-		oss << printTaskToUser(*iter);
+		oss << printTaskToUser(*iter, taskNumber);
+		taskNumber++;
 	}
 	return oss.str();
 }
 
-string CommandDisplay::printTaskToUser(Task toPrint) {
+Command* CommandDisplay::getInverseCommand(){
+	return nullptr;
+}
+
+string CommandDisplay::printTaskToUser(Task toPrint, int taskNumber) {
 
 	ostringstream oss;
 
 	//Prints Task Number
 	oss << "=============================" << endl;
-	oss << "Task #" << setw(8) << setfill('0') << "(Number)" << endl;
+	oss << "Task #" << setw(8) << setfill('0') << taskNumber << endl;
 	oss << "=============================" << endl;
 
 	oss << (toPrint).getTaskDetails() << endl;
@@ -39,12 +49,12 @@ string CommandDisplay::printTaskToUser(Task toPrint) {
 	Task::Type checkType = (toPrint).getTaskType();
 	switch (checkType) {
 	case Task::TIMED: {
-		oss << "START: " << (toPrint).getTaskStartTime().toString() << endl;
-		oss << "END: " << (toPrint).getTaskEndTime().toString() << endl;
+		oss << "START: " << (toPrint).getTaskStartTime()->toString() << endl;
+		oss << "END: " << (toPrint).getTaskEndTime()->toString() << endl;
 		break;
 	}
 	case Task::DEADLINE: {
-		oss << "DEADLINE: " << (toPrint).getTaskDeadline().toString() << endl;
+		oss << "DEADLINE: " << (toPrint).getTaskDeadline()->toString() << endl;
 		break;
 	}
 	default:
@@ -87,6 +97,16 @@ string CommandDisplay::printTaskToUser(Task toPrint) {
 	}
 	}
 
+	bool checkMarked = (toPrint).getTaskMarked();
+	switch (checkMarked) {
+	case true: {
+		oss << "MARKED: " << "YES" << endl;
+		break;
+	}
+	case false: {
+		oss << "MARKED: " << "NO" << endl;
+		break;
+	}
 	return oss.str();
 
 }

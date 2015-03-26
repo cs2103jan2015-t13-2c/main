@@ -8,6 +8,12 @@
 #include "CommandInvalid.h"
 #include "CommandDisplay.h"
 #include "Parser.h"
+#include "CommandUpdate.h"
+#include "CommandDelete.h"
+#include "CommandExit.h"
+#include "CommandUndo.h"
+#include "CommandMark.h"
+#include "CommandUnmark.h"
 
 using namespace std;
 
@@ -16,7 +22,7 @@ class CommandBuilder
 public:
 
 	enum CommandType {
-		Add, Display, Update, Delete, Exit, Invalid
+		Add, Display, Update, Delete, Exit, Invalid, Undo, Mark, Unmark
 	};
 
 	CommandBuilder();
@@ -29,9 +35,9 @@ public:
 	CommandBuilder::CommandType determineCommandType(string commandTypeString);
 
 	string getTaskDetails();
-	Date getTaskStartTime();
-	Date getTaskEndTime();
-	Date getTaskDeadline();
+	Date* getTaskStartTime();
+	Date* getTaskEndTime();
+	Date* getTaskDeadline();
 	Task::Recurrence getTaskRecurrence();
 	Task::Priority getTaskPriority();
 	bool getTaskMarked();
