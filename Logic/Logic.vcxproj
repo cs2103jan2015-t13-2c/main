@@ -17,7 +17,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -39,12 +39,14 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetExt>.exe</TargetExt>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Users\steven\Desktop\CS2103 Project\rapidjson-master\include\rapidjson;C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\rapidjson-master\include\rapidjson;rapidjson-master\include\rapidjson;C:\Users\Lee Han Young\Desktop\Taskky testing w UI\rapidjson-master\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>rapidjson-master\include\rapidjson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -74,6 +76,7 @@
     <ClInclude Include="CommandExit.h" />
     <ClInclude Include="CommandInvalid.h" />
     <ClInclude Include="CommandMark.h" />
+    <ClInclude Include="CommandSort.h" />
     <ClInclude Include="CommandUndo.h" />
     <ClInclude Include="CommandUnmark.h" />
     <ClInclude Include="CommandUpdate.h" />
@@ -93,6 +96,7 @@
     <ClCompile Include="CommandExit.cpp" />
     <ClCompile Include="CommandInvalid.cpp" />
     <ClCompile Include="CommandMark.cpp" />
+    <ClCompile Include="CommandSort.cpp" />
     <ClCompile Include="CommandUndo.cpp" />
     <ClCompile Include="CommandUnmark.cpp" />
     <ClCompile Include="CommandUpdate.cpp" />

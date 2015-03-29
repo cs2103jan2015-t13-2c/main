@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
+#include <algorithm>
 #include <vector>
 #include "Task.h"
 #include "Storage.h"
-#include <algorithm>
 
 using namespace std;
 class TaskManager
