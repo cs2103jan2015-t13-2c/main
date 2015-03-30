@@ -5,6 +5,7 @@
 #include "CommandBuilder.h"
 #include "TaskManager.h"
 #include "Storage.h"
+#include "SuggestionBuilder.h"
 
 using namespace std;
 

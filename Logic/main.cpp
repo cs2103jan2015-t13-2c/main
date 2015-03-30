@@ -14,6 +14,7 @@
 #include "Controller.h"
 #include "Storage.h"
 #include "TaskManager.h"
+#include "SuggestionBuilder.h"
 
 using namespace std;
 

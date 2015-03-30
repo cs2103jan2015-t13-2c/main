@@ -78,9 +78,13 @@
     <ClInclude Include="CommandUnmark.h" />
     <ClInclude Include="CommandUpdate.h" />
     <ClInclude Include="Controller.h" />
+    <ClInclude Include="CustomException.h" />
     <ClInclude Include="Date.h" />
+    <ClInclude Include="ParseException.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Storage.h" />
+    <ClInclude Include="StringDistance.h" />
+    <ClInclude Include="SuggestionBuilder.h" />
     <ClInclude Include="Task.h" />
     <ClInclude Include="TaskManager.h" />
   </ItemGroup>
@@ -97,10 +101,14 @@
     <ClCompile Include="CommandUnmark.cpp" />
     <ClCompile Include="CommandUpdate.cpp" />
     <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="CustomException.cpp" />
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ParseException.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Storage.cpp" />
+    <ClCompile Include="StringDistance.cpp" />
+    <ClCompile Include="SuggestionBuilder.cpp" />
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="TaskManager.cpp" />
   </ItemGroup>
