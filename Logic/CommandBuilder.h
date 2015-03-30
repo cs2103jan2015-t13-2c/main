@@ -22,7 +22,7 @@ class CommandBuilder
 public:
 
 	enum CommandType {
-		Add, Display, Update, Delete, Exit, Invalid, Undo, Mark, Unmark
+		Add, Display, Update, Delete, Exit, Invalid, Undo, Mark, Unmark, Search
 	};
 
 	CommandBuilder();

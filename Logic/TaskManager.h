@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
+#include <algorithm>
 #include <vector>
 #include "Task.h"
 #include "Storage.h"
-#include <algorithm>
 
 using namespace std;
 class TaskManager
@@ -21,6 +21,7 @@ public:
 	static void TaskManager::unmarkTask(int taskNumber);
 	static void TaskManager::sortTasks();
 	static void setAllCurrentTasks(vector<Task> allCurrentTasks);
+	static void sortTasksAccordingToDate();
 
 private:
 	TaskManager();

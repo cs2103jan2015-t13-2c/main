@@ -139,6 +139,10 @@ Command* CommandBuilder::parseCommand(string userInput){
 
 		return new CommandExit();
 
+	case CommandType::Search:
+
+		//return new CommandSort();
+
 	default:
 		return new CommandInvalid(userInput);
 	}
@@ -170,6 +174,12 @@ CommandBuilder::CommandType CommandBuilder::determineCommandType(string commandT
 		return CommandType::Mark;
 	}
 	else if (equalsIgnoreCase(commandTypeString, "unmark")) {
+		return CommandType::Unmark;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "sort")) {
+		return CommandType::Unmark;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "search")) {
 		return CommandType::Unmark;
 	}
 	else {
