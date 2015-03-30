@@ -21,6 +21,8 @@
 #include "CommandUnmark.cpp"
 #include "SuggestionBuilder.cpp"
 #include "StringDistance.cpp"
+#include "ParseException.cpp"
+#include "CustomException.cpp"
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

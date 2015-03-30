@@ -245,6 +245,8 @@ vector<Task> Storage::readFromFile() {
 
 		//Push into taskVector
 		TaskVector.push_back(task);
+
+		++i;
 	}
 
 	return TaskVector;
