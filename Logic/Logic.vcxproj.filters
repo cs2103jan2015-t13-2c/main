@@ -78,6 +78,9 @@
     <ClInclude Include="StringDistance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CommandSort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Task.cpp">
@@ -144,6 +147,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StringDistance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandSort.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

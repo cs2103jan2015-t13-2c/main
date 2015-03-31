@@ -1,4 +1,6 @@
 #include "TaskkyGUI.h"
+#include "TaskkyGUIContent.h"
+
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -11,4 +13,3 @@ void main(array<String^>^ args){
 	TaskkyUI::TaskkyGUI mainWindow;
 	Application::Run(%mainWindow);
 }
-
