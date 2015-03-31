@@ -1,10 +1,9 @@
-
 #pragma once
-
-#include "Parser.h"
-#include "Controller.h"
-#include <string>
+#include "Date.h"
 #include <msclr\marshal_cppstd.h>
+#include <string>
+#include "TaskkyGUI.h"
+#include "TaskkyGUIContent.h"
 
 
 namespace TaskkyUI {
@@ -16,14 +15,16 @@ namespace TaskkyUI {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-	string command, result, taskname;
-
+	string test;
+	string username, setvaluefortest;
+	int test2;
 
 	/// <summary>
-	/// Summary for Form1
+	/// Summary for TaskkyGUI
 	/// </summary>
 	public ref class TaskkyGUI : public System::Windows::Forms::Form
 	{
+		Timer^ t = gcnew Timer();
 	public:
 		TaskkyGUI(void)
 		{
@@ -31,6 +32,12 @@ namespace TaskkyUI {
 			//
 			//TODO: Add the constructor code here
 			//
+			t->Interval = 1000;
+			t->Tick += gcnew System::EventHandler(this, &TaskkyGUI::timer1_Tick);
+
+
+			//Starts time when form loads
+			t->Start(); //This will use timer1_Tick method
 		}
 
 	protected:
@@ -44,27 +51,24 @@ namespace TaskkyUI {
 				delete components;
 			}
 		}
+
+	private: System::Windows::Forms::Timer^  timer1;
 	private: System::Windows::Forms::Label^  label1;
-	protected:
-
-	protected:
-
-	protected:
-
-	private: System::Windows::Forms::TextBox^  textBox1;
-	private: System::Windows::Forms::ListView^  listView1;
-	private: System::Windows::Forms::Label^  label2;
-	private: System::Windows::Forms::ColorDialog^  colorDialog1;
-
-
 
 	private: System::Windows::Forms::TextBox^  textBox2;
-	private: System::Windows::Forms::TextBox^  textBox3;
+	private: System::Windows::Forms::Button^  button1;
+	private: System::Windows::Forms::Label^  label2;
+	private: System::Windows::Forms::Label^  label4;
+	private: System::Windows::Forms::Label^  label3;
+
+	private: System::ComponentModel::IContainer^  components;
+	protected:
+
 	private:
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -73,161 +77,248 @@ namespace TaskkyUI {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
+			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(TaskkyGUI::typeid));
+			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
-			this->listView1 = (gcnew System::Windows::Forms::ListView());
-			this->label2 = (gcnew System::Windows::Forms::Label());
-			this->colorDialog1 = (gcnew System::Windows::Forms::ColorDialog());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
-			this->textBox3 = (gcnew System::Windows::Forms::TextBox());
+			this->button1 = (gcnew System::Windows::Forms::Button());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->label4 = (gcnew System::Windows::Forms::Label());
+			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
+			// 
+			// timer1
+			// 
+			this->timer1->Tick += gcnew System::EventHandler(this, &TaskkyGUI::timer1_Tick);
 			// 
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Font = (gcnew System::Drawing::Font(L"Calibri", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label1->BackColor = System::Drawing::Color::Transparent;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 48, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label1->Location = System::Drawing::Point(148, 40);
-			this->label1->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label1->ForeColor = System::Drawing::Color::Snow;
+			this->label1->Location = System::Drawing::Point(73, 123);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(150, 29);
-			this->label1->TabIndex = 1;
-			this->label1->Text = L"WELCOME TO";
+			this->label1->Size = System::Drawing::Size(199, 73);
+			this->label1->TabIndex = 0;
+			this->label1->Text = L"00:00";
 			this->label1->Click += gcnew System::EventHandler(this, &TaskkyGUI::label1_Click);
 			// 
-			// textBox1
+			// textBox2
 			// 
-			this->textBox1->Font = (gcnew System::Drawing::Font(L"Calibri", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->textBox2->AcceptsReturn = true;
+			this->textBox2->Font = (gcnew System::Drawing::Font(L"Calibri", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->textBox1->ForeColor = System::Drawing::SystemColors::MenuText;
-			this->textBox1->Location = System::Drawing::Point(70, 110);
-			this->textBox1->Margin = System::Windows::Forms::Padding(2);
-			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(306, 22);
-			this->textBox1->TabIndex = 2;
-			this->textBox1->TextChanged += gcnew System::EventHandler(this, &TaskkyGUI::textBox1_TextChanged);
-			this->textBox1->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &TaskkyGUI::textBox1_KeyPress);
+			this->textBox2->Location = System::Drawing::Point(59, 231);
+			this->textBox2->Name = L"textBox2";
+			this->textBox2->Size = System::Drawing::Size(239, 21);
+			this->textBox2->TabIndex = 2;
+			this->textBox2->TextChanged += gcnew System::EventHandler(this, &TaskkyGUI::textBox2_TextChanged);
 			// 
-			// listView1
+			// button1
 			// 
-			this->listView1->BackColor = System::Drawing::SystemColors::GradientInactiveCaption;
-			this->listView1->Location = System::Drawing::Point(70, 177);
-			this->listView1->Margin = System::Windows::Forms::Padding(2);
-			this->listView1->Name = L"listView1";
-			this->listView1->Size = System::Drawing::Size(306, 166);
-			this->listView1->TabIndex = 3;
-			this->listView1->UseCompatibleStateImageBehavior = false;
-			this->listView1->View = System::Windows::Forms::View::List;
-			this->listView1->SelectedIndexChanged += gcnew System::EventHandler(this, &TaskkyGUI::listView1_SelectedIndexChanged);
+			this->button1->BackColor = System::Drawing::Color::Transparent;
+			this->button1->ForeColor = System::Drawing::Color::Transparent;
+			this->button1->Location = System::Drawing::Point(223, 232);
+			this->button1->Name = L"button1";
+			this->button1->Size = System::Drawing::Size(75, 20);
+			this->button1->TabIndex = 3;
+			this->button1->UseVisualStyleBackColor = false;
+			this->button1->Click += gcnew System::EventHandler(this, &TaskkyGUI::button1_Click);
 			// 
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Font = (gcnew System::Drawing::Font(L"Calibri", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label2->BackColor = System::Drawing::Color::Transparent;
+			this->label2->Font = (gcnew System::Drawing::Font(L"Calibri", 15.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label2->Location = System::Drawing::Point(146, 69);
+			this->label2->ForeColor = System::Drawing::Color::Linen;
+			this->label2->Location = System::Drawing::Point(81, 205);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(151, 39);
+			this->label2->Size = System::Drawing::Size(206, 26);
 			this->label2->TabIndex = 4;
-			this->label2->Text = L"T.A.S.K.K.Y";
+			this->label2->Text = L"Enter Your Username: ";
 			// 
-			// textBox2
+			// label4
 			// 
-			this->textBox2->Location = System::Drawing::Point(70, 177);
-			this->textBox2->Multiline = true;
-			this->textBox2->Name = L"textBox2";
-			this->textBox2->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-			this->textBox2->Size = System::Drawing::Size(306, 177);
-			this->textBox2->TabIndex = 8;
-			this->textBox2->TextChanged += gcnew System::EventHandler(this, &TaskkyGUI::textBox2_TextChanged_1);
+			this->label4->AutoSize = true;
+			this->label4->BackColor = System::Drawing::Color::Transparent;
+			this->label4->Font = (gcnew System::Drawing::Font(L"Calibri", 18, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label4->ForeColor = System::Drawing::Color::Snow;
+			this->label4->Location = System::Drawing::Point(102, 59);
+			this->label4->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
+			this->label4->Name = L"label4";
+			this->label4->Size = System::Drawing::Size(150, 29);
+			this->label4->TabIndex = 6;
+			this->label4->Text = L"WELCOME TO";
 			// 
-			// textBox3
+			// label3
 			// 
-			this->textBox3->BackColor = System::Drawing::SystemColors::Menu;
-			this->textBox3->BorderStyle = System::Windows::Forms::BorderStyle::None;
-			this->textBox3->Location = System::Drawing::Point(70, 144);
-			this->textBox3->Name = L"textBox3";
-			this->textBox3->Size = System::Drawing::Size(306, 13);
-			this->textBox3->TabIndex = 9;
+			this->label3->AutoSize = true;
+			this->label3->BackColor = System::Drawing::Color::Transparent;
+			this->label3->Font = (gcnew System::Drawing::Font(L"Calibri", 24, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label3->ForeColor = System::Drawing::Color::Snow;
+			this->label3->Location = System::Drawing::Point(100, 86);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(151, 39);
+			this->label3->TabIndex = 7;
+			this->label3->Text = L"T.A.S.K.K.Y";
 			// 
 			// TaskkyGUI
 			// 
+			this->AcceptButton = this->button1;
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(460, 366);
-			this->Controls->Add(this->textBox3);
-			this->Controls->Add(this->textBox2);
+			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
+			this->ClientSize = System::Drawing::Size(334, 330);
+			this->Controls->Add(this->label3);
+			this->Controls->Add(this->label4);
 			this->Controls->Add(this->label2);
-			this->Controls->Add(this->listView1);
-			this->Controls->Add(this->textBox1);
+			this->Controls->Add(this->textBox2);
+			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label1);
-			this->ForeColor = System::Drawing::SystemColors::ControlText;
-			this->Margin = System::Windows::Forms::Padding(2);
+			this->DoubleBuffered = true;
 			this->Name = L"TaskkyGUI";
 			this->Text = L"TaskkyGUI";
+			this->Load += gcnew System::EventHandler(this, &TaskkyGUI::timer1_Tick);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
+
+
+
+	public: System::Void Test_Load(System::Object^  sender, System::EventArgs^  e) {
+
+		//timer interval
+		t->Interval = 1000;
+		t->Tick += gcnew System::EventHandler(this, &TaskkyGUI::timer1_Tick);
+
+
+		//Starts time when form loads
+		t->Start(); //This will use timer1_Tick method
+
+	}
+
+			//time event handler
+	public: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e) {
+
+		//get current time
+		DateTime^ MyDate = gcnew DateTime();
+
+		//int hh, mm, ss;
+
+		//int hh = 10;
+		//long mm = 8;
+		//long ss = 6;
+
+
+		int hh = Date().getHour();
+		int mm = Date().getMinute();
+		//int ss = 00;
+		//int ToInt32(DateTime::Now::Hour);
+		//Convert ToInt32(System::DateTime::Now)
+
+		/*int hh = DateTime->Now->Hour;
+		int mm = DateTime.Now.Minute;
+		int ss = DateTime.Now.Second;*/
+
+		//time
+
+		System::String^ time = "";
+
+		//Padding leading zero
+		if (hh < 10)
+		{
+			time += "0" + hh;
+		}
+		else
+		{
+			time += hh;
+		}
+		time += ":";
+
+		if (mm < 10)
+		{
+			time += "0" + mm;
+		}
+		else
+		{
+			time += mm;
+		}
+		//time += ":";
+
+		/*if (ss < 10)
+		{
+		time += "0" + ss;
+		}
+		else
+		{
+		time += ss;
+		}
+		time += ":"; */
+
+		//Update label 
+		label1->Text = time;
+
+
+		//System::DateTime::Now::Hour
+
+		//textBox1->Text = gcnew String(Date::Date().c_str());
+		//label1->Text = gcnew String(MainLogic::processUserInput("display").c_str());
+	}
 	private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-		command = msclr::interop::marshal_as< std::string >(textBox1->Text);
-	}
-	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+
+		test2 = Date().getHour();
 
 
 
 	}
-	private: System::Void label1_Click(System::Object^  sender, System::EventArgs^  e) {
-		// try only		
-		//	label1->Text = gcnew String(MainLogic::processUserInput("display").c_str());
+	public: System::Void textBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+
+
+		username = msclr::interop::marshal_as< std::string >(textBox2->Text);
+
 	}
 
-
-	private: System::Void textBox1_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
+	private: System::Void textBox2_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
 
 		if (e->KeyChar == (char)13){
-			//get data from the textbox
-			if (command == "clr"){
-				//clear screen
-				listView1->Clear();
-				return;
-			}
-
-			result = Controller::processUserInput(command);
-			//taskname = Parser::determineContent(command);
-			//label1->Text = gcnew String(result.c_str());
-			//listView1->Items->Add(gcnew String(result.c_str()));
-			textBox3->Text = gcnew String(result.c_str());
-			if (command == "display"){
-				textBox3->Clear();
-				textBox2->Text = gcnew String(result.c_str());
-			}
-			//listView1->Items->Add(gcnew String(result.c_str()));
-			//listView2->Items->Add(gcnew String(taskname.c_str()));
-			//listView2->Items->Add(gcnew String("is Added"));
-
-			//Console::WriteLine(listView2->Items->Add(gcnew String(taskname.c_str())) + "is" + "Added");
-			textBox1->Clear();
+			//textBox1->AppendText("test");
+			return;
 		}
 
 
+
+		/*TaskkyGUI ^form2 = gcnew TaskkyGUI();
+		form2->Show();
+		this->Hide();*/
+
+
+		//textBox1->Text = "TESTTESTTEST";
+		//textBox1->Text = gcnew String(username.c_str());
 	}
-	private: System::Void listView1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-	}
-	private: System::Void textBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+	public: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+
+		setvaluefortest = msclr::interop::marshal_as< std::string >(textBox2->Text);
+
+		TaskkyGUIContent ^taskkyguicontent = gcnew TaskkyGUIContent();
+		taskkyguicontent->Show();
+		this->Hide();
+		/*Test2 ^test2 = gcnew Test2();
+		test2->Show();
+		this->Hide();*/
+
+
 	}
 
 
-
-	private: System::Void dateTimePicker1_ValueChanged(System::Object^  sender, System::EventArgs^  e) {
+	private: System::Void label1_Click(System::Object^  sender, System::EventArgs^  e) {
 	}
-	private: System::Void listView2_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-	}
-
-
-	private: System::Void textBox2_TextChanged_1(System::Object^  sender, System::EventArgs^  e) {
-	}
-}
-	;
+	};
 }
