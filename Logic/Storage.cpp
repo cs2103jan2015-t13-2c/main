@@ -19,7 +19,7 @@ void Storage::writeToFile(){
 	vector<Task>::iterator iter;
 
 	rapidjson::Document document;
-	document.SetArray();
+	
 	rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
 
 	rapidjson::Value taskname;
@@ -31,131 +31,152 @@ void Storage::writeToFile(){
 	char buffer[1024];
 	int len;
 
-	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
+	if (TaskVector.empty()) {
+		remove("Save.json");
 
-		//Check Task Details
-		len = sprintf(buffer, iter->getTaskDetails().c_str());
-		taskname.SetString(buffer, len, allocator);
-
-		//Check Task Type and Time
-		if (iter->getTaskType() == Task::FLOATING) {
-			startTime.SetNull();
-			endTime.SetNull();
-			deadline.SetNull();
-		}
-		else if (iter->getTaskType() == Task::TIMED) {
-			Date time = *(iter->getTaskStartTime());
-			string time_str = time.toString();
-
-			len = sprintf(buffer, time_str.c_str());
-			startTime.SetString(buffer, len, allocator);
-
-			time = *(iter->getTaskEndTime());
-			time_str = time.toString();
-
-			len = sprintf(buffer, time_str.c_str());
-			endTime.SetString(buffer, len, allocator);
-
-			deadline.SetNull();
-		}
-		else if (iter->getTaskType() == Task::DEADLINE) {
-			startTime.SetNull();
-			endTime.SetNull();
-
-			Date time = *(iter->getTaskDeadline());
-			string time_str = time.toString();
-
-			len = sprintf(buffer, time_str.c_str());
-			deadline.SetString(buffer, len, allocator);
-		}
-
-		//Check Recurrence
-		if (iter->getTaskRecurrence() == Task::Recurrence::NONE) {
-			char recur[1024];
-			int length = sprintf(recur, "NONE");
-
-			recurrence.SetString(recur, length, allocator);
-		}
-		else if (iter->getTaskRecurrence() == Task::Recurrence::DAY) {
-			char recur[1024];
-			int length = sprintf(recur, "DAY");
-
-			recurrence.SetString(recur, length, allocator);
-		}
-		else if (iter->getTaskRecurrence() == Task::Recurrence::WEEK)	{
-			char recur[1024];
-			int length = sprintf(recur, "WEEK");
-
-			recurrence.SetString(recur, length, allocator);
-		}
-		else if (iter->getTaskRecurrence() == Task::Recurrence::MONTH) {
-			char recur[1024];
-			int length = sprintf(recur, "MONTH");
-
-			recurrence.SetString(recur, length, allocator);
-		}
-		else {
-			char recur[1024];
-			int length = sprintf(recur, "NONE");
-
-			recurrence.SetString(recur, length, allocator);
-		}
-
-		//Check Task Priority
-		if (iter->getTaskPriority() == Task::Priority::HIGH) {
-			char prior[1024];
-			int leng = sprintf(prior, "HIGH");
-
-			priority.SetString(prior, leng, allocator);
-		}
-		else if (iter->getTaskPriority() == Task::Priority::NORMAL) {
-			char prior[1024];
-			int leng = sprintf(prior, "NORMAL");
-
-			priority.SetString(prior, leng, allocator);
-		}
-		else if (iter->getTaskPriority() == Task::Priority::LOW) {
-			char prior[1024];
-			int leng = sprintf(prior, "LOW");
-
-			priority.SetString(prior, leng, allocator);
-		}
-		else {
-			char prior[1024];
-			int leng = sprintf(prior, "NORMAL");
-
-			priority.SetString(prior, leng, allocator);
-		}
-
-		//Convert to json values
-		rapidjson::Value object(rapidjson::kObjectType);
-		object.AddMember("taskname", taskname, allocator);
-		object.AddMember("startTime", startTime, allocator);
-		object.AddMember("endTime", endTime, allocator);
-		object.AddMember("deadline", deadline, allocator);
-		object.AddMember("recurrence", recurrence, allocator);
-		object.AddMember("priority", priority, allocator);
-
-		document.PushBack(object, document.GetAllocator());
-
-
-		//writing to file
+		//write empty json
 		FILE* fp = fopen("Save.json", "wb"); // non-Windows use "w"
-		char writeBuffer[65536];
-
-		rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
-		rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
-		document.Accept(writer);
 
 		fclose(fp);
-	}
 
+	}
+	else {
+
+		document.SetArray();
+
+		for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
+
+			//Check Task Details
+			len = sprintf(buffer, iter->getTaskDetails().c_str());
+			taskname.SetString(buffer, len, allocator);
+
+			//Check Task Type and Time
+			if (iter->getTaskType() == Task::FLOATING) {
+				startTime.SetNull();
+				endTime.SetNull();
+				deadline.SetNull();
+			}
+			else if (iter->getTaskType() == Task::TIMED) {
+				Date time = *(iter->getTaskStartTime());
+				string time_str = time.toString();
+
+				len = sprintf(buffer, time_str.c_str());
+				startTime.SetString(buffer, len, allocator);
+
+				time = *(iter->getTaskEndTime());
+				time_str = time.toString();
+
+				len = sprintf(buffer, time_str.c_str());
+				endTime.SetString(buffer, len, allocator);
+
+				deadline.SetNull();
+			}
+			else if (iter->getTaskType() == Task::DEADLINE) {
+				startTime.SetNull();
+				endTime.SetNull();
+
+				Date time = *(iter->getTaskDeadline());
+				string time_str = time.toString();
+
+				len = sprintf(buffer, time_str.c_str());
+				deadline.SetString(buffer, len, allocator);
+			}
+
+			//Check Recurrence
+			if (iter->getTaskRecurrence() == Task::Recurrence::NONE) {
+				char recur[1024];
+				int length = sprintf(recur, "NONE");
+
+				recurrence.SetString(recur, length, allocator);
+			}
+			else if (iter->getTaskRecurrence() == Task::Recurrence::DAY) {
+				char recur[1024];
+				int length = sprintf(recur, "DAY");
+
+				recurrence.SetString(recur, length, allocator);
+			}
+			else if (iter->getTaskRecurrence() == Task::Recurrence::WEEK)	{
+				char recur[1024];
+				int length = sprintf(recur, "WEEK");
+
+				recurrence.SetString(recur, length, allocator);
+			}
+			else if (iter->getTaskRecurrence() == Task::Recurrence::MONTH) {
+				char recur[1024];
+				int length = sprintf(recur, "MONTH");
+
+				recurrence.SetString(recur, length, allocator);
+			}
+			else {
+				char recur[1024];
+				int length = sprintf(recur, "NONE");
+
+				recurrence.SetString(recur, length, allocator);
+			}
+
+			//Check Task Priority
+			if (iter->getTaskPriority() == Task::Priority::HIGH) {
+				char prior[1024];
+				int leng = sprintf(prior, "HIGH");
+
+				priority.SetString(prior, leng, allocator);
+			}
+			else if (iter->getTaskPriority() == Task::Priority::NORMAL) {
+				char prior[1024];
+				int leng = sprintf(prior, "NORMAL");
+
+				priority.SetString(prior, leng, allocator);
+			}
+			else if (iter->getTaskPriority() == Task::Priority::LOW) {
+				char prior[1024];
+				int leng = sprintf(prior, "LOW");
+
+				priority.SetString(prior, leng, allocator);
+			}
+			else {
+				char prior[1024];
+				int leng = sprintf(prior, "NORMAL");
+
+				priority.SetString(prior, leng, allocator);
+			}
+
+			//Convert to json values
+			rapidjson::Value object(rapidjson::kObjectType);
+			object.AddMember("taskname", taskname, allocator);
+			object.AddMember("startTime", startTime, allocator);
+			object.AddMember("endTime", endTime, allocator);
+			object.AddMember("deadline", deadline, allocator);
+			object.AddMember("recurrence", recurrence, allocator);
+			object.AddMember("priority", priority, allocator);
+
+			document.PushBack(object, document.GetAllocator());
+
+
+			//writing to file
+			FILE* fp = fopen("Save.json", "wb"); // non-Windows use "w"
+			char writeBuffer[65536];
+
+			rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+			rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
+			document.Accept(writer);
+
+			fclose(fp);
+		}
+	}
 	return;
 }
 
 vector<Task> Storage::readFromFile() {
 
-	
+	if (FILE *file = fopen("Save.json", "r")) {
+		fclose(file);
+	}
+	else {
+		FILE* createFile = fopen("Save.json", "wb"); // non-Windows use "w"
+		fclose(createFile);
+	}
+
+	//open file
 	FILE* fp = fopen("Save.json", "rb"); // non-Windows use "r"
 	char readBuffer[65536];
 
@@ -166,8 +187,7 @@ vector<Task> Storage::readFromFile() {
 
 	fclose(fp);
 
-
-	//Parse and construct Task Vector
+	//variables
 	vector<Task> TaskVector;
 
 	string taskname;
@@ -185,72 +205,82 @@ vector<Task> Storage::readFromFile() {
 
 	Task::Priority priority;
 
-	int i = 0;
-	for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr) {
-		//Task Details
-		taskname = d[i]["taskname"].GetString();
-
-		//Task Time
-		if (d[i]["startTime"].IsNull()) {
-			if (d[i]["deadline"].IsNull())
-			{
-				startTime_str = "";
-				endTime_str = "";
-				deadline_str = "";
-			}
-			else if (d[i]["deadline"].IsString()) {
-				deadline_str = d[i]["deadline"].GetString();
-				deadline = &Date::toDate(deadline_str);
-			}
-		}
-		else if (d[i]["startTime"].IsString()) {
-			startTime_str = d[i]["startTime"].GetString();
-			startTime = &Date::toDate(startTime_str);
-
-			endTime_str = d[i]["endTime"].GetString();
-			endTime = &Date::toDate(endTime_str);
-		}
-
-		
-		
-		
-		//Task Recurrence
-		if (d[i]["recurrence"].GetString() == "NONE") {
-			recurrence = Task::Recurrence::NONE;
-		}
-		else if (d[i]["recurrence"].GetString() == "DAY") {
-			recurrence = Task::Recurrence::DAY;
-		}
-		else if (d[i]["recurrence"].GetString() == "WEEK") {
-			recurrence = Task::Recurrence::WEEK;
-		}
-		else if (d[i]["recurrence"].GetString() == "MONTH") {
-			recurrence = Task::Recurrence::MONTH;
-		}
-
-		//Task Priority
-		if (d[i]["priority"].GetString() == "LOW") {
-			priority = Task::Priority::LOW;
-		}
-		else if (d[i]["priority"].GetString() == "NORMAL") {
-			priority = Task::Priority::NORMAL;
-		}
-		else if (d[i]["priority"].GetString() == "HIGH") {
-			priority = Task::Priority::HIGH;
-		}
-
-
-		//construct task object
-		Task task(taskname, startTime, endTime, deadline, recurrence, priority);
-
-		//Push into taskVector
-		TaskVector.push_back(task);
-
-		++i;
+	//check if empty
+	if (d.IsNull()) {
+		return TaskVector;
 	}
+	else {
 
-	return TaskVector;
 
+		//Parse and construct Task Vector
+
+
+		int i = 0;
+		for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr) {
+			//Task Details
+			taskname = d[i]["taskname"].GetString();
+
+			//Task Time
+			if (d[i]["startTime"].IsNull()) {
+				if (d[i]["deadline"].IsNull())
+				{
+					startTime_str = "";
+					endTime_str = "";
+					deadline_str = "";
+				}
+				else if (d[i]["deadline"].IsString()) {
+					deadline_str = d[i]["deadline"].GetString();
+					deadline = &Date::toDate(deadline_str);
+				}
+			}
+			else if (d[i]["startTime"].IsString()) {
+				startTime_str = d[i]["startTime"].GetString();
+				startTime = &Date::toDate(startTime_str);
+
+				endTime_str = d[i]["endTime"].GetString();
+				endTime = &Date::toDate(endTime_str);
+			}
+
+
+
+
+			//Task Recurrence
+			if (d[i]["recurrence"].GetString() == "NONE") {
+				recurrence = Task::Recurrence::NONE;
+			}
+			else if (d[i]["recurrence"].GetString() == "DAY") {
+				recurrence = Task::Recurrence::DAY;
+			}
+			else if (d[i]["recurrence"].GetString() == "WEEK") {
+				recurrence = Task::Recurrence::WEEK;
+			}
+			else if (d[i]["recurrence"].GetString() == "MONTH") {
+				recurrence = Task::Recurrence::MONTH;
+			}
+
+			//Task Priority
+			if (d[i]["priority"].GetString() == "LOW") {
+				priority = Task::Priority::LOW;
+			}
+			else if (d[i]["priority"].GetString() == "NORMAL") {
+				priority = Task::Priority::NORMAL;
+			}
+			else if (d[i]["priority"].GetString() == "HIGH") {
+				priority = Task::Priority::HIGH;
+			}
+
+
+			//construct task object
+			Task task(taskname, startTime, endTime, deadline, recurrence, priority);
+
+			//Push into taskVector
+			TaskVector.push_back(task);
+
+			++i;
+		}
+
+		return TaskVector;
+	}
 }
 
 /*
