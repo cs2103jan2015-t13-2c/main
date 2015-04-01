@@ -110,8 +110,6 @@ namespace TaskkyUI {
 			// textBox1
 			// 
 			this->textBox1->AutoCompleteCustomSource->AddRange(gcnew cli::array< System::String^  >(3) { L"add", L"delete", L"display" });
-			this->textBox1->AutoCompleteMode = System::Windows::Forms::AutoCompleteMode::Append;
-			this->textBox1->AutoCompleteSource = System::Windows::Forms::AutoCompleteSource::CustomSource;
 			this->textBox1->Font = (gcnew System::Drawing::Font(L"Calibri", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->textBox1->ForeColor = System::Drawing::SystemColors::WindowText;
@@ -182,7 +180,7 @@ private: System::Void textBox1_KeyPress(System::Object^  sender, System::Windows
 
 
 		result = Controller::processUserInput(command);
-	
+	    
 		//listView1->Items->Add(gcnew String(result.c_str()));
 		label3->Text = gcnew String(result.c_str());
 		//TaskManager::getInstance();
