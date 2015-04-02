@@ -52,7 +52,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\steven\Desktop\CS2103 Project\rapidjson-master\include\rapidjson;C:\Users\steven\Desktop\CS2103 Project\Logic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\rapidjson-master\include\rapidjson;C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\Logic;C:\Users\steven\Desktop\CS2103 Project\rapidjson-master\include\rapidjson;C:\Users\steven\Desktop\CS2103 Project\Logic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
