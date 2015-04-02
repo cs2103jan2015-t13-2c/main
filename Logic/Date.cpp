@@ -225,6 +225,8 @@ string Date::replace(string a, string b, string c) {
 int Date::parseMonthName(string monthName) {
 	int mon = 0;
 
+	std::transform(monthName.begin(), monthName.end(), monthName.begin(), ::tolower);
+
 	if (monthName == "january" || monthName == "jan") {
 		mon = 0;
 	}

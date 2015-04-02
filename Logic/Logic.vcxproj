@@ -40,7 +40,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetExt>.exe</TargetExt>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -76,6 +76,7 @@
     <ClInclude Include="CommandExit.h" />
     <ClInclude Include="CommandInvalid.h" />
     <ClInclude Include="CommandMark.h" />
+    <ClInclude Include="CommandSearch.h" />
     <ClInclude Include="CommandSort.h" />
     <ClInclude Include="CommandUndo.h" />
     <ClInclude Include="CommandUnmark.h" />
@@ -101,6 +102,7 @@
     <ClCompile Include="CommandExit.cpp" />
     <ClCompile Include="CommandInvalid.cpp" />
     <ClCompile Include="CommandMark.cpp" />
+    <ClCompile Include="CommandSearch.cpp" />
     <ClCompile Include="CommandSort.cpp" />
     <ClCompile Include="CommandUndo.cpp" />
     <ClCompile Include="CommandUnmark.cpp" />
