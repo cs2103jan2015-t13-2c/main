@@ -17,6 +17,8 @@ public:
 	int isEarlierThan(Date dateToCompare);
 	int Date::diffInMinutes(Date dateToCompare);
 
+	bool sameDate(Date dateToCompare);
+
 	std::chrono::system_clock::time_point getTimePoint();
 
 	string toString();

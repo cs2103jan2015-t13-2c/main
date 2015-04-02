@@ -58,6 +58,15 @@ Date Date::toDate(string date_str) {
 
 }
 
+bool Date::sameDate(Date dateToCompare){
+	if (getYear() == dateToCompare.getYear() &&
+		getMonth() == dateToCompare.getMonth() &&
+		getDay() == dateToCompare.getDay()){
+		return true;
+	}
+	return false;
+}
+
 std::chrono::system_clock::time_point Date::getTimePoint(){
 	return _currentDate;
 }

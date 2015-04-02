@@ -23,6 +23,7 @@
 #include "StringDistance.cpp"
 #include "ParseException.cpp"
 #include "CustomException.cpp"
+#include "TaskDisplayer.cpp"
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -80,6 +81,11 @@ namespace LogicTests
 			Assert::AreEqual<int>(00, nowDate.getMinute());
 			//Assert::AreEqual<string>("Tue", nowDate.getDayName());
 
+			//same Date test
+			Date tmrDate = Date(2015, 9, 14, 17, 00);
+			Assert::AreEqual<bool>(true, earlierDate.sameDate(laterDate));
+			Assert::AreEqual<bool>(false, earlierDate.sameDate(tmrDate));
+			
 		}
 		TEST_METHOD(TaskManagerTest)
 		{
