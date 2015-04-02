@@ -64,6 +64,11 @@ Parser::~Parser()
 
 void Parser::parseCommandAdd(string userCommand) {
 
+	//Parser to update
+	//Error catching: Adding without text; Wrong date format (e.g. 30 Feb)
+	//Streamline code: Use helper functions, OOP; Null iter problem
+
+
 	/* User can enter task in 3 different formats:
 	1. timed tasks
 	e.g. add chinese new year from 19 february to 21 February
