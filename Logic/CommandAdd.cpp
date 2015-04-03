@@ -16,8 +16,7 @@ CommandAdd::CommandAdd(string taskDetails,
 }
 
 
-CommandAdd::~CommandAdd()
-{
+CommandAdd::~CommandAdd(){
 }
 
 string CommandAdd::execute(){
