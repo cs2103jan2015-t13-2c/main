@@ -202,8 +202,15 @@ vector<Task> Storage::readFromFile() {
 	Date* deadline = NULL;
 
 	Task::Recurrence recurrence;
+	string r_none = "NONE";
+	string r_day = "DAY";
+	string r_week = "WEEK";
+	string r_month = "MONTH";
 
 	Task::Priority priority;
+	string p_low = "LOW";
+	string p_normal = "NORMAL";
+	string p_high = "HIGH";
 
 	//check if empty
 	if (d.IsNull()) {
@@ -214,9 +221,10 @@ vector<Task> Storage::readFromFile() {
 
 		//Parse and construct Task Vector
 
-
 		int i = 0;
 		for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr) {
+
+
 			//Task Details
 			taskname = d[i]["taskname"].GetString();
 
@@ -225,47 +233,50 @@ vector<Task> Storage::readFromFile() {
 				if (d[i]["deadline"].IsNull())
 				{
 					startTime_str = "";
+					startTime = NULL;
 					endTime_str = "";
+					endTime = NULL;
 					deadline_str = "";
+					deadline = NULL;
 				}
 				else if (d[i]["deadline"].IsString()) {
 					deadline_str = d[i]["deadline"].GetString();
-					deadline = &Date::toDate(deadline_str);
+					deadline = Date::toDate(deadline_str);
 				}
 			}
 			else if (d[i]["startTime"].IsString()) {
 				startTime_str = d[i]["startTime"].GetString();
-				startTime = &Date::toDate(startTime_str);
+				startTime = Date::toDate(startTime_str);
 
 				endTime_str = d[i]["endTime"].GetString();
-				endTime = &Date::toDate(endTime_str);
+				endTime = Date::toDate(endTime_str);
 			}
 
 
-
+			
 
 			//Task Recurrence
-			if (d[i]["recurrence"].GetString() == "NONE") {
+			if (d[i]["recurrence"].GetString() == r_none) {
 				recurrence = Task::Recurrence::NONE;
 			}
-			else if (d[i]["recurrence"].GetString() == "DAY") {
+			else if (d[i]["recurrence"].GetString() == r_day) {
 				recurrence = Task::Recurrence::DAY;
 			}
-			else if (d[i]["recurrence"].GetString() == "WEEK") {
+			else if (d[i]["recurrence"].GetString() == r_week) {
 				recurrence = Task::Recurrence::WEEK;
 			}
-			else if (d[i]["recurrence"].GetString() == "MONTH") {
+			else if (d[i]["recurrence"].GetString() == r_month) {
 				recurrence = Task::Recurrence::MONTH;
 			}
 
 			//Task Priority
-			if (d[i]["priority"].GetString() == "LOW") {
+			if (d[i]["priority"].GetString() == p_low) {
 				priority = Task::Priority::LOW;
 			}
-			else if (d[i]["priority"].GetString() == "NORMAL") {
+			else if (d[i]["priority"].GetString() == p_normal) {
 				priority = Task::Priority::NORMAL;
 			}
-			else if (d[i]["priority"].GetString() == "HIGH") {
+			else if (d[i]["priority"].GetString() == p_high) {
 				priority = Task::Priority::HIGH;
 			}
 
@@ -277,7 +288,13 @@ vector<Task> Storage::readFromFile() {
 			TaskVector.push_back(task);
 
 			++i;
+
+			startTime_str.clear();
+			endTime_str.clear();
+			deadline_str.clear();
 		}
+
+		
 
 		return TaskVector;
 	}

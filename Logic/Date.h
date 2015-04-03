@@ -23,7 +23,7 @@ public:
 	std::chrono::system_clock::time_point getTimePoint();
 
 	string toString();
-	static Date toDate(string date_str);
+	static Date *toDate(string date_str);
 
 	int getYear();
 	int getMonth();
