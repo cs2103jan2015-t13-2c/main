@@ -43,7 +43,8 @@ public:
 	static bool equalsIgnoreCase(const string& str1, const string& str2);
 	static int parseInt(string str);
 	static string replace(string a, string b, string c);
-	static Date* Parser::parseTime(string timeStr);
+	static bool isKeyword(string word);
+	static Date* Parser::parseTimeString(string timeStr);
 	static int parseDayName(string dayName);
 	static int parseMonthName(string monthName);
 
@@ -60,4 +61,3 @@ private:
 	static Task::Priority _taskPriority;
 	static bool _taskMarked;
 };
-
