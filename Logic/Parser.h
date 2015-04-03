@@ -23,6 +23,7 @@ public:
 	static void parseCommandDelete(string userCommand);
 	static void parseCommandMark(string userCommand);
 	static void parseCommandUnmark(string userCommand);
+	static void parseCommandSearch(string userCommand);
 
 	static string getTaskDetails();
 	static Date* getTaskStartTime();

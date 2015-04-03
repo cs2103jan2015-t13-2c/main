@@ -14,6 +14,7 @@
 #include "CommandUndo.h"
 #include "CommandMark.h"
 #include "CommandUnmark.h"
+#include "CommandSearch.h"
 
 using namespace std;
 

@@ -439,6 +439,60 @@ void Parser::parseCommandUnmark(string userCommand){
 	_taskNumber = atoi(task_number_str.c_str());
 }
 
+void Parser::parseCommandSearch(string userCommand){
+
+	string text = removeFirstWord(userCommand);
+	ostringstream temp;
+
+	vector<string> textVec = splitParameters(text);
+	vector<string>::iterator iter = textVec.begin();
+
+	//by date using from and to
+	if (*iter == "from"){
+
+		while (*iter != "to") {
+			temp << *iter << " ";
+			iter++;
+			if (iter == textVec.end())
+				break;
+		}
+		_taskStartTime = (parseTime(temp.str()));
+		temp.str("");
+
+		iter++;
+		while (*iter != "#impt") {
+			temp << *iter << " ";
+			iter++;
+			if (iter == textVec.end())
+				break;
+		}
+		_taskEndTime = (parseTime(temp.str()));
+		temp.str("");
+	}
+
+	//by date using before and after
+	if (*iter == "before"){
+
+		while (*iter != "#impt") {
+			temp << *iter << " ";
+			iter++;
+			if (iter == textVec.end())
+				break;
+		}
+		_taskStartTime = (parseTime(temp.str()));
+		temp.str("");
+	}
+	//by priority
+
+	//by just task name
+
+
+	else if (*iter == "date"){
+
+	}
+
+}
+
 /*
 * ====================================================================
 *  Additional functions
