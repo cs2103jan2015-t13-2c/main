@@ -33,6 +33,20 @@ namespace LogicTests
 	TEST_CLASS(TasksTest)
 	{
 	public:
+
+		TEST_METHOD(SystemTest){
+			
+			TaskManager* instance = TaskManager::getInstance();
+			vector<Task>* allCurrentTasks = TaskManager::getAllCurrentTasks();
+
+			//making sure task has been added to the back of the task vector
+			Assert::AreEqual<bool>(true, Controller::processUserInput("add hello") == "Task has been added!");
+			int numOfTasks = instance->getNumberOfTasks();
+			Assert::AreEqual<bool>(true, allCurrentTasks->at(numOfTasks - 1).getTaskDetails() == "hello");
+
+			Assert::AreEqual<bool>(true, Controller::processUserInput("delete 1") == "Deleted Task #1");
+			Assert::AreEqual<bool>(true, Controller::processUserInput("undo") == "Action has been undone!");
+		}
 		
 		TEST_METHOD(TaskTest)
 		{
@@ -213,6 +227,7 @@ namespace LogicTests
 
 		}
 
+		
 		TEST_METHOD(ParserTest)
 		{   /*-----------------------------------------------
 			Floating Tasks

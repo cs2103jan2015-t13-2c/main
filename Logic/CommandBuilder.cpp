@@ -141,7 +141,12 @@ Command* CommandBuilder::parseCommand(string userInput){
 
 	case CommandType::Search:
 
-		//return new CommandSort();
+		parser.parseCommandSearch(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandSearch(_taskDetails, _taskStartTime, _taskEndTime, 
+			_taskDeadline, _taskRecurrence, _taskPriority);
 
 	default:
 		return new CommandInvalid(userInput);
