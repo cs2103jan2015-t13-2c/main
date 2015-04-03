@@ -88,13 +88,13 @@ Command* CommandBuilder::parseCommand(string userInput){
 	case CommandType::Display:{
 		return new CommandDisplay();
 	}
-/*
+
 	case CommandType::Update:{
 		parser.parseCommandUpdate(userInput);
 		CommandBuilder::setAttributesFromParser(parser);
 		return new CommandUpdate(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
 			_taskRecurrence, _taskPriority, _taskNumber);
-	}*/
+	}
 
 	case CommandType::Delete:{
 		parser.parseCommandDelete(userInput);
