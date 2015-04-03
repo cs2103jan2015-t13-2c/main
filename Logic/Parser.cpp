@@ -73,7 +73,7 @@ void Parser::parseCommandAdd(string userCommand){
 
 	//Adding task details
 	while (!isKeyword(*iter)){
-		temp << *iter;
+		temp << *iter << " ";
 		iter++;
 	};
 	_taskDetails = temp.str();
@@ -83,7 +83,7 @@ void Parser::parseCommandAdd(string userCommand){
 	if (*iter == "by"){
 		iter++;
 		while (!isKeyword(*iter)){
-			temp << *iter;
+			temp << *iter << " ";
 			iter++;
 		};
 		timeString = temp.str();
@@ -95,13 +95,13 @@ void Parser::parseCommandAdd(string userCommand){
 	if (*iter == "from"){
 		iter++;
 		while (*iter != "to"){
-			temp << *iter;
+			temp << *iter << " ";
 			iter++;
 
 			if (*iter != "\n"){
 				//throw error "enter end time"
 			}
-			};
+		};
 		timeString = temp.str();
 		_taskStartTime = parseTimeString(timeString);
 		temp.str("");
@@ -109,7 +109,7 @@ void Parser::parseCommandAdd(string userCommand){
 		//Adding task end time
 		iter++;
 		while (!isKeyword(*iter)){
-			temp << *iter;
+			temp << *iter << " ";
 			iter++;
 		};
 		timeString = temp.str();
@@ -155,8 +155,7 @@ void Parser::parseCommandAdd(string userCommand){
 	//Adding task priority
 	if (*iter == "#impt" || *iter == "#high"){
 		_taskPriority = Task::Priority::HIGH;
-	}
-	if (*iter == "#low"){
+	} else if (*iter == "#low"){
 		_taskPriority = Task::Priority::LOW;
 	}
 }
@@ -199,41 +198,35 @@ void Parser::parseCommandUpdate(string userCommand){
 	//Changes are made here
 	if (attributeToChange == "details"){
 		_taskDetails = updatedStr;
-	}
+	} 
 	else if (attributeToChange == "deadline"){
 		_taskDeadline = (parseTimeString(updatedStr));
-	}
+	} 
 	else if (attributeToChange == "starttime"){
 		_taskStartTime = (parseTimeString(updatedStr));
-	}
+	} 
 	else if (attributeToChange == "endtime"){
 		_taskEndTime = (parseTimeString(updatedStr));
-	}
+	} 
 	else if (attributeToChange == "recurrence"){
 		if (updatedStr == "day" || updatedStr == "every day"){
 			_taskRecurrence = Task::Recurrence::DAY;
-		}
-		else if (updatedStr == "week" || updatedStr == "every week"){
+		} else if (updatedStr == "week" || updatedStr == "every week"){
 			_taskRecurrence = Task::Recurrence::WEEK;
-		}
-		else if (updatedStr == "month" || updatedStr == "every month"){
+		} else if (updatedStr == "month" || updatedStr == "every month"){
 			_taskRecurrence = Task::Recurrence::MONTH;
-		}
-		else{
+		} else{
 			//throw error
 		}
 	}
 	else if (attributeToChange == "priority"){
 		if (updatedStr == "low"){
 			_taskPriority = Task::Priority::LOW;
-		}
-		else if (updatedStr == "normal"){
+		} else if (updatedStr == "normal"){
 			_taskPriority = Task::Priority::NORMAL;
-		}
-		else if (updatedStr == "high"){
+		} else if (updatedStr == "high"){
 			_taskPriority = Task::Priority::HIGH;
-		}
-		else{
+		} else{
 			//throw error
 		}
 	}
@@ -406,36 +399,25 @@ string Parser::replace(string a, string b, string c) {
 
 bool Parser::isKeyword(string word){
 	return (word == "by" || word == "from" || word == "every" || word == "#impt" ||
-			word == "high" || word == "low" || word == "\n");
+			word == "#high" || word == "#low" || word == "\n");
 }
 
-
-/*
-* ====================================================================
-*  TO EDIT NOW (BEGIN)
-* ====================================================================
-*/
 Date* Parser::parseTimeString(string timeStr){
 	if (timeStr == ""){
-		return nullptr;
+		//throw error
 	}
 	
 	int year = Date().getYear(),
-		mon(0),
-		day(0),
-		hour(0),
-		min(0);
+		mon(0), day(0), hour(0), min(0);
 	string temp;
 
 	temp = getFirstWord(timeStr);
 
 	//E.g. User types in "this thursday"
-	if (temp == "this" || temp == "every"){
-		int taskDay;
+	if (temp == "this"){
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
-
 		temp = (getFirstWord(timeStr));
-		taskDay = parseDayName(temp);
+		int taskDay = parseDayName(temp);
 		int diffinDays = taskDay - Date().getDayName();
 		//throw error if negative
 
@@ -443,35 +425,30 @@ Date* Parser::parseTimeString(string timeStr){
 		day = Date().getDay() + diffinDays;
 	}
 
+	//E.g. User types in "next thursday"
 	else if (temp == "next"){
-		int taskDay;
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
-
 		temp = (getFirstWord(timeStr));
-		taskDay = parseDayName(temp);
-
+		int taskDay = parseDayName(temp);
 		int diffinDays = taskDay - Date().getDayName() + 7;
 		//throw error if negative
 
 		mon = Date().getMonth();
 		day = Date().getDay() + diffinDays;
-
 	}
 
+	//E.g. User types in "9 apr"
 	else {
 		day = parseInt(temp);
-
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
-
 		temp = (getFirstWord(timeStr));
 		mon = parseMonthName(temp);
 	}
-	timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
 
+	timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
 	if (timeStr != "") {
 		temp = getFirstWord(timeStr);
-	}
-	else {
+	} else {
 		return (new Date(year, mon, day, hour, min));
 	}
 
@@ -480,11 +457,9 @@ Date* Parser::parseTimeString(string timeStr){
 		year = parseInt(temp);
 
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
-
 		if (timeStr != "") {
 			temp = getFirstWord(timeStr);
-		}
-		else {
+		} else {
 			return (new Date(year, mon, day, hour, min));
 		}
 	}
@@ -503,13 +478,12 @@ Date* Parser::parseTimeString(string timeStr){
 	for (int i = 0; i < strlen(chars); ++i) {
 		temp.erase(remove(temp.begin(), temp.end(), chars[i]), temp.end());
 	}
-
 	int time = parseInt(temp);
 
+	//Checks if time is in format 12pm or 12:00pm
 	if (time / 100 == 0) {
 		hour = time % 100;
-	}
-	else {
+	} else {
 		hour = time / 100;
 		min = time % 100;
 	}
@@ -517,16 +491,8 @@ Date* Parser::parseTimeString(string timeStr){
 	if (hour < 12 && afterNoon)
 		hour += 12;
 
-	//cout << day << " " << mon;
 	return (new Date(year, mon, day, hour, min));
 }
-
-/*
-* ====================================================================
-*  TO EDIT NOW (END)
-* ====================================================================
-*/
-
 
 int Parser::parseDayName(string dayName) {
 	int day = 0;
