@@ -29,7 +29,8 @@ string Date::toString(){
 	return ts;
 }
 
-Date Date::toDate(string date_str) {
+Date *Date::toDate(string date_str) {
+
 	//e.g Thu Nov 05 00:00:00 2015
 	date_str = removeFirstWord(date_str);
 
@@ -53,7 +54,8 @@ Date Date::toDate(string date_str) {
 	int year = parseInt(date_str);
 
 
-	Date date(year, month, day, hours, minutes);
+	Date *date =  new Date (year, month, day, hours, minutes);
+
 	return date;
 
 }
