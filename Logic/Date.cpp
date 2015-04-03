@@ -36,7 +36,11 @@ string Date::toString(){
 	return buffer;
 }
 
-Date Date::toDate(string date_str){
+
+Date *Date::toDate(string date_str){
+
+	//NEED TO CHANGE IF FUNCTION toString CHANGE, created specific to toString function only.
+
 	//e.g Thu Nov 05 00:00:00 2015
 	date_str = removeFirstWord(date_str);
 
@@ -60,7 +64,8 @@ Date Date::toDate(string date_str){
 	int year = parseInt(date_str);
 
 
-	Date date(year, month, day, hours, minutes);
+	Date *date =  new Date (year, month, day, hours, minutes);
+
 	return date;
 
 }

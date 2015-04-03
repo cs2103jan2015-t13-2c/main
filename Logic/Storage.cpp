@@ -19,15 +19,21 @@ void Storage::writeToFile(){
 	vector<Task>::iterator iter;
 
 	rapidjson::Document document;
-	
+
 	rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
 
 	rapidjson::Value taskname;
+
 	rapidjson::Value startTime;
+
 	rapidjson::Value endTime;
+
 	rapidjson::Value deadline;
+
 	rapidjson::Value recurrence;
+
 	rapidjson::Value priority;
+
 	char buffer[1024];
 	int len;
 
@@ -58,16 +64,22 @@ void Storage::writeToFile(){
 			}
 			else if (iter->getTaskType() == Task::TIMED) {
 				Date time = *(iter->getTaskStartTime());
-				string time_str = time.toString();
 
-				len = sprintf(buffer, time_str.c_str());
-				startTime.SetString(buffer, len, allocator);
+				startTime.SetObject();
+				startTime.AddMember("day", time.getDay(), allocator);
+				startTime.AddMember("month", time.getMonth(), allocator);
+				startTime.AddMember("year", time.getYear(), allocator);
+				startTime.AddMember("hour", time.getHour(), allocator);
+				startTime.AddMember("minutes", time.getMinute(), allocator);
 
 				time = *(iter->getTaskEndTime());
-				time_str = time.toString();
 
-				len = sprintf(buffer, time_str.c_str());
-				endTime.SetString(buffer, len, allocator);
+				endTime.SetObject();
+				endTime.AddMember("day", time.getDay(), allocator);
+				endTime.AddMember("month", time.getMonth(), allocator);
+				endTime.AddMember("year", time.getYear(), allocator);
+				endTime.AddMember("hour", time.getHour(), allocator);
+				endTime.AddMember("minutes", time.getMinute(), allocator);
 
 				deadline.SetNull();
 			}
@@ -76,10 +88,13 @@ void Storage::writeToFile(){
 				endTime.SetNull();
 
 				Date time = *(iter->getTaskDeadline());
-				string time_str = time.toString();
-
-				len = sprintf(buffer, time_str.c_str());
-				deadline.SetString(buffer, len, allocator);
+				
+				deadline.SetObject();
+				deadline.AddMember("day", time.getDay(), allocator);
+				deadline.AddMember("month", time.getMonth(), allocator);
+				deadline.AddMember("year", time.getYear(), allocator);
+				deadline.AddMember("hour", time.getHour(), allocator);
+				deadline.AddMember("minutes", time.getMinute(), allocator);
 			}
 
 			//Check Recurrence
@@ -151,7 +166,6 @@ void Storage::writeToFile(){
 
 			document.PushBack(object, document.GetAllocator());
 
-
 			//writing to file
 			FILE* fp = fopen("Save.json", "wb"); // non-Windows use "w"
 			char writeBuffer[65536];
@@ -161,7 +175,10 @@ void Storage::writeToFile(){
 			document.Accept(writer);
 
 			fclose(fp);
+
 		}
+
+		
 	}
 	return;
 }
@@ -202,8 +219,15 @@ vector<Task> Storage::readFromFile() {
 	Date* deadline = NULL;
 
 	Task::Recurrence recurrence;
+	string r_none = "NONE";
+	string r_day = "DAY";
+	string r_week = "WEEK";
+	string r_month = "MONTH";
 
 	Task::Priority priority;
+	string p_low = "LOW";
+	string p_normal = "NORMAL";
+	string p_high = "HIGH";
 
 	//check if empty
 	if (d.IsNull()) {
@@ -214,9 +238,10 @@ vector<Task> Storage::readFromFile() {
 
 		//Parse and construct Task Vector
 
-
 		int i = 0;
 		for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr) {
+
+
 			//Task Details
 			taskname = d[i]["taskname"].GetString();
 
@@ -224,48 +249,66 @@ vector<Task> Storage::readFromFile() {
 			if (d[i]["startTime"].IsNull()) {
 				if (d[i]["deadline"].IsNull())
 				{
-					startTime_str = "";
-					endTime_str = "";
-					deadline_str = "";
+					//startTime_str = "";
+					startTime = NULL;
+					//endTime_str = "";
+					endTime = NULL;
+					//deadline_str = "";
+					deadline = NULL;
 				}
-				else if (d[i]["deadline"].IsString()) {
-					deadline_str = d[i]["deadline"].GetString();
-					deadline = &Date::toDate(deadline_str);
+				else if (d[i]["deadline"].IsObject()) {
+					int day = d[i]["deadline"]["day"].GetInt();
+					int month = d[i]["deadline"]["month"].GetInt();
+					int year = d[i]["deadline"]["year"].GetInt();
+					int hour = d[i]["deadline"]["hour"].GetInt();
+					int minutes = d[i]["deadline"]["minutes"].GetInt();
+
+					deadline = new Date(year, month, day, hour, minutes);
 				}
 			}
-			else if (d[i]["startTime"].IsString()) {
-				startTime_str = d[i]["startTime"].GetString();
-				startTime = &Date::toDate(startTime_str);
+			else if (d[i]["startTime"].IsObject()) {
+				int day = d[i]["startTime"]["day"].GetInt();
+				int month = d[i]["startTime"]["month"].GetInt();
+				int year = d[i]["startTime"]["year"].GetInt();
+				int hour = d[i]["startTime"]["hour"].GetInt();
+				int minutes = d[i]["startTime"]["minutes"].GetInt();
 
-				endTime_str = d[i]["endTime"].GetString();
-				endTime = &Date::toDate(endTime_str);
+				startTime = new Date(year, month, day, hour, minutes);
+
+				day = d[i]["endTime"]["day"].GetInt();
+				month = d[i]["endTime"]["month"].GetInt();
+				year = d[i]["endTime"]["year"].GetInt();
+				hour = d[i]["endTime"]["hour"].GetInt();
+				minutes = d[i]["endTime"]["minutes"].GetInt();
+
+				endTime = new Date(year, month, day, hour, minutes);
 			}
 
 
 
 
 			//Task Recurrence
-			if (d[i]["recurrence"].GetString() == "NONE") {
+			if (d[i]["recurrence"].GetString() == r_none) {
 				recurrence = Task::Recurrence::NONE;
 			}
-			else if (d[i]["recurrence"].GetString() == "DAY") {
+			else if (d[i]["recurrence"].GetString() == r_day) {
 				recurrence = Task::Recurrence::DAY;
 			}
-			else if (d[i]["recurrence"].GetString() == "WEEK") {
+			else if (d[i]["recurrence"].GetString() == r_week) {
 				recurrence = Task::Recurrence::WEEK;
 			}
-			else if (d[i]["recurrence"].GetString() == "MONTH") {
+			else if (d[i]["recurrence"].GetString() == r_month) {
 				recurrence = Task::Recurrence::MONTH;
 			}
 
 			//Task Priority
-			if (d[i]["priority"].GetString() == "LOW") {
+			if (d[i]["priority"].GetString() == p_low) {
 				priority = Task::Priority::LOW;
 			}
-			else if (d[i]["priority"].GetString() == "NORMAL") {
+			else if (d[i]["priority"].GetString() == p_normal) {
 				priority = Task::Priority::NORMAL;
 			}
-			else if (d[i]["priority"].GetString() == "HIGH") {
+			else if (d[i]["priority"].GetString() == p_high) {
 				priority = Task::Priority::HIGH;
 			}
 
@@ -278,6 +321,8 @@ vector<Task> Storage::readFromFile() {
 
 			++i;
 		}
+
+
 
 		return TaskVector;
 	}
