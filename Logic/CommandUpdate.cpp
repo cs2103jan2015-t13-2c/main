@@ -1,6 +1,6 @@
 #include "CommandUpdate.h"
 
-const string CommandUpdate::MESSAGE_UPDATED = "Updated Task #%d: \n%s";
+const string CommandUpdate::MESSAGE_UPDATED = "Updated Task #%d!";
 char CommandUpdate::buffer[255];
 
 CommandUpdate::CommandUpdate(string taskDetails,
@@ -44,7 +44,7 @@ string CommandUpdate::execute(){
 	//adding task back to vector (but at the back, not fixed)
 	instance.addTask(currentTask);
 
-	sprintf_s(buffer, MESSAGE_UPDATED.c_str(), _taskNumber, _taskDetails.c_str());
+	sprintf_s(buffer, MESSAGE_UPDATED.c_str(), _taskNumber);
 
 	return buffer;
 }

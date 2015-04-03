@@ -1,15 +1,11 @@
 #include "CommandBuilder.h"
 
 
-
-CommandBuilder::CommandBuilder()
-{
+CommandBuilder::CommandBuilder(){
 	clearPreviousCommand();
 }
 
-
-CommandBuilder::~CommandBuilder()
-{
+CommandBuilder::~CommandBuilder(){
 }
 
 void CommandBuilder::clearPreviousCommand(){
@@ -68,7 +64,7 @@ void CommandBuilder::setAttributesFromParser(Parser parser){
 
 
 Command* CommandBuilder::parseCommand(string userInput){
-	if (trim(userInput) == "") {
+	if (trim(userInput) == ""){
 		return new CommandInvalid(userInput);
 	}
 
@@ -81,13 +77,10 @@ Command* CommandBuilder::parseCommand(string userInput){
 	switch (commandType){
 
 	case CommandType::Add:{
-
 		//parser parses in the userInput into its attributes
 		parser.parseCommandAdd(userInput);
-
 		//command builder takes these from parser attributes and sets them as its own
 		CommandBuilder::setAttributesFromParser(parser);
-
 		return new CommandAdd(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
 			_taskRecurrence, _taskPriority);
 	}
@@ -97,51 +90,41 @@ Command* CommandBuilder::parseCommand(string userInput){
 	}
 
 	case CommandType::Update:{
-
 		parser.parseCommandUpdate(userInput);
-
 		CommandBuilder::setAttributesFromParser(parser);
-
 		return new CommandUpdate(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
 			_taskRecurrence, _taskPriority, _taskNumber);
 	}
 
 	case CommandType::Delete:{
-
 		parser.parseCommandDelete(userInput);
-
 		CommandBuilder::setAttributesFromParser(parser);
-
 		return new CommandDelete(_taskNumber);
 	}
 
-	case CommandType::Undo:
-
+	case CommandType::Undo:{
 		return new CommandUndo();
+	}
 
-	case CommandType::Mark:
-
+	case CommandType::Mark:{
 		parser.parseCommandMark(userInput);
-
 		CommandBuilder::setAttributesFromParser(parser);
-
 		return new CommandMark(_taskNumber);
+	}
 
-	case CommandType::Unmark:
-
+	case CommandType::Unmark:{
 		parser.parseCommandUnmark(userInput);
-
 		CommandBuilder::setAttributesFromParser(parser);
-
 		return new CommandUnmark(_taskNumber);
+	}
 
-	case CommandType::Exit:
-
+	case CommandType::Exit:{
 		return new CommandExit();
+	}
 
-	case CommandType::Search:
-
+	case CommandType::Search:{
 		//return new CommandSort();
+	}
 
 	default:
 		return new CommandInvalid(userInput);
@@ -152,37 +135,27 @@ Command* CommandBuilder::parseCommand(string userInput){
 //This operation determines which of the supported command types the user
 //wants to perform (commandTypeString is the first word of the user command)
 CommandBuilder::CommandType CommandBuilder::determineCommandType(string commandTypeString) {
-	if (equalsIgnoreCase(commandTypeString, "add")) {
+	if (equalsIgnoreCase(commandTypeString, "add")){
 		return CommandType::Add;
-	}
-	else if (equalsIgnoreCase(commandTypeString, "display")) {
+	} else if (equalsIgnoreCase(commandTypeString, "display")){
 		return CommandType::Display;
-	}
-	else if (equalsIgnoreCase(commandTypeString, "update")) {
+	} else if (equalsIgnoreCase(commandTypeString, "update")){
 		return CommandType::Update;
-	}
-	else if (equalsIgnoreCase(commandTypeString, "delete")) {
+	} else if (equalsIgnoreCase(commandTypeString, "delete")){
 		return CommandType::Delete;
-	}
-	else if (equalsIgnoreCase(commandTypeString, "exit")) {
+	} else if (equalsIgnoreCase(commandTypeString, "exit")){
 		return CommandType::Exit;
-	}
-	else if (equalsIgnoreCase(commandTypeString, "undo")) {
+	} else if (equalsIgnoreCase(commandTypeString, "undo")){
 		return CommandType::Undo;
-	}
-	else if (equalsIgnoreCase(commandTypeString, "mark")) {
+	} else if (equalsIgnoreCase(commandTypeString, "mark")){
 		return CommandType::Mark;
-	}
-	else if (equalsIgnoreCase(commandTypeString, "unmark")) {
+	} else if (equalsIgnoreCase(commandTypeString, "unmark")){
 		return CommandType::Unmark;
-	}
-	else if (equalsIgnoreCase(commandTypeString, "sort")) {
+	} else if (equalsIgnoreCase(commandTypeString, "sort")){
 		return CommandType::Unmark;
-	}
-	else if (equalsIgnoreCase(commandTypeString, "search")) {
+	} else if (equalsIgnoreCase(commandTypeString, "search")){
 		return CommandType::Unmark;
-	}
-	else {
+	} else{
 		return CommandType::Invalid;
 	}
 }
@@ -192,11 +165,11 @@ CommandBuilder::CommandType CommandBuilder::determineCommandType(string commandT
 *  Additional functions
 * ====================================================================
 */
-string CommandBuilder::removeFirstWord(string userCommand) {
+string CommandBuilder::removeFirstWord(string userCommand){
 	return trim(replace(userCommand, getFirstWord(userCommand), ""));
 }
 
-string CommandBuilder::getFirstWord(string userCommand) {
+string CommandBuilder::getFirstWord(string userCommand){
 	string commandTypeString = splitParameters(userCommand)[0];
 	return commandTypeString;
 }
@@ -212,49 +185,49 @@ vector<string> CommandBuilder::splitParameters(string commandParametersString){
 	return tokens;
 }
 
-inline string CommandBuilder::trim_right(const string& s, const string& delimiters) {
+inline string CommandBuilder::trim_right(const string& s, const string& delimiters){
 	return s.substr(0, s.find_last_not_of(delimiters) + 1);
 }
 
-inline string CommandBuilder::trim_left(const string& s, const string& delimiters) {
+inline string CommandBuilder::trim_left(const string& s, const string& delimiters){
 	return s.substr(s.find_first_not_of(delimiters));
 }
 
-inline string CommandBuilder::trim(const string& s, const string& delimiters) {
+inline string CommandBuilder::trim(const string& s, const string& delimiters){
 	if (!s.empty())
 		return trim_left(trim_right(s, delimiters), delimiters);
 	else
 		return s;
 }
 
-bool CommandBuilder::equalsIgnoreCase(const string& str1, const string& str2) {
-	if (str1.size() != str2.size()) {
+bool CommandBuilder::equalsIgnoreCase(const string& str1, const string& str2){
+	if (str1.size() != str2.size()){
 		return false;
 	}
-	for (string::const_iterator c1 = str1.begin(), c2 = str2.begin(); c1 != str1.end(); ++c1, ++c2) {
-		if (tolower(*c1) != tolower(*c2)) {
+	for (string::const_iterator c1 = str1.begin(), c2 = str2.begin(); c1 != str1.end(); ++c1, ++c2){
+		if (tolower(*c1) != tolower(*c2)){
 			return false;
 		}
 	}
 	return true;
 }
 
-int CommandBuilder::parseInt(string str) {
+int CommandBuilder::parseInt(string str){
 	char c;
 	int i = 0;
 	std::stringstream ss(str);
 	ss >> i;
-	if (ss.fail() || ss.get(c)) {
+	if (ss.fail() || ss.get(c)){
 		return INVALID_NUMBER_FORMAT;
 	}
-	else {
+	else{
 		return i;
 	}
 }
 
-string CommandBuilder::replace(string a, string b, string c) {
+string CommandBuilder::replace(string a, string b, string c){
 	int pos;
-	do {
+	do{
 		pos = a.find(b);
 		if (pos != -1)  a.replace(pos, b.length(), c);
 	} while (pos != -1);
