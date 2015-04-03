@@ -24,6 +24,7 @@
 #include "ParseException.cpp"
 #include "CustomException.cpp"
 #include "TaskDisplayer.cpp"
+#include "CommandSearch.cpp"
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
