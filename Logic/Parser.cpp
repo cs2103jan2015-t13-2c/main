@@ -9,8 +9,7 @@ Task::Recurrence Parser::_taskRecurrence;
 Task::Priority Parser::_taskPriority;
 bool Parser::_taskMarked;
 
-Parser::Parser()
-{
+Parser::Parser(){
 	clearPreviousParse();
 }
 
@@ -57,354 +56,185 @@ int Parser::getTaskNumber(){
 	return _taskNumber;
 }
 
-
-Parser::~Parser()
-{
+Parser::~Parser(){
 }
 
-void Parser::parseCommandAdd(string userCommand) {
-
-	/* User can enter task in 3 different formats:
-	1. timed tasks
-	e.g. add chinese new year from 19 february to 21 February
-	2. tasks with deadlines
-	e.g add finish CS2103 project by 10 july 2359hrs
-	3. floating tasks
-	e.g add finish coding assignment
-	*/
+void Parser::parseCommandAdd(string userCommand){
 	Parser::clearPreviousParse();
-
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
 
 	string text = removeFirstWord(userCommand);
+	string timeString;
 	ostringstream temp;
 
 	vector<string> textVec = splitParameters(text);
+	textVec.push_back("\n");	//Represents the end of vector
 	vector<string>::iterator iter = textVec.begin();
 
-	while (*iter != "from" && *iter != "by" && *iter != "every") {
+	//Adding task details
+	while (!isKeyword(*iter)){
 		temp << *iter << " ";
 		iter++;
-		if (iter == textVec.end())
-			break;
-	}
+	};
 	_taskDetails = temp.str();
 	temp.str("");
 
-	if (iter == textVec.end())
-		return;
-
-	if (*iter == "from") {
-		//If keyword "from" is found, task is a timed task
+	//Adding task deadline (if it is deadline task)
+	if (*iter == "by"){
 		iter++;
-		while (*iter != "to") {
+		while (!isKeyword(*iter)){
 			temp << *iter << " ";
 			iter++;
-			if (iter == textVec.end())
-				break;
-		}
-		_taskStartTime = (parseTime(temp.str()));
-		temp.str("");
-
-		iter++;
-		while (*iter != "#impt") {
-			temp << *iter << " ";
-			iter++;
-			if (iter == textVec.end())
-				break;
-		}
-		_taskEndTime = (parseTime(temp.str()));
+		};
+		timeString = temp.str();
+		_taskDeadline = parseTimeString(timeString);
 		temp.str("");
 	}
 
-	else if (*iter == "by") {
-		//If keyword "by" is found, task is a deadline task
+	//Adding task start time (if it is timed task)
+	if (*iter == "from"){
 		iter++;
-		while (*iter != "#impt") {
+		while (*iter != "to"){
 			temp << *iter << " ";
 			iter++;
-			if (iter == textVec.end())
-				break;
-		}
-		_taskDeadline = (parseTime(temp.str()));
+
+			if (*iter != "\n"){
+				//throw error "enter end time"
+			}
+		};
+		timeString = temp.str();
+		_taskStartTime = parseTimeString(timeString);
+		temp.str("");
+
+		//Adding task end time
+		iter++;
+		while (!isKeyword(*iter)){
+			temp << *iter << " ";
+			iter++;
+		};
+		timeString = temp.str();
+		_taskEndTime = parseTimeString(timeString);
 		temp.str("");
 	}
 
-	else if (*iter == "every") {
-		//If keyword "every" is found, task is a recurring task
+	//Adding task recurrence
+	if (*iter == "every"){
 		iter++;
-
-		//Recurs every day
-		if (*iter == "day") {
+		if (*iter == "day"){
 			_taskRecurrence = Task::Recurrence::DAY;
-			int hour = 0, min = 0;
-
-			iter++;
-			if (iter == textVec.end()) {
-				_taskDeadline = new Date(Date().getYear(),
-					Date().getMonth(),
-					Date().getDay() + 1, 0, 0);
-				return;
-			}
-
-			if (*iter == "at") {
-				iter++;
-				string temp = *iter;
-
-				//Checks if time is in AM/PM 
-				bool afterNoon = false;
-				int amFound = temp.find("am");
-				int pmFound = temp.find("pm");
-				if (amFound < 0) {
-					if (pmFound >= 0) {
-						afterNoon = true;
-					}
-				}
-
-				char chars[] = ".:apmhrs";
-				for (int i = 0; i < strlen(chars); ++i) {
-					temp.erase(remove(temp.begin(), temp.end(), chars[i]), temp.end());
-				}
-
-				int time = parseInt(temp);
-
-				if (time / 100 == 0) {
-					hour = time % 100;
-				}
-				else {
-					hour = time / 100;
-					min = time % 100;
-				}
-
-				if (hour < 12 && afterNoon)
-					hour += 12;
-			}
-
-			_taskDeadline = new Date(Date().getYear(),
-				Date().getMonth(),
-				Date().getDay() + 1, hour, min);
 		}
-
-		//Recurs every week
 		else if (*iter == "sunday" || *iter == "sun" ||
-			*iter == "monday" || *iter == "mon" ||
-			*iter == "tuesday" || *iter == "tue" || *iter == "tues" ||
-			*iter == "wednesday" || *iter == "wed" ||
-			*iter == "thursday" || *iter == "thu" || *iter == "thur" ||
-			*iter == "friday" || *iter == "fri" ||
-			*iter == "saturday" || *iter == "sat") {
+				*iter == "monday" || *iter == "mon" ||
+				*iter == "tuesday" || *iter == "tue" || *iter == "tues" ||
+				*iter == "wednesday" || *iter == "wed" ||
+				*iter == "thursday" || *iter == "thu" || *iter == "thurs" ||
+				*iter == "friday" || *iter == "fri" ||
+				*iter == "saturday" || *iter == "sat") {
 			_taskRecurrence = Task::Recurrence::WEEK;
-
-			iter--;
-			while (*iter != "to" && *iter != "#impt") {
-				temp << *iter << " ";
-				iter++;
-				if (iter == textVec.end())
-					break;
-			}
-
-			if (iter == textVec.end()) {
-				_taskDeadline = (parseTime(temp.str()));
-				return;
-			}
-
-			if (*iter == "to") {
-				_taskStartTime = (parseTime(temp.str()));
-				temp.str("");
-				temp << "every ";
-
-				iter++;
-				while (*iter != "#impt") {
-					temp << *iter << " ";
-					iter++;
-					if (iter == textVec.end())
-						break;
-				}
-				_taskEndTime = (parseTime(temp.str()));
-			}
 		}
-
-		//Recurs every month
 		else if (*iter == "january" || *iter == "jan" ||
-			*iter == "february" || *iter == "feb" ||
-			*iter == "march" || *iter == "mar" ||
-			*iter == "april" || *iter == "apr" ||
-			*iter == "may" || *iter == "may" ||
-			*iter == "june" || *iter == "jun" ||
-			*iter == "july" || *iter == "jul" ||
-			*iter == "august" || *iter == "aug" ||
-			*iter == "september" || *iter == "sep" ||
-			*iter == "october" || *iter == "oct" ||
-			*iter == "november" || *iter == "nov" ||
-			*iter == "december" || *iter == "dec") {
+				*iter == "february" || *iter == "feb" ||
+				*iter == "march" || *iter == "mar" ||
+				*iter == "april" || *iter == "apr" ||
+				*iter == "may" ||
+				*iter == "june" || *iter == "jun" ||
+				*iter == "july" || *iter == "jul" ||
+				*iter == "august" || *iter == "aug" ||
+				*iter == "september" || *iter == "sep" ||
+				*iter == "october" || *iter == "oct" ||
+				*iter == "november" || *iter == "nov" ||
+				*iter == "december" || *iter == "dec") {
 			_taskRecurrence = Task::Recurrence::MONTH;
-
-			int taskMonth = parseMonthName(*iter);
-			int diffinMonths = taskMonth - Date().getMonth();
-
-			_taskDeadline = new Date(Date().getYear(),
-				Date().getMonth() + diffinMonths,
-				1, 0, 0);
 		}
+		else{
+			//throw error;
+		}
+		iter++;
 	}
 
-	if (iter == textVec.end())
-		return;
-
-	if (*iter == "#impt") {
+	//Adding task priority
+	if (*iter == "#impt" || *iter == "#high"){
 		_taskPriority = Task::Priority::HIGH;
+	} else if (*iter == "#low"){
+		_taskPriority = Task::Priority::LOW;
 	}
 }
+
 
 void Parser::parseCommandUpdate(string userCommand){
 	Parser::clearPreviousParse();
-	
+
 	ostringstream oss;
-	//get usercommand without the first word
 	string text = removeFirstWord(userCommand);
 
-	string task_number_str = getFirstWord(text);
+	//Getting the task to change
+	string taskNumberStr = getFirstWord(text);
+	Parser::_taskNumber = atoi(taskNumberStr.c_str());
+	Task taskToChange = TaskManager::getTask(Parser::_taskNumber);
+
+	_taskDetails = taskToChange.getTaskDetails();
+	_taskDeadline = taskToChange.getTaskDeadline();
+	_taskStartTime = taskToChange.getTaskStartTime();
+	_taskEndTime = taskToChange.getTaskEndTime();
+	_taskRecurrence = taskToChange.getTaskRecurrence();
+	_taskPriority = taskToChange.getTaskPriority();
+
+	//Getting the attribute to change
 	text = removeFirstWord(text);
-	Parser::_taskNumber = atoi(task_number_str.c_str());
+	string attributeToChange = getFirstWord(text);
 
-	//getting the task to edit from the taskmanager
-	Task currentTask = TaskManager::getTask(Parser::_taskNumber);
+	//User can either type in the changed version or program will prompt
+	string updatedStr;
+	text = removeFirstWord(text);
 
-	vector<string> textVec = splitParameters(text);
-	vector<string>::iterator iter = textVec.begin();
-
-	ostringstream temp;
-
-	//Check for details
-	iter = textVec.begin();
-	temp<<currentTask.getTaskDetails();
-	while (iter != textVec.end()) {
-		if (*iter == "details") {
-			temp.str("");
-			++iter;
-			while (iter != textVec.end() && *iter != "from" && *iter != "by" && *iter != "every" && *iter != "priority") {
-				temp << *iter << " ";
-				++iter;
-			}
-		}
-		//++iter;
-	}
-	_taskDetails = temp.str();
-
-
-
-	//Check for start time
-	temp.clear();
-	iter = textVec.begin();
-	Date* start_time = currentTask.getTaskStartTime();
-	string time_str;
-	if (start_time == nullptr){
-		time_str = "";
+	if (text == ""){
+		cout << "Enter new " << attributeToChange << ": ";
+		getline(cin, updatedStr);
 	}
 	else{
-		time_str = start_time->toString();
+		updatedStr = text;
 	}
-	while (iter != textVec.end()) {
-		if (*iter == "from") {
-			while (*iter != "to") {
-				time_str = time_str + " " + *iter;
-				++iter;
-			}
-		}
-		++iter;
-	}
-	start_time = parseTime(time_str);
-	_taskStartTime=start_time;
 
-	//Check for end time
-	iter = textVec.begin();
-	Date* end_time = (currentTask).getTaskEndTime();
-	if (end_time == nullptr){
-		time_str = "";
-	}
-	else{
-		time_str = end_time->toString();
-	}
-	while (iter != textVec.end()) {
-		if (*iter == "to") {
-			while (*iter != "details" && *iter != "by" && *iter != "every" && *iter != "priority") {
-				time_str = time_str + " " + *iter;
-				++iter;
-			}
+	//Changes are made here
+	if (attributeToChange == "details"){
+		_taskDetails = updatedStr;
+	} 
+	else if (attributeToChange == "deadline"){
+		_taskDeadline = (parseTimeString(updatedStr));
+	} 
+	else if (attributeToChange == "starttime"){
+		_taskStartTime = (parseTimeString(updatedStr));
+	} 
+	else if (attributeToChange == "endtime"){
+		_taskEndTime = (parseTimeString(updatedStr));
+	} 
+	else if (attributeToChange == "recurrence"){
+		if (updatedStr == "day" || updatedStr == "every day"){
+			_taskRecurrence = Task::Recurrence::DAY;
+		} else if (updatedStr == "week" || updatedStr == "every week"){
+			_taskRecurrence = Task::Recurrence::WEEK;
+		} else if (updatedStr == "month" || updatedStr == "every month"){
+			_taskRecurrence = Task::Recurrence::MONTH;
+		} else{
+			//throw error
 		}
-		++iter;
 	}
-	end_time = parseTime(time_str);
-	_taskEndTime=end_time;
-
-	//Check for deadline
-	iter = textVec.begin();
-	Date* deadline = currentTask.getTaskDeadline();
-	if (deadline == nullptr){
-		time_str = "";
-	}
-	else{
-		time_str = deadline->toString();
-	}
-	if (*iter == "by") {
-		while (*iter != "from" && *iter != "details" && *iter != "every" && *iter != "priority") {
-			time_str = time_str + " " + *iter;
-			++iter;
+	else if (attributeToChange == "priority"){
+		if (updatedStr == "low"){
+			_taskPriority = Task::Priority::LOW;
+		} else if (updatedStr == "normal"){
+			_taskPriority = Task::Priority::NORMAL;
+		} else if (updatedStr == "high"){
+			_taskPriority = Task::Priority::HIGH;
+		} else{
+			//throw error
 		}
-		++iter;
 	}
-	deadline = parseTime(time_str);
-	_taskDeadline=deadline;
-
-	//Check for recurrence
-	iter = textVec.begin();
-	Task::Recurrence recurrence = currentTask.getTaskRecurrence();
-	while (iter != textVec.end()) {
-		if (*iter == "every") {
-			++iter;
-			if (*iter == "day") {
-				recurrence = Task::Recurrence::DAY;
-			}
-			else if (*iter == "week") {
-				recurrence = Task::Recurrence::WEEK;
-			}
-			else if (*iter == "month") {
-				recurrence = Task::Recurrence::MONTH;
-			}
-		}
-		else if (*iter == "everyday") {
-			recurrence = Task::Recurrence::DAY;
-		}
-		else if (*iter == "no" || *iter == "not") {
-			++iter;
-			if (*iter == "recurrence" || *iter == "recurring" || *iter == "repeating") {
-				recurrence = Task::Recurrence::NONE;
-			}
-		}
-		++iter;
+	else {
+		//throw error
 	}
-	_taskRecurrence=recurrence;
-
-	//Check for priority
-	iter = textVec.begin();
-	Task::Priority priority = currentTask.getTaskPriority();
-	while (iter != textVec.end()) {
-		if (*iter == "priority") {
-			++iter;
-			if (*iter == "high") {
-				priority = Task::Priority::HIGH;
-			}
-			else if (*iter == "normal") {
-				priority = Task::Priority::NORMAL;
-			}
-			else if (*iter == "low") {
-				priority = Task::Priority::LOW;
-			}
-		}
-		++iter;
-	}
-	_taskPriority=priority;
 }
+
 
 void Parser::parseCommandDelete(string userCommand){
 	Parser::clearPreviousParse();
@@ -444,11 +274,11 @@ void Parser::parseCommandUnmark(string userCommand){
 *  Additional functions
 * ====================================================================
 */
-string Parser::removeFirstWord(string userCommand) {
+string Parser::removeFirstWord(string userCommand){
 	return trim(replace(userCommand, getFirstWord(userCommand), ""));
 }
 
-string Parser::getFirstWord(string userCommand) {
+string Parser::getFirstWord(string userCommand){
 	string commandTypeString = splitParameters(userCommand)[0];
 	return commandTypeString;
 }
@@ -464,42 +294,42 @@ vector<string> Parser::splitParameters(string commandParametersString){
 	return tokens;
 }
 
-inline string Parser::trim_right(const string& s, const string& delimiters) {
+inline string Parser::trim_right(const string& s, const string& delimiters){
 	return s.substr(0, s.find_last_not_of(delimiters) + 1);
 }
 
-inline string Parser::trim_left(const string& s, const string& delimiters) {
+inline string Parser::trim_left(const string& s, const string& delimiters){
 	return s.substr(s.find_first_not_of(delimiters));
 }
 
-inline string Parser::trim(const string& s, const string& delimiters) {
-	if (!s.empty())
+inline string Parser::trim(const string& s, const string& delimiters){
+	if (!s.empty()){
 		return trim_left(trim_right(s, delimiters), delimiters);
-	else
+	} else{
 		return s;
+	}
 }
 
-bool Parser::equalsIgnoreCase(const string& str1, const string& str2) {
-	if (str1.size() != str2.size()) {
+bool Parser::equalsIgnoreCase(const string& str1, const string& str2){
+	if (str1.size() != str2.size()){
 		return false;
 	}
-	for (string::const_iterator c1 = str1.begin(), c2 = str2.begin(); c1 != str1.end(); ++c1, ++c2) {
-		if (tolower(*c1) != tolower(*c2)) {
+	for (string::const_iterator c1 = str1.begin(), c2 = str2.begin(); c1 != str1.end(); ++c1, ++c2){
+		if (tolower(*c1) != tolower(*c2)){
 			return false;
 		}
 	}
 	return true;
 }
 
-int Parser::parseInt(string str) {
+int Parser::parseInt(string str){
 	char c;
 	int i = 0;
 	std::stringstream ss(str);
 	ss >> i;
-	if (ss.fail() || ss.get(c)) {
+	if (ss.fail() || ss.get(c)){
 		return INVALID_NUMBER_FORMAT;
-	}
-	else {
+	} else{
 		return i;
 	}
 }
@@ -513,27 +343,27 @@ string Parser::replace(string a, string b, string c) {
 	return a;
 }
 
-Date* Parser::parseTime(string timeStr) {
+bool Parser::isKeyword(string word){
+	return (word == "by" || word == "from" || word == "every" || word == "#impt" ||
+			word == "#high" || word == "#low" || word == "\n");
+}
+
+Date* Parser::parseTimeString(string timeStr){
 	if (timeStr == ""){
-		return nullptr;
+		//throw error
 	}
 	
 	int year = Date().getYear(),
-		mon(0),
-		day(0),
-		hour(0),
-		min(0);
+		mon(0), day(0), hour(0), min(0);
 	string temp;
 
 	temp = getFirstWord(timeStr);
 
 	//E.g. User types in "this thursday"
-	if (temp == "this" || temp == "every") {
-		int taskDay;
+	if (temp == "this"){
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
-
 		temp = (getFirstWord(timeStr));
-		taskDay = parseDayName(temp);
+		int taskDay = parseDayName(temp);
 		int diffinDays = taskDay - Date().getDayName();
 		//throw error if negative
 
@@ -541,35 +371,30 @@ Date* Parser::parseTime(string timeStr) {
 		day = Date().getDay() + diffinDays;
 	}
 
-	else if (temp == "next") {
-		int taskDay;
+	//E.g. User types in "next thursday"
+	else if (temp == "next"){
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
-
 		temp = (getFirstWord(timeStr));
-		taskDay = parseDayName(temp);
-
+		int taskDay = parseDayName(temp);
 		int diffinDays = taskDay - Date().getDayName() + 7;
 		//throw error if negative
 
 		mon = Date().getMonth();
 		day = Date().getDay() + diffinDays;
-
 	}
 
+	//E.g. User types in "9 apr"
 	else {
 		day = parseInt(temp);
-
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
-
 		temp = (getFirstWord(timeStr));
 		mon = parseMonthName(temp);
 	}
-	timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
 
+	timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
 	if (timeStr != "") {
 		temp = getFirstWord(timeStr);
-	}
-	else {
+	} else {
 		return (new Date(year, mon, day, hour, min));
 	}
 
@@ -578,11 +403,9 @@ Date* Parser::parseTime(string timeStr) {
 		year = parseInt(temp);
 
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
-
 		if (timeStr != "") {
 			temp = getFirstWord(timeStr);
-		}
-		else {
+		} else {
 			return (new Date(year, mon, day, hour, min));
 		}
 	}
@@ -601,13 +424,12 @@ Date* Parser::parseTime(string timeStr) {
 	for (int i = 0; i < strlen(chars); ++i) {
 		temp.erase(remove(temp.begin(), temp.end(), chars[i]), temp.end());
 	}
-
 	int time = parseInt(temp);
 
+	//Checks if time is in format 12pm or 12:00pm
 	if (time / 100 == 0) {
 		hour = time % 100;
-	}
-	else {
+	} else {
 		hour = time / 100;
 		min = time % 100;
 	}
@@ -615,7 +437,6 @@ Date* Parser::parseTime(string timeStr) {
 	if (hour < 12 && afterNoon)
 		hour += 12;
 
-	//cout << day << " " << mon;
 	return (new Date(year, mon, day, hour, min));
 }
 
@@ -624,26 +445,21 @@ int Parser::parseDayName(string dayName) {
 
 	if (dayName == "sunday" || dayName == "sun") {
 		day = 0;
-	}
-	else if (dayName == "monday" || dayName == "mon") {
+	} else if (dayName == "monday" || dayName == "mon") {
 		day = 1;
-	}
-	else if (dayName == "tuesday" || dayName == "tue" || dayName == "tues") {
+	} else if (dayName == "tuesday" || dayName == "tue" || dayName == "tues") {
 		day = 2;
-	}
-	else if (dayName == "wednesday" || dayName == "wed") {
+	} else if (dayName == "wednesday" || dayName == "wed") {
 		day = 3;
-	}
-	else if (dayName == "thursday" || dayName == "thu" || dayName == "thurs") {
+	} else if (dayName == "thursday" || dayName == "thu" || dayName == "thurs") {
 		day = 4;
-	}
-	else if (dayName == "friday" || dayName == "fri") {
+	} else if (dayName == "friday" || dayName == "fri") {
 		day = 5;
-	}
-	else if (dayName == "saturday" || dayName == "sat") {
+	} else if (dayName == "saturday" || dayName == "sat") {
 		day = 6;
-	} //else throw error
-
+	} else {
+		//throw error
+	}
 	return day;
 }
 
@@ -652,40 +468,30 @@ int Parser::parseMonthName(string monthName) {
 
 	if (monthName == "january" || monthName == "jan") {
 		mon = 0;
-	}
-	else if (monthName == "february" || monthName == "feb") {
+	} else if (monthName == "february" || monthName == "feb") {
 		mon = 1;
-	}
-	else if (monthName == "march" || monthName == "mar") {
+	} else if (monthName == "march" || monthName == "mar") {
 		mon = 2;
-	}
-	else if (monthName == "april" || monthName == "apr") {
+	} else if (monthName == "april" || monthName == "apr") {
 		mon = 3;
-	}
-	else if (monthName == "may") {
+	} else if (monthName == "may") {
 		mon = 4;
-	}
-	else if (monthName == "june" || monthName == "jun") {
+	} else if (monthName == "june" || monthName == "jun") {
 		mon = 5;
-	}
-	else if (monthName == "july" || monthName == "jul") {
+	} else if (monthName == "july" || monthName == "jul") {
 		mon = 6;
-	}
-	else if (monthName == "august" || monthName == "aug") {
+	} else if (monthName == "august" || monthName == "aug") {
 		mon = 7;
-	}
-	else if (monthName == "september" || monthName == "sep") {
+	} else if (monthName == "september" || monthName == "sep") {
 		mon = 8;
-	}
-	else if (monthName == "october" || monthName == "oct") {
+	} else if (monthName == "october" || monthName == "oct") {
 		mon = 9;
-	}
-	else if (monthName == "november" || monthName == "nov") {
+	} else if (monthName == "november" || monthName == "nov") {
 		mon = 10;
-	}
-	else if (monthName == "december" || monthName == "dec") {
+	} else if (monthName == "december" || monthName == "dec") {
 		mon = 11;
-	} //else throw error
-
+	} else {
+		//throw error
+	}
 	return mon;
 }
