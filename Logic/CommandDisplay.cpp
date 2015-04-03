@@ -1,13 +1,10 @@
 #include "CommandDisplay.h"
 
-
-CommandDisplay::CommandDisplay()
-{
+CommandDisplay::CommandDisplay(){
 }
 
 
-CommandDisplay::~CommandDisplay()
-{
+CommandDisplay::~CommandDisplay(){
 }
 
 string CommandDisplay::execute(){
@@ -21,7 +18,7 @@ string CommandDisplay::execute(){
 	}
 	vector<Task> allTasks = *allTasksPtr;
 
-	//Prints Task Number
+	//Counts Task Number
 	int taskNumber=1;
 	for (iter = allTasks.begin(); iter != allTasks.end(); ++iter) {
 		oss << printTaskToUser(*iter, taskNumber);
@@ -39,10 +36,12 @@ string CommandDisplay::printTaskToUser(Task toPrint, int taskNumber) {
 	ostringstream oss;
 
 	//Prints Task Number
-	oss << "=============================" << endl;
-	oss << "Task #" << setw(8) << setfill('0') << taskNumber << endl;
-	oss << "=============================" << endl;
+	oss << "====================================================" << endl;
+	oss << "Task #" << taskNumber << endl;
+	oss << "====================================================" << endl;
 
+	//Prints Task Details
+	oss << "TASKNAME: ";
 	oss << (toPrint).getTaskDetails() << endl;
 
 	//Prints Task Start/End Time or Deadline (if any)
@@ -52,12 +51,10 @@ string CommandDisplay::printTaskToUser(Task toPrint, int taskNumber) {
 		oss << "START: " << (toPrint).getTaskStartTime()->toString() << endl;
 		oss << "END: " << (toPrint).getTaskEndTime()->toString() << endl;
 		break;
-	}
-	case Task::DEADLINE: {
+	} case Task::DEADLINE: {
 		oss << "DEADLINE: " << (toPrint).getTaskDeadline()->toString() << endl;
 		break;
-	}
-	default:
+	} default:
 		break;
 	}
 
@@ -67,50 +64,34 @@ string CommandDisplay::printTaskToUser(Task toPrint, int taskNumber) {
 	case Task::DAY: {
 		oss << "EVERY DAY" << endl;
 		break;
-	}
-	case Task::WEEK: {
+	} case Task::WEEK: {
 		oss << "EVERY WEEK" << endl;
 		break;
-	}
-	case Task::MONTH: {
+	} case Task::MONTH: {
 		oss << "EVERY MONTH" << endl;
 		break;
-	}
-	default:
+	} default:
 		break;
 	}
 
 	//Prints Task Priority
 	Task::Priority checkPri = (toPrint).getTaskPriority();
 	switch (checkPri) {
-	case Task::LOW: {
-		oss << "PRIORITY: LOW" << endl;
-		break;
-	}
-	case Task::HIGH: {
-		oss << "PRIORITY: HIGH" << endl;
-		break;
-	}
-	default: {
-		oss << "PRIORITY: NORMAL" << endl;
-		break;
-	}
+		case Task::LOW: {
+			oss << "PRIORITY: LOW" << endl;
+			break;
+		} case Task::HIGH: {
+			oss << "PRIORITY: HIGH" << endl;
+			break;
+		} default: {
+			break;
+		}
 	}
 
 	bool checkMarked = (toPrint).getTaskMarked();
-	switch (checkMarked) {
-	case true: {
-		oss << "MARKED: " << "YES" << endl;
-		break;
-	}
-	case false: {
-		oss << "MARKED: " << "NO" << endl;
-		break;
-	}
-	default:
-		break;
+	if (checkMarked) {
+		oss << "DONE!" << endl;
 	}
 
 	return oss.str();
-
 }
