@@ -162,155 +162,86 @@ void Parser::parseCommandAdd(string userCommand){
 }
 
 
-/*void Parser::parseCommandUpdate(string userCommand){
+void Parser::parseCommandUpdate(string userCommand){
 	Parser::clearPreviousParse();
-	
+
 	ostringstream oss;
-	//get usercommand without the first word
 	string text = removeFirstWord(userCommand);
 
-	string task_number_str = getFirstWord(text);
+	//Getting the task to change
+	string taskNumberStr = getFirstWord(text);
+	Parser::_taskNumber = atoi(taskNumberStr.c_str());
+	Task taskToChange = TaskManager::getTask(Parser::_taskNumber);
+
+	_taskDetails = taskToChange.getTaskDetails();
+	_taskDeadline = taskToChange.getTaskDeadline();
+	_taskStartTime = taskToChange.getTaskStartTime();
+	_taskEndTime = taskToChange.getTaskEndTime();
+	_taskRecurrence = taskToChange.getTaskRecurrence();
+	_taskPriority = taskToChange.getTaskPriority();
+
+	//Getting the attribute to change
 	text = removeFirstWord(text);
-	Parser::_taskNumber = atoi(task_number_str.c_str());
+	string attributeToChange = getFirstWord(text);
 
-	//getting the task to edit from the taskmanager
-	Task currentTask = TaskManager::getTask(Parser::_taskNumber);
+	//User can either type in the changed version or program will prompt
+	string updatedStr;
+	text = removeFirstWord(text);
 
-	vector<string> textVec = splitParameters(text);
-	vector<string>::iterator iter = textVec.begin();
-
-	ostringstream temp;
-
-	//Check for details
-	iter = textVec.begin();
-	temp<<currentTask.getTaskDetails();
-	while (iter != textVec.end()) {
-		if (*iter == "details") {
-			temp.str("");
-			++iter;
-			while (iter != textVec.end() && *iter != "from" && *iter != "by" && *iter != "every" && *iter != "priority") {
-				temp << *iter << " ";
-				++iter;
-			}
-		}
-		//++iter;
-	}
-	_taskDetails = temp.str();
-
-
-
-	//Check for start time
-	temp.clear();
-	iter = textVec.begin();
-	Date* start_time = currentTask.getTaskStartTime();
-	string time_str;
-	if (start_time == nullptr){
-		time_str = "";
+	if (text == ""){
+		cout << "Enter new " << attributeToChange << ": ";
+		getline(cin, updatedStr);
 	}
 	else{
-		time_str = start_time->toString();
+		updatedStr = text;
 	}
-	while (iter != textVec.end()) {
-		if (*iter == "from") {
-			while (*iter != "to") {
-				time_str = time_str + " " + *iter;
-				++iter;
-			}
-		}
-		++iter;
-	}
-	start_time = parseTime(time_str);
-	_taskStartTime=start_time;
 
-	//Check for end time
-	iter = textVec.begin();
-	Date* end_time = (currentTask).getTaskEndTime();
-	if (end_time == nullptr){
-		time_str = "";
+	//Changes are made here
+	if (attributeToChange == "details"){
+		_taskDetails = updatedStr;
 	}
-	else{
-		time_str = end_time->toString();
+	else if (attributeToChange == "deadline"){
+		_taskDeadline = (parseTimeString(updatedStr));
 	}
-	while (iter != textVec.end()) {
-		if (*iter == "to") {
-			while (*iter != "details" && *iter != "by" && *iter != "every" && *iter != "priority") {
-				time_str = time_str + " " + *iter;
-				++iter;
-			}
+	else if (attributeToChange == "starttime"){
+		_taskStartTime = (parseTimeString(updatedStr));
+	}
+	else if (attributeToChange == "endtime"){
+		_taskEndTime = (parseTimeString(updatedStr));
+	}
+	else if (attributeToChange == "recurrence"){
+		if (updatedStr == "day" || updatedStr == "every day"){
+			_taskRecurrence = Task::Recurrence::DAY;
 		}
-		++iter;
+		else if (updatedStr == "week" || updatedStr == "every week"){
+			_taskRecurrence = Task::Recurrence::WEEK;
+		}
+		else if (updatedStr == "month" || updatedStr == "every month"){
+			_taskRecurrence = Task::Recurrence::MONTH;
+		}
+		else{
+			//throw error
+		}
 	}
-	end_time = parseTime(time_str);
-	_taskEndTime=end_time;
+	else if (attributeToChange == "priority"){
+		if (updatedStr == "low"){
+			_taskPriority = Task::Priority::LOW;
+		}
+		else if (updatedStr == "normal"){
+			_taskPriority = Task::Priority::NORMAL;
+		}
+		else if (updatedStr == "high"){
+			_taskPriority = Task::Priority::HIGH;
+		}
+		else{
+			//throw error
+		}
+	}
+	else {
+		//throw error
+	}
+}
 
-	//Check for deadline
-	iter = textVec.begin();
-	Date* deadline = currentTask.getTaskDeadline();
-	if (deadline == nullptr){
-		time_str = "";
-	}
-	else{
-		time_str = deadline->toString();
-	}
-	if (*iter == "by") {
-		while (*iter != "from" && *iter != "details" && *iter != "every" && *iter != "priority") {
-			time_str = time_str + " " + *iter;
-			++iter;
-		}
-		++iter;
-	}
-	deadline = parseTime(time_str);
-	_taskDeadline=deadline;
-
-	//Check for recurrence
-	iter = textVec.begin();
-	Task::Recurrence recurrence = currentTask.getTaskRecurrence();
-	while (iter != textVec.end()) {
-		if (*iter == "every") {
-			++iter;
-			if (*iter == "day") {
-				recurrence = Task::Recurrence::DAY;
-			}
-			else if (*iter == "week") {
-				recurrence = Task::Recurrence::WEEK;
-			}
-			else if (*iter == "month") {
-				recurrence = Task::Recurrence::MONTH;
-			}
-		}
-		else if (*iter == "everyday") {
-			recurrence = Task::Recurrence::DAY;
-		}
-		else if (*iter == "no" || *iter == "not") {
-			++iter;
-			if (*iter == "recurrence" || *iter == "recurring" || *iter == "repeating") {
-				recurrence = Task::Recurrence::NONE;
-			}
-		}
-		++iter;
-	}
-	_taskRecurrence=recurrence;
-
-	//Check for priority
-	iter = textVec.begin();
-	Task::Priority priority = currentTask.getTaskPriority();
-	while (iter != textVec.end()) {
-		if (*iter == "priority") {
-			++iter;
-			if (*iter == "high") {
-				priority = Task::Priority::HIGH;
-			}
-			else if (*iter == "normal") {
-				priority = Task::Priority::NORMAL;
-			}
-			else if (*iter == "low") {
-				priority = Task::Priority::LOW;
-			}
-		}
-		++iter;
-	}
-	_taskPriority=priority;
-}*/
 
 void Parser::parseCommandDelete(string userCommand){
 	Parser::clearPreviousParse();
