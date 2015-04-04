@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-
 #include "Task.cpp"
 #include "Date.cpp"
 #include "TaskManager.cpp"

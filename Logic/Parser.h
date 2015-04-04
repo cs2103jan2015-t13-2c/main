@@ -7,6 +7,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include "ParseException.h"
 
 using namespace std;
 
@@ -39,6 +40,7 @@ public:
 	static vector<string> splitParameters(string commandParametersString);
 	static string trim_right(const string& s, const string& delimiters = " \f\n\r\t\v");
 	static string trim_left(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static unsigned int countWordsInString(const string& str);
 	static string trim(const string& s, const string& delimiters = " \f\n\r\t\v");
 	static bool equalsIgnoreCase(const string& str1, const string& str2);
 	static int parseInt(string str);
@@ -50,6 +52,7 @@ public:
 
 	static char buffer[255];
 	static const int INVALID_NUMBER_FORMAT = -1;
+	static const string Parser::ERROR_MESSAGE_PARSING_ADD;
 
 private:
 	static int _taskNumber;

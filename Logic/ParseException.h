@@ -14,8 +14,11 @@ private:
 public:
 
 	ParseException(std::string input);
-	inline string getMessage();
-	inline int getErrorCode();
-	inline string getInput();
+	string getMessage();
+	int getErrorCode();
+	string getInput();
+
+	static const string ParseException::ERROR_MESSAGE_PARSING;
+	static const int ParseException::ERROR_CODE_PARSING;
 
 };

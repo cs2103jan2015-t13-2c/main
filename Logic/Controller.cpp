@@ -23,18 +23,27 @@ vector<Command*>* Controller::getUndoStack(){
 
 string Controller::processUserInput(string userInput){
 
-	TaskManager* taskManager = TaskManager::getInstance();
-	CommandBuilder commandBuilder = CommandBuilder();
-	Command* command = commandBuilder.parseCommand(userInput);
-	
-	Command* undoCommand = command->getInverseCommand();
-	if (undoCommand != nullptr){
-		getUndoStack()->push_back(undoCommand);
+	string feedback;
+
+	try{
+
+		TaskManager* taskManager = TaskManager::getInstance();
+		CommandBuilder commandBuilder = CommandBuilder();
+		Command* command = commandBuilder.parseCommand(userInput);
+
+		Command* undoCommand = command->getInverseCommand();
+		if (undoCommand != nullptr){
+			getUndoStack()->push_back(undoCommand);
+		}
+
+		feedback = command->execute();
+
 	}
+	catch (ParseException& e){
 
-	
+		feedback = e.getMessage();
 
-	string feedback = command->execute();
+	}
 	return feedback;
 }
 
