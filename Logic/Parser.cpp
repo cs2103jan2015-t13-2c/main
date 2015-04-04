@@ -186,6 +186,9 @@ void Parser::parseCommandUpdate(string userCommand){
 
 	//Getting the attribute to change
 	text = removeFirstWord(text);
+	if (text == ""){
+		throw ParseException(ERROR_MESSAGE_PARSING_UPDATEARGUMENTS);
+	}
 	string attributeToChange = getFirstWord(text);
 
 	//User can either type in the changed version or program will prompt
@@ -565,4 +568,5 @@ int Parser::parseMonthName(string monthName) {
 	return mon;
 }
 
-const string Parser::ERROR_MESSAGE_PARSING_ADD = "There is no task to add";
+const string Parser::ERROR_MESSAGE_PARSING_ADD = "There is no task to add"; 
+const string Parser::ERROR_MESSAGE_PARSING_UPDATEARGUMENTS = "There are no arguments to update";
