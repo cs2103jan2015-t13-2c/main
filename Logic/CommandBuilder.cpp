@@ -145,12 +145,13 @@ Command* CommandBuilder::parseCommand(string userInput){
 
 		CommandBuilder::setAttributesFromParser(parser);
 
-		return new CommandSearch(_taskDetails, _taskStartTime, _taskEndTime, 
+		return new CommandSearch(_taskDetails, _taskStartTime, _taskEndTime,
 			_taskDeadline, _taskRecurrence, _taskPriority);
 
 	default:
 		return new CommandInvalid(userInput);
 	}
+
 }
 
 

@@ -59,11 +59,16 @@ int Parser::getTaskNumber(){
 Parser::~Parser(){
 }
 
-void Parser::parseCommandAdd(string userCommand){
+void Parser::parseCommandAdd(string userCommand) throw (ParseException){
 	Parser::clearPreviousParse();
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
 
 	string text = removeFirstWord(userCommand);
+
+	if (text == ""){
+		throw ParseException(ERROR_MESSAGE_PARSING_ADD);
+	}
+
 	string timeString;
 	ostringstream temp;
 
@@ -328,6 +333,7 @@ void Parser::parseCommandSearch(string userCommand){
 *  Additional functions
 * ====================================================================
 */
+
 string Parser::removeFirstWord(string userCommand){
 	return trim(replace(userCommand, getFirstWord(userCommand), ""));
 }
@@ -353,7 +359,16 @@ inline string Parser::trim_right(const string& s, const string& delimiters){
 }
 
 inline string Parser::trim_left(const string& s, const string& delimiters){
+	if (countWordsInString(s) == 0){
+		return "";
+	}
 	return s.substr(s.find_first_not_of(delimiters));
+}
+
+unsigned int Parser::countWordsInString(const string& str)
+{
+	std::stringstream stream(str);
+	return std::distance(std::istream_iterator<std::string>(stream), std::istream_iterator<std::string>());
 }
 
 inline string Parser::trim(const string& s, const string& delimiters){
@@ -549,3 +564,5 @@ int Parser::parseMonthName(string monthName) {
 	}
 	return mon;
 }
+
+const string Parser::ERROR_MESSAGE_PARSING_ADD = "There is no task to add";
