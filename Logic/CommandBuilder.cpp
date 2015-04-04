@@ -186,7 +186,7 @@ CommandBuilder::CommandType CommandBuilder::determineCommandType(string commandT
 		return CommandType::Unmark;
 	}
 	else if (equalsIgnoreCase(commandTypeString, "search")) {
-		return CommandType::Unmark;
+		return CommandType::Search;
 	}
 	else {
 		return CommandType::Invalid;
