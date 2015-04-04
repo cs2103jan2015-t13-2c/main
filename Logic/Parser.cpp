@@ -481,13 +481,9 @@ Date* Parser::parseTimeString(string timeStr){
 
 	//Checks if time is in AM/PM 
 	bool afterNoon = false;
-	int amFound = temp.find("am");
-	int pmFound = temp.find("pm");
-	if (amFound < 0) {
-		if (pmFound >= 0) {
+	if (temp.find("pm") != string::npos) {
 			afterNoon = true;
 		}
-	}
 
 	char chars[] = ".:apmhrs";
 	for (int i = 0; i < strlen(chars); ++i) {
@@ -503,8 +499,12 @@ Date* Parser::parseTimeString(string timeStr){
 		min = time % 100;
 	}
 
-	if (hour < 12 && afterNoon)
+	if (hour < 12 && afterNoon){
 		hour += 12;
+	}
+	if (hour == 12 && !afterNoon){
+		hour = 0;
+	}
 
 	return (new Date(year, mon, day, hour, min));
 }
