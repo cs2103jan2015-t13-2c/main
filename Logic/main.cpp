@@ -34,16 +34,16 @@ void showToUser(string text) {
 void main() {
 	printWelcomeMessage();
 
-	string userName;
-	cout << "Please enter your username: ";
-	cin >> userName;
-	cout << "\nWelcome back, " << userName << "!\n";
+	//string userName;
+	//cout << "Please enter your username: ";
+	//cin >> userName;
+	//cout << "\nWelcome back, " << userName << "!\n";
 	//userName + 
 	string fileName = "Save.txt";
 	//vector<Task> tempSave;
 	TaskManager::setAllCurrentTasks(Storage::readFromFile());
 
-	cin.ignore();
+	//cin.ignore();
 	while (true) {
 		cout << "command: ";
 		string userCommand;
