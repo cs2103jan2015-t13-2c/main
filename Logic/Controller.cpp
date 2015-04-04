@@ -44,6 +44,12 @@ string Controller::processUserInput(string userInput){
 		feedback = e.getMessage();
 
 	}
+	catch (CommandException& e){
+
+		feedback = e.getMessage();
+
+	}
+
 	return feedback;
 }
 

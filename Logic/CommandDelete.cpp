@@ -19,6 +19,10 @@ string CommandDelete::execute(){
 	// get the instance of the Task from task manager
 	TaskManager instance = *TaskManager::getInstance();
 
+	if (_taskNumber <= 0 || _taskNumber > instance.getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+
 	//get the task to edit, remove it from vector.
 	Task currentTask = TaskManager::getTask(_taskNumber);
 	TaskManager::removeTask(_taskNumber);
@@ -30,6 +34,10 @@ string CommandDelete::execute(){
 
 Command* CommandDelete::getInverseCommand(){
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
+
+	if (_taskNumber <= 0 || _taskNumber > taskManagerInstance->getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
 	Task currentTask = TaskManager::getTask(_taskNumber);
 	
 	string taskDetails = currentTask.getTaskDetails();
@@ -42,6 +50,8 @@ Command* CommandDelete::getInverseCommand(){
 	//no logic for undoing task marked!
 	return new CommandAdd(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskRecurrence, taskPriority);
 }
+
+const string CommandDelete::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
 
 /*
 command for delete will be "delete /task_name"

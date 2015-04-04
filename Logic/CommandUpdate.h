@@ -5,6 +5,7 @@
 #include "Task.h"
 #include "TaskManager.h"
 #include <vector>
+#include "CommandException.h"
 
 class CommandUpdate: public Command
 {
@@ -22,6 +23,7 @@ public:
 
 	static const string CommandUpdate::MESSAGE_UPDATED;
 	static char CommandUpdate::buffer[255];
+	static const string CommandUpdate::ERROR_MESSAGE_COMMAND_TASKNUM;
 
 private:
 	string _taskDetails;

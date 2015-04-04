@@ -53,6 +53,7 @@ public:
 	static char buffer[255];
 	static const int INVALID_NUMBER_FORMAT = -1;
 	static const string Parser::ERROR_MESSAGE_PARSING_ADD;
+	static const string Parser::ERROR_MESSAGE_PARSING_UPDATEARGUMENTS;
 
 private:
 	static int _taskNumber;

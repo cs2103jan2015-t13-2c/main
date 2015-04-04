@@ -6,6 +6,7 @@
 #include "TaskManager.h"
 #include <vector>
 #include "CommandAdd.h"
+#include "CommandException.h"
 
 using namespace std;
 
@@ -19,6 +20,8 @@ public:
 
 	static const string CommandDelete::MESSAGE_DELETED;
 	static char CommandDelete::buffer[255];
+	static const string CommandDelete::ERROR_MESSAGE_COMMAND_TASKNUM;
+
 private:
 	int _taskNumber;
 };

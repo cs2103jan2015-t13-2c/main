@@ -6,6 +6,8 @@
 #include "TaskManager.h"
 #include "Storage.h"
 #include "SuggestionBuilder.h"
+#include "ParseException.h"
+#include "CommandException.h"
 
 using namespace std;
 

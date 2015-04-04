@@ -29,6 +29,10 @@ string CommandUpdate::execute(){
 	//get the instance of the Task from task manager
 	TaskManager instance = *TaskManager::getInstance();
 	
+	if (_taskNumber <= 0 || _taskNumber > instance.getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+
 	//get the task to edit, remove it from vector.
 	Task currentTask = TaskManager::getTask(_taskNumber);
 	TaskManager::removeTask(_taskNumber);
@@ -50,7 +54,12 @@ string CommandUpdate::execute(){
 }
 
 Command* CommandUpdate::getInverseCommand(){
+
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
+	
+	if (_taskNumber <= 0 || _taskNumber > taskManagerInstance->getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
 	Task currentTask = TaskManager::getTask(_taskNumber);
 
 	string taskDetails = currentTask.getTaskDetails();
@@ -63,3 +72,5 @@ Command* CommandUpdate::getInverseCommand(){
 	//no logic for undoing task marked!
 	return new CommandUpdate(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskRecurrence, taskPriority,_taskNumber);
 }
+
+const string CommandUpdate::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
