@@ -81,6 +81,11 @@ void Parser::parseCommandAdd(string userCommand) throw (ParseException){
 		temp << *iter << " ";
 		iter++;
 	};
+
+	if (temp.str() == ""){
+		throw ParseException(ERROR_MESSAGE_PARSING_TASK);
+	}
+
 	_taskDetails = temp.str();
 	temp.str("");
 
@@ -103,8 +108,11 @@ void Parser::parseCommandAdd(string userCommand) throw (ParseException){
 			temp << *iter << " ";
 			iter++;
 
-			if (*iter != "\n"){
-				//throw error "enter end time"
+			//if (*iter != "\n"){
+			//}
+
+			if (iter == textVec.end()){
+				throw CommandException(ERROR_MESSAGE_COMMAND_ENDTIME);
 			}
 		};
 		timeString = temp.str();
@@ -285,7 +293,16 @@ void Parser::parseCommandSearch(string userCommand){
 	ostringstream temp;
 
 	vector<string> textVec = splitParameters(text);
+	textVec.push_back("\n");
 	vector<string>::iterator iter = textVec.begin();
+
+	while (!isKeyword(*iter)){
+		temp << *iter << " ";
+		iter++;
+	};
+
+	_taskDetails = temp.str();
+	temp.str("");
 
 	//by date using from and to
 	if (*iter == "from"){
@@ -570,14 +587,12 @@ int Parser::parseMonthName(string monthName) {
 	return mon;
 }
 
-<<<<<<< HEAD
 const string Parser::ERROR_MESSAGE_PARSING_ADD = "There is no task to add"; 
 const string Parser::ERROR_MESSAGE_PARSING_UPDATEARGUMENTS = "There are no arguments to update";
-=======
-const string Parser::ERROR_MESSAGE_PARSING_ADD = "There is no task to add";
 const string Parser::ERROR_MESSAGE_PARSING_RECURRENCE = "Please enter a valid Recurrence: DAY, WEEK, MONTH";
 const string Parser::ERROR_MESSAGE_PARSING_PRIORITY = "Please enter a valid Priority: LOW, NORMAL, HIGH";
 const string Parser::ERROR_MESSAGE_PARSING_DATEPASSED = "This date has already passed";
 const string Parser::ERROR_MESSAGE_PARSING_DAYNAME = "Day is invalid";
 const string Parser::ERROR_MESSAGE_PARSING_MONTHNAME = "Month is invalid";
->>>>>>> origin/master
+const string Parser::ERROR_MESSAGE_COMMAND_ENDTIME = "Please enter the ending time!";
+const string Parser::ERROR_MESSAGE_PARSING_TASK = "Please enter a task to add!";
