@@ -53,7 +53,15 @@ public:
 	static char buffer[255];
 	static const int INVALID_NUMBER_FORMAT = -1;
 	static const string Parser::ERROR_MESSAGE_PARSING_ADD;
+<<<<<<< HEAD
 	static const string Parser::ERROR_MESSAGE_PARSING_UPDATEARGUMENTS;
+=======
+	static const string Parser::ERROR_MESSAGE_PARSING_RECURRENCE;
+	static const string Parser::ERROR_MESSAGE_PARSING_PRIORITY;
+	static const string Parser::ERROR_MESSAGE_PARSING_DATEPASSED;
+	static const string Parser::ERROR_MESSAGE_PARSING_DAYNAME;
+	static const string Parser::ERROR_MESSAGE_PARSING_MONTHNAME;
+>>>>>>> origin/master
 
 private:
 	static int _taskNumber;

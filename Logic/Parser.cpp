@@ -128,7 +128,8 @@ void Parser::parseCommandAdd(string userCommand) throw (ParseException){
 		if (*iter == "day"){
 			_taskRecurrence = Task::Recurrence::DAY;
 		}
-		else if (*iter == "sunday" || *iter == "sun" ||
+		else if (*iter == "week" ||
+				*iter == "sunday" || *iter == "sun" ||
 				*iter == "monday" || *iter == "mon" ||
 				*iter == "tuesday" || *iter == "tue" || *iter == "tues" ||
 				*iter == "wednesday" || *iter == "wed" ||
@@ -137,7 +138,8 @@ void Parser::parseCommandAdd(string userCommand) throw (ParseException){
 				*iter == "saturday" || *iter == "sat") {
 			_taskRecurrence = Task::Recurrence::WEEK;
 		}
-		else if (*iter == "january" || *iter == "jan" ||
+		else if (*iter == "month" ||
+				*iter == "january" || *iter == "jan" ||
 				*iter == "february" || *iter == "feb" ||
 				*iter == "march" || *iter == "mar" ||
 				*iter == "april" || *iter == "apr" ||
@@ -152,7 +154,7 @@ void Parser::parseCommandAdd(string userCommand) throw (ParseException){
 			_taskRecurrence = Task::Recurrence::MONTH;
 		}
 		else{
-			//throw error;
+			throw ParseException(ERROR_MESSAGE_PARSING_RECURRENCE);
 		}
 		iter++;
 	}
@@ -224,7 +226,7 @@ void Parser::parseCommandUpdate(string userCommand){
 		} else if (updatedStr == "month" || updatedStr == "every month"){
 			_taskRecurrence = Task::Recurrence::MONTH;
 		} else{
-			//throw error
+			throw ParseException(ERROR_MESSAGE_PARSING_RECURRENCE);
 		}
 	}
 	else if (attributeToChange == "priority"){
@@ -235,7 +237,7 @@ void Parser::parseCommandUpdate(string userCommand){
 		} else if (updatedStr == "high"){
 			_taskPriority = Task::Priority::HIGH;
 		} else{
-			//throw error
+			throw ParseException(ERROR_MESSAGE_PARSING_PRIORITY);
 		}
 	}
 	else {
@@ -449,7 +451,7 @@ Date* Parser::parseTimeString(string timeStr){
 		temp = (getFirstWord(timeStr));
 		int taskDay = parseDayName(temp);
 		int diffinDays = taskDay - Date().getDayName() + 7;
-		//throw error if negative
+		throw ParseException(ERROR_MESSAGE_PARSING_DATEPASSED);
 
 		mon = Date().getMonth();
 		day = Date().getDay() + diffinDays;
@@ -530,7 +532,7 @@ int Parser::parseDayName(string dayName) {
 	} else if (dayName == "saturday" || dayName == "sat") {
 		day = 6;
 	} else {
-		//throw error
+		throw ParseException(ERROR_MESSAGE_PARSING_DAYNAME);
 	}
 	return day;
 }
@@ -563,10 +565,19 @@ int Parser::parseMonthName(string monthName) {
 	} else if (monthName == "december" || monthName == "dec") {
 		mon = 11;
 	} else {
-		//throw error
+		throw ParseException(ERROR_MESSAGE_PARSING_MONTHNAME);
 	}
 	return mon;
 }
 
+<<<<<<< HEAD
 const string Parser::ERROR_MESSAGE_PARSING_ADD = "There is no task to add"; 
 const string Parser::ERROR_MESSAGE_PARSING_UPDATEARGUMENTS = "There are no arguments to update";
+=======
+const string Parser::ERROR_MESSAGE_PARSING_ADD = "There is no task to add";
+const string Parser::ERROR_MESSAGE_PARSING_RECURRENCE = "Please enter a valid Recurrence: DAY, WEEK, MONTH";
+const string Parser::ERROR_MESSAGE_PARSING_PRIORITY = "Please enter a valid Priority: LOW, NORMAL, HIGH";
+const string Parser::ERROR_MESSAGE_PARSING_DATEPASSED = "This date has already passed";
+const string Parser::ERROR_MESSAGE_PARSING_DAYNAME = "Day is invalid";
+const string Parser::ERROR_MESSAGE_PARSING_MONTHNAME = "Month is invalid";
+>>>>>>> origin/master
