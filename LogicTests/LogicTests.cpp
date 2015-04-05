@@ -26,6 +26,7 @@
 #include "CommandSearch.cpp"
 #include "CommandException.cpp"
 #include "CommandSort.cpp"
+#include "CommandRedo.cpp"
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -45,6 +46,8 @@ namespace LogicTests
 			Assert::AreEqual<bool>(true, Controller::processUserInput("add hello") == "Task has been added!");
 			int numOfTasks = instance->getNumberOfTasks();
 			Assert::AreEqual<bool>(true, allCurrentTasks->at(numOfTasks - 1).getTaskDetails() == "hello");
+			
+			//add tasks by today test
 
 			Assert::AreEqual<bool>(true, Controller::processUserInput("delete 1") == "Deleted Task #1");
 			Assert::AreEqual<bool>(true, Controller::processUserInput("undo") == "Action has been undone!");
@@ -53,19 +56,18 @@ namespace LogicTests
 		TEST_METHOD(TaskTest)
 		{
 			//testing floating task
-			Task newFloatingTask = Task::Task("Do Something", nullptr, nullptr, nullptr, Task::Recurrence::NONE, Task::Priority::HIGH);
+			Task newFloatingTask = Task::Task("Do Something", nullptr, nullptr, nullptr, Task::Priority::HIGH);
 			Assert::AreEqual<std::string>("Do Something", newFloatingTask.getTaskDetails());
 			Assert::AreEqual<bool>(true, newFloatingTask.getTaskDeadline() == nullptr);
 			Assert::AreEqual<bool>(true, newFloatingTask.getTaskStartTime() == nullptr);
 			Assert::AreEqual<bool>(true, newFloatingTask.getTaskEndTime() == nullptr);
 			Assert::AreEqual<bool>(true, newFloatingTask.getTaskType() == Task::FLOATING);
 			Assert::AreEqual<bool>(true, Task::Priority::HIGH == newFloatingTask.getTaskPriority());
-			Assert::AreEqual<bool>(true, newFloatingTask.getTaskRecurrence() == Task::NONE);
 		
 			//testing timed tasks
 			Date earlierDate = Date(2015, 10, 13, 17, 00);
 			Date laterDate = Date(2015, 10, 13, 18, 00);
-			Task newTimedTask = Task::Task("Do Something", &earlierDate, &laterDate, NULL, Task::Recurrence::NONE, Task::Priority::HIGH);
+			Task newTimedTask = Task::Task("Do Something", &earlierDate, &laterDate, NULL, Task::Priority::HIGH);
 			Assert::AreEqual<std::string>("Do Something", newTimedTask.getTaskDetails());
 			Assert::AreEqual<bool>(true, newTimedTask.getTaskType() == Task::TIMED);
 			Assert::AreEqual<int>(0, newTimedTask.getTaskStartTime()->isEarlierThan(*newTimedTask.getTaskStartTime()));
@@ -127,7 +129,6 @@ namespace LogicTests
 			Assert::AreEqual<bool>(true, commandBuilder.getTaskDeadline() == nullptr);
 			Assert::AreEqual<bool>(true, commandBuilder.getTaskStartTime() == nullptr);
 			Assert::AreEqual<bool>(true, commandBuilder.getTaskEndTime() == nullptr);
-			Assert::AreEqual<bool>(true, commandBuilder.getTaskRecurrence() == Task::NONE);
 			Assert::AreEqual<bool>(true, commandBuilder.getTaskPriority() == Task::NORMAL);
 			Assert::AreEqual<bool>(true, commandBuilder.getTaskMarked() == false);
 			Assert::AreEqual<bool>(true, commandBuilder.getTaskNumber() == -1);

@@ -15,7 +15,6 @@ public:
 		Date *taskStartTime,
 		Date *taskEndTime,
 		Date *taskDeadline,
-		Task::Recurrence taskRecurrence,
 		Task::Priority taskPriority);
 
 	~CommandAdd();
@@ -27,7 +26,6 @@ private:
 	Date *_taskStartTime;
 	Date *_taskEndTime;
 	Date *_taskDeadline;
-	Task::Recurrence _taskRecurrence;
 	Task::Priority _taskPriority;
 };
 

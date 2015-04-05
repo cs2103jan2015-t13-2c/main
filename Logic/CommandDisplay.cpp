@@ -58,22 +58,6 @@ string CommandDisplay::printTaskToUser(Task toPrint, int taskNumber) {
 		break;
 	}
 
-	//Prints Task Recurrence (if any)
-	Task::Recurrence checkRec = (toPrint).getTaskRecurrence();
-	switch (checkRec) {
-	case Task::DAY: {
-		oss << "EVERY DAY" << endl;
-		break;
-	} case Task::WEEK: {
-		oss << "EVERY WEEK" << endl;
-		break;
-	} case Task::MONTH: {
-		oss << "EVERY MONTH" << endl;
-		break;
-	} default:
-		break;
-	}
-
 	//Prints Task Priority
 	Task::Priority checkPri = (toPrint).getTaskPriority();
 	switch (checkPri) {

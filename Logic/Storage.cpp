@@ -30,8 +30,6 @@ void Storage::writeToFile(){
 
 	rapidjson::Value deadline;
 
-	rapidjson::Value recurrence;
-
 	rapidjson::Value priority;
 
 	char buffer[1024];
@@ -97,38 +95,6 @@ void Storage::writeToFile(){
 				deadline.AddMember("minutes", time.getMinute(), allocator);
 			}
 
-			//Check Recurrence
-			if (iter->getTaskRecurrence() == Task::Recurrence::NONE) {
-				char recur[1024];
-				int length = sprintf(recur, "NONE");
-
-				recurrence.SetString(recur, length, allocator);
-			}
-			else if (iter->getTaskRecurrence() == Task::Recurrence::DAY) {
-				char recur[1024];
-				int length = sprintf(recur, "DAY");
-
-				recurrence.SetString(recur, length, allocator);
-			}
-			else if (iter->getTaskRecurrence() == Task::Recurrence::WEEK)	{
-				char recur[1024];
-				int length = sprintf(recur, "WEEK");
-
-				recurrence.SetString(recur, length, allocator);
-			}
-			else if (iter->getTaskRecurrence() == Task::Recurrence::MONTH) {
-				char recur[1024];
-				int length = sprintf(recur, "MONTH");
-
-				recurrence.SetString(recur, length, allocator);
-			}
-			else {
-				char recur[1024];
-				int length = sprintf(recur, "NONE");
-
-				recurrence.SetString(recur, length, allocator);
-			}
-
 			//Check Task Priority
 			if (iter->getTaskPriority() == Task::Priority::HIGH) {
 				char prior[1024];
@@ -161,7 +127,6 @@ void Storage::writeToFile(){
 			object.AddMember("startTime", startTime, allocator);
 			object.AddMember("endTime", endTime, allocator);
 			object.AddMember("deadline", deadline, allocator);
-			object.AddMember("recurrence", recurrence, allocator);
 			object.AddMember("priority", priority, allocator);
 
 			document.PushBack(object, document.GetAllocator());
@@ -217,12 +182,6 @@ vector<Task> Storage::readFromFile() {
 
 	string deadline_str;
 	Date* deadline = NULL;
-
-	Task::Recurrence recurrence;
-	string r_none = "NONE";
-	string r_day = "DAY";
-	string r_week = "WEEK";
-	string r_month = "MONTH";
 
 	Task::Priority priority;
 	string p_low = "LOW";
@@ -284,23 +243,6 @@ vector<Task> Storage::readFromFile() {
 				endTime = new Date(year, month, day, hour, minutes);
 			}
 
-
-
-
-			//Task Recurrence
-			if (d[i]["recurrence"].GetString() == r_none) {
-				recurrence = Task::Recurrence::NONE;
-			}
-			else if (d[i]["recurrence"].GetString() == r_day) {
-				recurrence = Task::Recurrence::DAY;
-			}
-			else if (d[i]["recurrence"].GetString() == r_week) {
-				recurrence = Task::Recurrence::WEEK;
-			}
-			else if (d[i]["recurrence"].GetString() == r_month) {
-				recurrence = Task::Recurrence::MONTH;
-			}
-
 			//Task Priority
 			if (d[i]["priority"].GetString() == p_low) {
 				priority = Task::Priority::LOW;
@@ -314,7 +256,7 @@ vector<Task> Storage::readFromFile() {
 
 
 			//construct task object
-			Task task(taskname, startTime, endTime, deadline, recurrence, priority);
+			Task task(taskname, startTime, endTime, deadline, priority);
 
 			//Push into taskVector
 			TaskVector.push_back(task);

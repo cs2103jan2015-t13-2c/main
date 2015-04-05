@@ -7,14 +7,12 @@ CommandUpdate::CommandUpdate(string taskDetails,
 	Date *taskStartTime,
 	Date *taskEndTime,
 	Date *taskDeadline,
-	Task::Recurrence taskRecurrence,
 	Task::Priority taskPriority,
 	int taskNumber){
 	_taskDetails = taskDetails;
 	_taskStartTime = taskStartTime;
 	_taskEndTime = taskEndTime;
 	_taskDeadline = taskDeadline;
-	_taskRecurrence = taskRecurrence;
 	_taskPriority = taskPriority;
 	_taskNumber = taskNumber;
 }
@@ -42,7 +40,6 @@ string CommandUpdate::execute(){
 	currentTask.setTaskStartTime(_taskStartTime);
 	currentTask.setTaskEndTime(_taskEndTime);
 	currentTask.setTaskDeadline(_taskDeadline);
-	currentTask.setTaskRecurrence(_taskRecurrence);
 	currentTask.setTaskPriority(_taskPriority);
 
 	//adding task back to vector (but at the back, not fixed)
@@ -66,11 +63,10 @@ Command* CommandUpdate::getInverseCommand(){
 	Date* taskStartTime = currentTask.getTaskStartTime();
 	Date* taskEndTime = currentTask.getTaskEndTime();
 	Date* taskDeadline = currentTask.getTaskDeadline();
-	Task::Recurrence taskRecurrence = currentTask.getTaskRecurrence();
 	Task::Priority taskPriority = currentTask.getTaskPriority();
 
 	//no logic for undoing task marked!
-	return new CommandUpdate(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskRecurrence, taskPriority,_taskNumber);
+	return new CommandUpdate(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority,_taskNumber);
 }
 
 const string CommandUpdate::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
