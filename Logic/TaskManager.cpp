@@ -32,7 +32,7 @@ void TaskManager::setAllCurrentTasks(vector<Task> allCurrentTasks){
 	if (_allCurrentTasks == nullptr){
 		_allCurrentTasks = new vector < Task > ;
 	}
-	for (int i = 0; i < allCurrentTasks.size(); i++){
+	for (unsigned int i = 0; i < allCurrentTasks.size(); i++){
 		_allCurrentTasks->push_back(allCurrentTasks[i]);
 	}
 	//*_allCurrentTasks = allCurrentTasks;

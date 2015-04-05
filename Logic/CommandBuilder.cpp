@@ -17,7 +17,6 @@ void CommandBuilder::clearPreviousCommand(){
 	_taskStartTime = NULL;
 	_taskEndTime = NULL;
 	_taskDeadline = NULL;
-	_taskRecurrence = Task::NONE;
 	_taskPriority = Task::NORMAL;
 	_taskMarked = false;
 	_taskNumber = -1;
@@ -41,10 +40,6 @@ Date* CommandBuilder::getTaskDeadline(){
 	return _taskDeadline;
 }
 
-Task::Recurrence CommandBuilder::getTaskRecurrence(){
-	return _taskRecurrence;
-}
-
 Task::Priority CommandBuilder::getTaskPriority(){
 	return _taskPriority;
 }
@@ -62,7 +57,6 @@ void CommandBuilder::setAttributesFromParser(Parser parser){
 	_taskStartTime = parser.getTaskStartTime();
 	_taskEndTime = parser.getTaskEndTime();
 	_taskDeadline = parser.getTaskDeadline();
-	_taskRecurrence = parser.getTaskRecurrence();
 	_taskPriority = parser.getTaskPriority();
 	_taskMarked = parser.getTaskMarked();
 	_taskNumber = parser.getTaskNumber();
@@ -93,7 +87,7 @@ Command* CommandBuilder::parseCommand(string userInput){
 		CommandBuilder::setAttributesFromParser(parser);
 
 		return new CommandAdd(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
-			_taskRecurrence, _taskPriority);
+			_taskPriority);
 	}
 
 	case CommandType::Display:{
@@ -107,7 +101,7 @@ Command* CommandBuilder::parseCommand(string userInput){
 		CommandBuilder::setAttributesFromParser(parser);
 
 		return new CommandUpdate(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
-			_taskRecurrence, _taskPriority, _taskNumber);
+			_taskPriority, _taskNumber);
 	}
 
 	case CommandType::Delete:{
@@ -150,11 +144,15 @@ Command* CommandBuilder::parseCommand(string userInput){
 		CommandBuilder::setAttributesFromParser(parser);
 
 		return new CommandSearch(_taskDetails, _taskStartTime, _taskEndTime,
-			_taskDeadline, _taskRecurrence, _taskPriority, _taskMarked, _foundMarked, _foundPriority);
+			_taskDeadline, _taskPriority, _taskMarked, _foundMarked, _foundPriority);
 
 	case CommandType::Sort:
 
 		return new CommandSort();
+	
+	case CommandType::Redo:
+
+		return new CommandRedo();
 
 	default:
 		return new CommandInvalid(userInput);
@@ -195,6 +193,9 @@ CommandBuilder::CommandType CommandBuilder::determineCommandType(string commandT
 	}
 	else if (equalsIgnoreCase(commandTypeString, "search")) {
 		return CommandType::Search;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "redo")) {
+		return CommandType::Redo;
 	}
 	else {
 		return CommandType::Invalid;

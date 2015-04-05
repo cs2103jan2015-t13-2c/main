@@ -19,6 +19,8 @@ public:
 
 	static vector<Command*>* getUndoStack();
 
+	static vector<Command*>* getRedoStack();
+
 	static string processUserInput(string userInput);
 
 private:
@@ -29,6 +31,8 @@ private:
 	static Controller *_instance;
 
 	static vector<Command*>* _undoStack;
+
+	static vector<Command*>* _redoStack;
 	
 	Controller();
 	

@@ -16,6 +16,7 @@ string CommandUndo::execute(){
 	
 	Controller* instance = Controller::getInstance();
 	vector<Command*>* undoStack = instance->getUndoStack();
+	vector<Command*>* redoStack = instance->getRedoStack();
 
 	if (undoStack->size() == 0){
 		return MESSAGE_NOTHING_TO_UNDO;
@@ -24,6 +25,7 @@ string CommandUndo::execute(){
 	else{
 		Command* undoCommand = (*undoStack)[undoStack->size()-1];
 		undoStack->pop_back();
+		redoStack->push_back(undoCommand->getInverseCommand());
 		undoCommand->execute();
 		return MESSAGE_ACTION_UNDONE;
 	}

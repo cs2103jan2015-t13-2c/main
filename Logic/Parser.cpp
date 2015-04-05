@@ -5,7 +5,6 @@ string Parser::_taskDetails;
 Date* Parser::_taskStartTime = nullptr;
 Date* Parser::_taskEndTime = nullptr;
 Date* Parser::_taskDeadline = nullptr;
-Task::Recurrence Parser::_taskRecurrence;
 Task::Priority Parser::_taskPriority;
 bool Parser::_taskMarked;
 bool Parser::_foundMarked;
@@ -20,7 +19,6 @@ void Parser::clearPreviousParse(){
 	_taskStartTime = 0;
 	_taskEndTime = 0;
 	_taskDeadline = 0;
-	_taskRecurrence = Task::NONE;
 	_taskPriority = Task::NORMAL;
 	_taskMarked = false;
 	_taskNumber = -1;
@@ -42,10 +40,6 @@ Date* Parser::getTaskEndTime(){
 
 Date* Parser::getTaskDeadline(){
 	return _taskDeadline;
-}
-
-Task::Recurrence Parser::getTaskRecurrence(){
-	return _taskRecurrence;
 }
 
 Task::Priority Parser::getTaskPriority(){
@@ -71,7 +65,7 @@ bool Parser::getFoundPriority(){
 Parser::~Parser(){
 }
 
-void Parser::parseCommandAdd(string userCommand) throw (ParseException){
+void Parser::parseCommandAdd(string userCommand){
 	Parser::clearPreviousParse();
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
 
@@ -142,43 +136,6 @@ void Parser::parseCommandAdd(string userCommand) throw (ParseException){
 		temp.str("");
 	}
 
-	//Adding task recurrence
-	if (*iter == "every"){
-		iter++;
-		if (*iter == "day"){
-			_taskRecurrence = Task::Recurrence::DAY;
-		}
-		else if (*iter == "week" ||
-				*iter == "sunday" || *iter == "sun" ||
-				*iter == "monday" || *iter == "mon" ||
-				*iter == "tuesday" || *iter == "tue" || *iter == "tues" ||
-				*iter == "wednesday" || *iter == "wed" ||
-				*iter == "thursday" || *iter == "thu" || *iter == "thurs" ||
-				*iter == "friday" || *iter == "fri" ||
-				*iter == "saturday" || *iter == "sat") {
-			_taskRecurrence = Task::Recurrence::WEEK;
-		}
-		else if (*iter == "month" ||
-				*iter == "january" || *iter == "jan" ||
-				*iter == "february" || *iter == "feb" ||
-				*iter == "march" || *iter == "mar" ||
-				*iter == "april" || *iter == "apr" ||
-				*iter == "may" ||
-				*iter == "june" || *iter == "jun" ||
-				*iter == "july" || *iter == "jul" ||
-				*iter == "august" || *iter == "aug" ||
-				*iter == "september" || *iter == "sep" ||
-				*iter == "october" || *iter == "oct" ||
-				*iter == "november" || *iter == "nov" ||
-				*iter == "december" || *iter == "dec") {
-			_taskRecurrence = Task::Recurrence::MONTH;
-		}
-		else{
-			throw ParseException(ERROR_MESSAGE_PARSING_RECURRENCE);
-		}
-		iter++;
-	}
-
 	//Adding task priority
 	if (*iter == "#impt" || *iter == "#high"){
 		_taskPriority = Task::Priority::HIGH;
@@ -203,7 +160,6 @@ void Parser::parseCommandUpdate(string userCommand){
 	_taskDeadline = taskToChange.getTaskDeadline();
 	_taskStartTime = taskToChange.getTaskStartTime();
 	_taskEndTime = taskToChange.getTaskEndTime();
-	_taskRecurrence = taskToChange.getTaskRecurrence();
 	_taskPriority = taskToChange.getTaskPriority();
 
 	//Getting the attribute to change
@@ -238,17 +194,6 @@ void Parser::parseCommandUpdate(string userCommand){
 	else if (attributeToChange == "endtime"){
 		_taskEndTime = (parseTimeString(updatedStr));
 	} 
-	else if (attributeToChange == "recurrence"){
-		if (updatedStr == "day" || updatedStr == "every day"){
-			_taskRecurrence = Task::Recurrence::DAY;
-		} else if (updatedStr == "week" || updatedStr == "every week"){
-			_taskRecurrence = Task::Recurrence::WEEK;
-		} else if (updatedStr == "month" || updatedStr == "every month"){
-			_taskRecurrence = Task::Recurrence::MONTH;
-		} else{
-			throw ParseException(ERROR_MESSAGE_PARSING_RECURRENCE);
-		}
-	}
 	else if (attributeToChange == "priority"){
 		if (updatedStr == "low"){
 			_taskPriority = Task::Priority::LOW;
@@ -514,6 +459,15 @@ Date* Parser::parseTimeString(string timeStr){
 		day = Date().getDay() + diffinDays;
 	}
 
+	//e.g. user types in "today"
+	else if (temp == "today"){
+		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
+		mon = Date().getMonth();
+		day = Date().getDay();
+		hour = 23;
+		min = 59;
+	}
+
 	//E.g. User types in "9 apr"
 	else {
 		day = parseInt(temp);
@@ -548,7 +502,7 @@ Date* Parser::parseTimeString(string timeStr){
 		}
 
 	char chars[] = ".:apmhrs";
-	for (int i = 0; i < strlen(chars); ++i) {
+	for (unsigned int i = 0; i < strlen(chars); ++i) {
 		temp.erase(remove(temp.begin(), temp.end(), chars[i]), temp.end());
 	}
 	int time = parseInt(temp);

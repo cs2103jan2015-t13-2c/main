@@ -5,7 +5,6 @@ CommandSearch::CommandSearch(string taskDetails,
 	Date *taskStartTime,
 	Date *taskEndTime,
 	Date *taskDeadline,
-	Task::Recurrence taskRecurrence,
 	Task::Priority taskPriority,
 	bool taskMarked,
 	bool foundMarked,
@@ -15,7 +14,6 @@ CommandSearch::CommandSearch(string taskDetails,
 	_taskStartTime = taskStartTime;
 	_taskEndTime = taskEndTime;
 	_taskDeadline = taskDeadline;
-	_taskRecurrence = taskRecurrence;
 	_taskPriority = taskPriority;
 	_taskMarked = taskMarked;
 	_foundMarked = foundMarked;
@@ -307,25 +305,6 @@ string CommandSearch::printTask(Task toPrint, int taskNumber) {
 		break;
 	}
 
-	//Prints Task Recurrence (if any)
-	Task::Recurrence checkRec = (toPrint).getTaskRecurrence();
-	switch (checkRec) {
-	case Task::DAY: {
-		oss << "EVERY DAY" << endl;
-		break;
-	}
-	case Task::WEEK: {
-		oss << "EVERY WEEK" << endl;
-		break;
-	}
-	case Task::MONTH: {
-		oss << "EVERY MONTH" << endl;
-		break;
-	}
-	default:
-		break;
-	}
-
 	//Prints Task Priority
 	Task::Priority checkPri = (toPrint).getTaskPriority();
 	switch (checkPri) {
@@ -353,8 +332,6 @@ string CommandSearch::printTask(Task toPrint, int taskNumber) {
 		oss << "MARKED: " << "NO" << endl;
 		break;
 	}
-	default:
-		break;
 	}
 
 	return oss.str();

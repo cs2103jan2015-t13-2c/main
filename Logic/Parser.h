@@ -31,7 +31,6 @@ public:
 	static Date* getTaskStartTime();
 	static Date* getTaskEndTime();
 	static Date* getTaskDeadline();
-	static Task::Recurrence getTaskRecurrence();
 	static Task::Priority getTaskPriority();
 	static bool getTaskMarked();
 	static int Parser::getTaskNumber();
@@ -72,7 +71,6 @@ private:
 	static Date *_taskStartTime;
 	static Date *_taskEndTime;
 	static Date *_taskDeadline;
-	static Task::Recurrence _taskRecurrence;
 	static Task::Priority _taskPriority;
 	static bool _taskMarked;
 	static bool _foundMarked;

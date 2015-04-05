@@ -16,7 +16,6 @@ public:
 		Date *taskStartTime,
 		Date *taskEndTime,
 		Date *taskDeadline,
-		Task::Recurrence taskRecurrence,
 		Task::Priority taskPriority,
 		bool marked,
 		bool foundMarked,
@@ -33,7 +32,6 @@ private:
 	Date *_taskStartTime;
 	Date *_taskEndTime;
 	Date *_taskDeadline;
-	Task::Recurrence _taskRecurrence;
 	Task::Priority _taskPriority;
 	bool _taskMarked;
 	bool _foundMarked;

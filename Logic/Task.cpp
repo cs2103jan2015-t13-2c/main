@@ -5,13 +5,11 @@ Task::Task(string taskDetails,
 	Date *taskStartTime,
 	Date *taskEndTime,
 	Date *taskDeadline,
-	Task::Recurrence taskRecurrence,
 	Task::Priority taskPriority){
 	_taskDetails = taskDetails;
 	_taskStartTime = taskStartTime;
 	_taskEndTime = taskEndTime;
 	_taskDeadline = taskDeadline;
-	_taskRecurrence = taskRecurrence;
 	_taskPriority = taskPriority;
 	_taskMarked = false;
 
@@ -49,10 +47,6 @@ void Task::setTaskDeadline(Date* taskDeadline){
 	_taskDeadline = taskDeadline;
 }
 
-void Task::setTaskRecurrence(Task::Recurrence taskRecurrence){
-	_taskRecurrence = taskRecurrence;
-}
-
 void Task::setTaskPriority(Priority taskPriority){
 	_taskPriority = taskPriority;
 }
@@ -80,10 +74,6 @@ Date* Task::getTaskEndTime(){
 
 Date* Task::getTaskDeadline(){
 	return _taskDeadline;
-}
-
-Task::Recurrence Task::getTaskRecurrence(){
-	return _taskRecurrence;
 }
 
 Task::Priority Task::getTaskPriority(){

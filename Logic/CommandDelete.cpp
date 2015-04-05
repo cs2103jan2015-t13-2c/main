@@ -44,11 +44,10 @@ Command* CommandDelete::getInverseCommand(){
 	Date* taskStartTime = currentTask.getTaskStartTime();
 	Date* taskEndTime = currentTask.getTaskEndTime();
 	Date* taskDeadline = currentTask.getTaskDeadline();
-	Task::Recurrence taskRecurrence = currentTask.getTaskRecurrence();
 	Task::Priority taskPriority = currentTask.getTaskPriority();
 	
 	//no logic for undoing task marked!
-	return new CommandAdd(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskRecurrence, taskPriority);
+	return new CommandAdd(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority);
 }
 
 const string CommandDelete::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";

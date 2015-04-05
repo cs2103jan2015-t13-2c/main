@@ -16,6 +16,7 @@
 #include "CommandUnmark.h"
 #include "CommandSearch.h"
 #include "CommandSort.h"
+#include "CommandRedo.h"
 
 using namespace std;
 
@@ -24,7 +25,7 @@ class CommandBuilder
 public:
 
 	enum CommandType {
-		Add, Display, Update, Delete, Exit, Invalid, Undo, Mark, Unmark, Search, Sort
+		Add, Display, Update, Delete, Exit, Invalid, Undo, Mark, Unmark, Search, Sort, Redo
 	};
 
 	CommandBuilder();
@@ -40,7 +41,6 @@ public:
 	Date* getTaskStartTime();
 	Date* getTaskEndTime();
 	Date* getTaskDeadline();
-	Task::Recurrence getTaskRecurrence();
 	Task::Priority getTaskPriority();
 	bool getTaskMarked();
 	int getTaskNumber();
@@ -72,7 +72,6 @@ private:
 	Date *_taskStartTime;
 	Date *_taskEndTime;
 	Date *_taskDeadline;
-	Task::Recurrence _taskRecurrence;
 	Task::Priority _taskPriority;
 	bool _taskMarked;
 	bool _foundMarked;

@@ -77,6 +77,7 @@
     <ClInclude Include="CommandExit.h" />
     <ClInclude Include="CommandInvalid.h" />
     <ClInclude Include="CommandMark.h" />
+    <ClInclude Include="CommandRedo.h" />
     <ClInclude Include="CommandSearch.h" />
     <ClInclude Include="CommandSort.h" />
     <ClInclude Include="CommandUndo.h" />
@@ -104,6 +105,7 @@
     <ClCompile Include="CommandExit.cpp" />
     <ClCompile Include="CommandInvalid.cpp" />
     <ClCompile Include="CommandMark.cpp" />
+    <ClCompile Include="CommandRedo.cpp" />
     <ClCompile Include="CommandSearch.cpp" />
     <ClCompile Include="CommandSort.cpp" />
     <ClCompile Include="CommandUndo.cpp" />
