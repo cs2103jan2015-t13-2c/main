@@ -1,194 +1,62 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandAdd.cpp" />
+    <ClCompile Include="CommandBuilder.cpp" />
+    <ClCompile Include="CommandChangeFileLocation.cpp" />
+    <ClCompile Include="CommandCheckFileLocation.cpp" />
+    <ClCompile Include="CommandDelete.cpp" />
+    <ClCompile Include="CommandDisplay.cpp" />
+    <ClCompile Include="CommandException.cpp" />
+    <ClCompile Include="CommandExit.cpp" />
+    <ClCompile Include="CommandInvalid.cpp" />
+    <ClCompile Include="CommandMark.cpp" />
+    <ClCompile Include="CommandRedo.cpp" />
+    <ClCompile Include="CommandSearch.cpp" />
+    <ClCompile Include="CommandUndo.cpp" />
+    <ClCompile Include="CommandUnmark.cpp" />
+    <ClCompile Include="CommandUpdate.cpp" />
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="CustomException.cpp" />
+    <ClCompile Include="Date.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ParseException.cpp" />
+    <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="Storage.cpp" />
+    <ClCompile Include="StringDistance.cpp" />
+    <ClCompile Include="SuggestionBuilder.cpp" />
+    <ClCompile Include="Task.cpp" />
+    <ClCompile Include="TaskDisplayer.cpp" />
+    <ClCompile Include="TaskManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Task.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Date.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TaskManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Command.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandAdd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandDisplay.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandInvalid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandUpdate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandDelete.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandExit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Storage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandUndo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandMark.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandUnmark.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SuggestionBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CustomException.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ParseException.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StringDistance.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandSort.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TaskDisplayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandSearch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandException.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="CommandRedo.h">
-=======
-    <ClInclude Include="CommandChangeFileLocation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandCheckFileLocation.h">
->>>>>>> origin/master
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Task.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Date.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TaskManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Command.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandAdd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandDisplay.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandInvalid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Parser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandUpdate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandDelete.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandExit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Storage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandUndo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandMark.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandUnmark.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SuggestionBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CustomException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ParseException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StringDistance.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandSort.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TaskDisplayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandSearch.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandException.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="CommandRedo.cpp">
-=======
-    <ClCompile Include="CommandChangeFileLocation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandCheckFileLocation.cpp">
->>>>>>> origin/master
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandAdd.h" />
+    <ClInclude Include="CommandBuilder.h" />
+    <ClInclude Include="CommandChangeFileLocation.h" />
+    <ClInclude Include="CommandCheckFileLocation.h" />
+    <ClInclude Include="CommandDelete.h" />
+    <ClInclude Include="CommandDisplay.h" />
+    <ClInclude Include="CommandException.h" />
+    <ClInclude Include="CommandExit.h" />
+    <ClInclude Include="CommandInvalid.h" />
+    <ClInclude Include="CommandMark.h" />
+    <ClInclude Include="CommandRedo.h" />
+    <ClInclude Include="CommandSearch.h" />
+    <ClInclude Include="CommandUndo.h" />
+    <ClInclude Include="CommandUnmark.h" />
+    <ClInclude Include="CommandUpdate.h" />
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="CustomException.h" />
+    <ClInclude Include="Date.h" />
+    <ClInclude Include="ParseException.h" />
+    <ClInclude Include="Parser.h" />
+    <ClInclude Include="Storage.h" />
+    <ClInclude Include="StringDistance.h" />
+    <ClInclude Include="SuggestionBuilder.h" />
+    <ClInclude Include="Task.h" />
+    <ClInclude Include="TaskDisplayer.h" />
+    <ClInclude Include="TaskManager.h" />
   </ItemGroup>
 </Project>

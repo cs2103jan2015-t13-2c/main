@@ -15,7 +15,6 @@
 #include "CommandMark.h"
 #include "CommandUnmark.h"
 #include "CommandSearch.h"
-#include "CommandSort.h"
 #include "CommandRedo.h"
 #include "CommandChangeFileLocation.h"
 #include "CommandCheckFileLocation.h"
