@@ -439,8 +439,11 @@ Date* Parser::parseTimeString(string timeStr){
 		//throw error
 	}
 	
-	int year = Date().getYear(),
-		mon(0), day(0), hour(0), min(0);
+	int year = Date().getYear();
+	int mon(0); 
+	int day(0); 
+	int hour(0);
+	int minute(0);
 	string temp;
 
 	temp = getFirstWord(timeStr);
@@ -475,7 +478,7 @@ Date* Parser::parseTimeString(string timeStr){
 		mon = Date().getMonth();
 		day = Date().getDay();
 		hour = 23;
-		min = 59;
+		minute = 59;
 	}
 
 	//E.g. User types in "9 apr"
@@ -490,7 +493,7 @@ Date* Parser::parseTimeString(string timeStr){
 	if (timeStr != "") {
 		temp = getFirstWord(timeStr);
 	} else {
-		return (new Date(year, mon, day, hour, min));
+		return (new Date(year, mon, day, hour, minute));
 	}
 
 	//Checks if user keyed in a year (Default is set to current year)
@@ -501,7 +504,7 @@ Date* Parser::parseTimeString(string timeStr){
 		if (timeStr != "") {
 			temp = getFirstWord(timeStr);
 		} else {
-			return (new Date(year, mon, day, hour, min));
+			return (new Date(year, mon, day, hour, minute));
 		}
 	}
 
@@ -522,7 +525,7 @@ Date* Parser::parseTimeString(string timeStr){
 		hour = time % 100;
 	} else {
 		hour = time / 100;
-		min = time % 100;
+		minute = time % 100;
 	}
 
 	if (hour < 12 && afterNoon){
@@ -532,7 +535,7 @@ Date* Parser::parseTimeString(string timeStr){
 		hour = 0;
 	}
 
-	return (new Date(year, mon, day, hour, min));
+	return (new Date(year, mon, day, hour, minute));
 }
 
 int Parser::parseDayName(string dayName) {
