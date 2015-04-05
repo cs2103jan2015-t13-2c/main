@@ -133,6 +133,14 @@ void Parser::parseCommandAdd(string userCommand){
 		};
 		timeString = temp.str();
 		_taskEndTime = parseTimeString(timeString);
+		if (_taskEndTime->isEarlierThan(*(_taskStartTime)) == 1) {
+			Date* tempEndTime = _taskEndTime;
+			_taskEndTime = new Date(tempEndTime->getYear() + 1, 
+				tempEndTime->getMonth(), 
+				tempEndTime->getDay(), 
+				tempEndTime->getHour(), 
+				tempEndTime->getMinute());
+		}
 		temp.str("");
 	}
 
@@ -493,6 +501,14 @@ Date* Parser::parseTimeString(string timeStr){
 	if (timeStr != "") {
 		temp = getFirstWord(timeStr);
 	} else {
+		if (mon < Date().getMonth()){
+			++year;
+		} else if (mon == Date().getMonth()){
+			if (day < Date().getDay()){
+				++year;
+			}
+		}
+
 		return (new Date(year, mon, day, hour, minute));
 	}
 
