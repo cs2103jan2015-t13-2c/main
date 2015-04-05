@@ -133,6 +133,14 @@ void Parser::parseCommandAdd(string userCommand){
 		};
 		timeString = temp.str();
 		_taskEndTime = parseTimeString(timeString);
+		if (_taskEndTime->isEarlierThan(*(_taskStartTime)) == 1) {
+			Date* tempEndTime = _taskEndTime;
+			_taskEndTime = new Date(tempEndTime->getYear() + 1, 
+				tempEndTime->getMonth(), 
+				tempEndTime->getDay(), 
+				tempEndTime->getHour(), 
+				tempEndTime->getMinute());
+		}
 		temp.str("");
 	}
 
@@ -216,6 +224,10 @@ void Parser::parseCommandDelete(string userCommand){
 
 	//get usercommand without the first word
 	string text = removeFirstWord(userCommand);
+
+	if (text == ""){
+		throw ParseException(ERROR_MESSAGE_DELETE_TASKNUM);
+	}
 
 	string task_number_str = getFirstWord(text);
 	text = removeFirstWord(text);
@@ -439,8 +451,11 @@ Date* Parser::parseTimeString(string timeStr){
 		//throw error
 	}
 	
-	int year = Date().getYear(),
-		mon(0), day(0), hour(0), min(0);
+	int year = Date().getYear();
+	int mon(0); 
+	int day(0); 
+	int hour(0);
+	int minute(0);
 	string temp;
 
 	temp = getFirstWord(timeStr);
@@ -475,7 +490,7 @@ Date* Parser::parseTimeString(string timeStr){
 		mon = Date().getMonth();
 		day = Date().getDay();
 		hour = 23;
-		min = 59;
+		minute = 59;
 	}
 
 	//E.g. User types in "9 apr"
@@ -490,7 +505,15 @@ Date* Parser::parseTimeString(string timeStr){
 	if (timeStr != "") {
 		temp = getFirstWord(timeStr);
 	} else {
-		return (new Date(year, mon, day, hour, min));
+		if (mon < Date().getMonth()){
+			++year;
+		} else if (mon == Date().getMonth()){
+			if (day < Date().getDay()){
+				++year;
+			}
+		}
+
+		return (new Date(year, mon, day, hour, minute));
 	}
 
 	//Checks if user keyed in a year (Default is set to current year)
@@ -501,7 +524,7 @@ Date* Parser::parseTimeString(string timeStr){
 		if (timeStr != "") {
 			temp = getFirstWord(timeStr);
 		} else {
-			return (new Date(year, mon, day, hour, min));
+			return (new Date(year, mon, day, hour, minute));
 		}
 	}
 
@@ -522,7 +545,7 @@ Date* Parser::parseTimeString(string timeStr){
 		hour = time % 100;
 	} else {
 		hour = time / 100;
-		min = time % 100;
+		minute = time % 100;
 	}
 
 	if (hour < 12 && afterNoon){
@@ -532,7 +555,7 @@ Date* Parser::parseTimeString(string timeStr){
 		hour = 0;
 	}
 
-	return (new Date(year, mon, day, hour, min));
+	return (new Date(year, mon, day, hour, minute));
 }
 
 int Parser::parseDayName(string dayName) {
@@ -600,3 +623,4 @@ const string Parser::ERROR_MESSAGE_PARSING_DAYNAME = "Day is invalid";
 const string Parser::ERROR_MESSAGE_PARSING_MONTHNAME = "Month is invalid";
 const string Parser::ERROR_MESSAGE_COMMAND_ENDTIME = "Please enter the ending time!";
 const string Parser::ERROR_MESSAGE_PARSING_TASK = "Please enter a task to add!";
+const string Parser::ERROR_MESSAGE_DELETE_TASKNUM = "Please enter a task number to delete!";

@@ -46,7 +46,6 @@ Command* CommandDelete::getInverseCommand(){
 	Date* taskDeadline = currentTask.getTaskDeadline();
 	Task::Priority taskPriority = currentTask.getTaskPriority();
 	
-	//no logic for undoing task marked!
 	return new CommandAdd(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority);
 }
 

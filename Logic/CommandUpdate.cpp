@@ -57,16 +57,31 @@ Command* CommandUpdate::getInverseCommand(){
 	if (_taskNumber <= 0 || _taskNumber > taskManagerInstance->getNumberOfTasks()){
 		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
 	}
-	Task currentTask = TaskManager::getTask(_taskNumber);
 
+	//preparing old task to update
+	Task currentTask = TaskManager::getTask(_taskNumber);
 	string taskDetails = currentTask.getTaskDetails();
 	Date* taskStartTime = currentTask.getTaskStartTime();
 	Date* taskEndTime = currentTask.getTaskEndTime();
 	Date* taskDeadline = currentTask.getTaskDeadline();
 	Task::Priority taskPriority = currentTask.getTaskPriority();
 
-	//no logic for undoing task marked!
-	return new CommandUpdate(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority,_taskNumber);
+	//preparing new task to add
+	Task taskToAdd = Task(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline, _taskPriority);
+	taskToAdd.setTaskMarked(currentTask.getTaskMarked());
+
+	//deleting old task
+	TaskManager::removeTask(_taskNumber);
+
+	//adding and deleting new task to get index
+	int indexToUpdate = TaskManager::addTask(taskToAdd);
+	TaskManager::removeTask(indexToUpdate + 1);
+
+	//adding back old task
+	TaskManager::addTask(currentTask);
+
+	//undoing task
+	return new CommandUpdate(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority, indexToUpdate+1);
 }
 
 const string CommandUpdate::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
