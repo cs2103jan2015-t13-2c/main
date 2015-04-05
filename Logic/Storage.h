@@ -38,6 +38,7 @@ public:
 
 	static const string DIRECTORY_ERROR;
 	static const string FILENAME_NOT_FOUND;
+	static const string FILE_LOCATION_INVALID;
 
 private:
 	Storage();
