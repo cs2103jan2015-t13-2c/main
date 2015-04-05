@@ -388,9 +388,16 @@ namespace LogicTests
 			//Assert::AreEqual<Task::Recurrence>((Parser::getTaskRecurrence()), Task::MONTH);
 		}
 
+		TEST_METHOD(DirExistTest){
 
+			Assert::AreEqual<bool>(true, CommandChangeFileLocation::dirExists("C:\\Users\\Adi!/Desktop\\CS2103\\Taskky"));
+			Assert::AreEqual<bool>(false, CommandChangeFileLocation::dirExists("C:/Users/Adi!/Desktop/CS03/Taskky"));
+		}
 
-		
+		TEST_METHOD(StorageTest) {
+
+			Assert::AreEqual<string>("C:\\Users\\Adi!\\Desktop\\CS2103\\Taskky\\Debug", Storage::findProgramDirectory());
+		}
 	};
 
 }

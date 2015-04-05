@@ -6,8 +6,14 @@
 #include <fstream>
 #include <iomanip>
 #include <cstdio>
+#include <Windows.h>
+#include <direct.h>
+#define GetCurrentDir _getcwd
+#include <stdio.h>
 #include "Task.h"
 #include "TaskManager.h"
+#include "CommandCheckFileLocation.h"
+#include "CommandException.h"
 #include "document.h"
 #include "filereadstream.h"
 #include "filewritestream.h"
@@ -26,6 +32,12 @@ public:
 	static vector<Task> readFromFile();
 
 	static string _filename;
+	static string determineFileName();
+	static string findProgramDirectory();
+	static bool dirExists(const std::string& dirName_in);
+
+	static const string DIRECTORY_ERROR;
+	static const string FILENAME_NOT_FOUND;
 
 private:
 	Storage();
