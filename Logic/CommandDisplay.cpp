@@ -44,6 +44,7 @@ string CommandDisplay::printTaskToUser(Task toPrint, int taskNumber) {
 	oss << "TASKNAME: ";
 	oss << (toPrint).getTaskDetails() << endl;
 
+
 	//Prints Task Start/End Time or Deadline (if any)
 	Task::Type checkType = (toPrint).getTaskType();
 	switch (checkType) {

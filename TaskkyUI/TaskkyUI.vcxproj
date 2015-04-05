@@ -52,11 +52,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-<<<<<<< HEAD
-      <AdditionalIncludeDirectories>C:\Users\Adi!\Desktop\CS2103\Taskky\rapidjson-master\include\rapidjson;C:\Users\Adi!\Desktop\CS2103\Taskky\Logic;C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\rapidjson-master\include\rapidjson;C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\Logic;C:\Users\steven\Desktop\CS2103 Project\rapidjson-master\include\rapidjson;C:\Users\steven\Desktop\CS2103 Project\Logic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-=======
-      <AdditionalIncludeDirectories>C:\Users\acer\Desktop\School\CS2103\Taskky\Taskky\Logic;C:\Users\acer\Desktop\School\CS2103\Taskky\Taskky\rapidjson-master\include\rapidjson;C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\rapidjson-master\include\rapidjson;C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\Logic;C:\Users\steven\Desktop\CS2103 Project\rapidjson-master\include\rapidjson;C:\Users\steven\Desktop\CS2103 Project\Logic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
->>>>>>> a7e8c3bd4d3e8be6816f484870eff3250b713390
+      <AdditionalIncludeDirectories>C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\rapidjson-master\include\rapidjson;C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\Logic;C:\Users\steven\Desktop\CS2103 Project\rapidjson-master\include\rapidjson;C:\Users\steven\Desktop\CS2103 Project\Logic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -84,13 +80,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TaskkyGUI.cpp" />
-    <ClCompile Include="TaskkyGUIContent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TaskkyGUI.h">
-      <FileType>CppForm</FileType>
-    </ClInclude>
-    <ClInclude Include="TaskkyGUIContent.h">
       <FileType>CppForm</FileType>
     </ClInclude>
   </ItemGroup>
@@ -105,9 +97,6 @@
   <ItemGroup>
     <EmbeddedResource Include="TaskkyGUI.resx">
       <DependentUpon>TaskkyGUI.h</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TaskkyGUIContent.resx">
-      <DependentUpon>TaskkyGUIContent.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
