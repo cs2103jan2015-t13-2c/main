@@ -3,6 +3,7 @@
 Storage* Storage::_instance = NULL;
 const string Storage::DIRECTORY_ERROR = "Directory not found";
 const string Storage::FILENAME_NOT_FOUND = "New User detected. To help you get started, type help";
+const string Storage::FILE_LOCATION_INVALID = "File location invalid, save file location restored to default.";
 
 Storage::Storage()
 {
@@ -150,126 +151,138 @@ void Storage::writeToFile(){
 
 vector<Task> Storage::readFromFile() {
 
-	string filename = determineFileName();
+	//check if saveFile location is valid
+	if (!dirExists(CommandCheckFileLocation::getFileLocation())) {
+		remove("saveFileLocation.txt");
 
-	if (FILE *file = fopen(filename.c_str(), "r")) {
-		fclose(file);
-	}
-	else {
-		cout << FILENAME_NOT_FOUND << endl;
-		FILE* createFile = fopen(filename.c_str(), "wb"); // non-Windows use "w"
-		fclose(createFile);
-	}
-
-
-	//open file
-	FILE* fp = fopen(filename.c_str(), "rb"); // non-Windows use "r"
-	char readBuffer[65536];
-
-	rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
-
-	rapidjson::Document d;
-	d.ParseStream(is);
-
-	fclose(fp);
-
-	//variables
-	vector<Task> TaskVector;
-
-	string taskname;
-
-	string startTime_str;
-	Date* startTime = NULL;
-
-	string endTime_str;
-	Date* endTime = NULL;
-
-	string deadline_str;
-	Date* deadline = NULL;
-
-	Task::Priority priority;
-	string p_low = "LOW";
-	string p_normal = "NORMAL";
-	string p_high = "HIGH";
-
-	//check if empty
-	if (d.IsNull()) {
-		return TaskVector;
-	}
-	else {
-
-
-		//Parse and construct Task Vector
-
-		int i = 0;
-		for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr) {
-
-
-			//Task Details
-			taskname = d[i]["taskname"].GetString();
-
-			//Task Time
-			if (d[i]["startTime"].IsNull()) {
-				if (d[i]["deadline"].IsNull())
-				{
-					//startTime_str = "";
-					startTime = NULL;
-					//endTime_str = "";
-					endTime = NULL;
-					//deadline_str = "";
-					deadline = NULL;
-				}
-				else if (d[i]["deadline"].IsObject()) {
-					int day = d[i]["deadline"]["day"].GetInt();
-					int month = d[i]["deadline"]["month"].GetInt();
-					int year = d[i]["deadline"]["year"].GetInt();
-					int hour = d[i]["deadline"]["hour"].GetInt();
-					int minutes = d[i]["deadline"]["minutes"].GetInt();
-
-					deadline = new Date(year, month, day, hour, minutes);
-				}
-			}
-			else if (d[i]["startTime"].IsObject()) {
-				int day = d[i]["startTime"]["day"].GetInt();
-				int month = d[i]["startTime"]["month"].GetInt();
-				int year = d[i]["startTime"]["year"].GetInt();
-				int hour = d[i]["startTime"]["hour"].GetInt();
-				int minutes = d[i]["startTime"]["minutes"].GetInt();
-
-				startTime = new Date(year, month, day, hour, minutes);
-
-				day = d[i]["endTime"]["day"].GetInt();
-				month = d[i]["endTime"]["month"].GetInt();
-				year = d[i]["endTime"]["year"].GetInt();
-				hour = d[i]["endTime"]["hour"].GetInt();
-				minutes = d[i]["endTime"]["minutes"].GetInt();
-
-				endTime = new Date(year, month, day, hour, minutes);
-			}
-
-			//Task Priority
-			if (d[i]["priority"].GetString() == p_low) {
-				priority = Task::Priority::LOW;
-			}
-			else if (d[i]["priority"].GetString() == p_normal) {
-				priority = Task::Priority::NORMAL;
-			}
-			else if (d[i]["priority"].GetString() == p_high) {
-				priority = Task::Priority::HIGH;
-			}
-
-
-			//construct task object
-			Task task(taskname, startTime, endTime, deadline, priority);
-
-			//Push into taskVector
-			TaskVector.push_back(task);
-
-			++i;
+		ofstream writeFile("saveFileLocation.txt");
+		if (writeFile.is_open()){
+			writeFile << "default";
+			writeFile.close();
 		}
-		return TaskVector;
+
+		cout << FILE_LOCATION_INVALID << endl;
 	}
 
+		string filename = determineFileName();
+
+		if (FILE *file = fopen(filename.c_str(), "r")) {
+			fclose(file);
+		}
+		else {
+			cout << FILENAME_NOT_FOUND << endl;
+			FILE* createFile = fopen(filename.c_str(), "wb"); // non-Windows use "w"
+			fclose(createFile);
+		}
+
+
+		//open file
+		FILE* fp = fopen(filename.c_str(), "rb"); // non-Windows use "r"
+		char readBuffer[65536];
+
+		rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+		rapidjson::Document d;
+		d.ParseStream(is);
+
+		fclose(fp);
+
+		//variables
+		vector<Task> TaskVector;
+
+		string taskname;
+
+		string startTime_str;
+		Date* startTime = NULL;
+
+		string endTime_str;
+		Date* endTime = NULL;
+
+		string deadline_str;
+		Date* deadline = NULL;
+
+		Task::Priority priority;
+		string p_low = "LOW";
+		string p_normal = "NORMAL";
+		string p_high = "HIGH";
+
+		//check if empty
+		if (d.IsNull()) {
+			return TaskVector;
+		}
+		else {
+
+
+			//Parse and construct Task Vector
+
+			int i = 0;
+			for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr) {
+
+
+				//Task Details
+				taskname = d[i]["taskname"].GetString();
+
+				//Task Time
+				if (d[i]["startTime"].IsNull()) {
+					if (d[i]["deadline"].IsNull())
+					{
+						//startTime_str = "";
+						startTime = NULL;
+						//endTime_str = "";
+						endTime = NULL;
+						//deadline_str = "";
+						deadline = NULL;
+					}
+					else if (d[i]["deadline"].IsObject()) {
+						int day = d[i]["deadline"]["day"].GetInt();
+						int month = d[i]["deadline"]["month"].GetInt();
+						int year = d[i]["deadline"]["year"].GetInt();
+						int hour = d[i]["deadline"]["hour"].GetInt();
+						int minutes = d[i]["deadline"]["minutes"].GetInt();
+
+						deadline = new Date(year, month, day, hour, minutes);
+					}
+				}
+				else if (d[i]["startTime"].IsObject()) {
+					int day = d[i]["startTime"]["day"].GetInt();
+					int month = d[i]["startTime"]["month"].GetInt();
+					int year = d[i]["startTime"]["year"].GetInt();
+					int hour = d[i]["startTime"]["hour"].GetInt();
+					int minutes = d[i]["startTime"]["minutes"].GetInt();
+
+					startTime = new Date(year, month, day, hour, minutes);
+
+					day = d[i]["endTime"]["day"].GetInt();
+					month = d[i]["endTime"]["month"].GetInt();
+					year = d[i]["endTime"]["year"].GetInt();
+					hour = d[i]["endTime"]["hour"].GetInt();
+					minutes = d[i]["endTime"]["minutes"].GetInt();
+
+					endTime = new Date(year, month, day, hour, minutes);
+				}
+
+				//Task Priority
+				if (d[i]["priority"].GetString() == p_low) {
+					priority = Task::Priority::LOW;
+				}
+				else if (d[i]["priority"].GetString() == p_normal) {
+					priority = Task::Priority::NORMAL;
+				}
+				else if (d[i]["priority"].GetString() == p_high) {
+					priority = Task::Priority::HIGH;
+				}
+
+
+				//construct task object
+				Task task(taskname, startTime, endTime, deadline, priority);
+
+				//Push into taskVector
+				TaskVector.push_back(task);
+
+				++i;
+			}
+			return TaskVector;
+		}
 }
 
 

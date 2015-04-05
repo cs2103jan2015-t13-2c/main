@@ -28,8 +28,5 @@
     <EmbeddedResource Include="TaskkyGUI.resx">
       <Filter>Resource Files</Filter>
     </EmbeddedResource>
-    <EmbeddedResource Include="TaskkyGUIContent.resx">
-      <Filter>Resource Files</Filter>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>
