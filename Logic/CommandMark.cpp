@@ -1,13 +1,8 @@
 #include "CommandMark.h"
 
-const string CommandMark::MESSAGE_MARKED = "Marked Task #%d";
-const string CommandMark::MESSAGE_NOT_MARKED = "Task #%d is already marked!";
-char CommandMark::buffer[255];
-
 CommandMark::CommandMark(int taskNumber)
 {
 	_taskNumber = taskNumber;
-	_hasInverseCommand = false;
 }
 
 
@@ -25,12 +20,10 @@ string CommandMark::execute(){
 	
 	//only mark the task if not already marked
 	if (currentTask.getTaskMarked()==true){
-		_hasInverseCommand = false;
 		sprintf_s(buffer, MESSAGE_NOT_MARKED.c_str(), _taskNumber);
 		return buffer;
 	}
 	else{
-		_hasInverseCommand = true;
 		TaskManager::markTask(_taskNumber);
 		sprintf_s(buffer, MESSAGE_MARKED.c_str(), _taskNumber);
 		return buffer;
@@ -39,10 +32,23 @@ string CommandMark::execute(){
 }
 
 Command* CommandMark::getInverseCommand(){
-	if (_hasInverseCommand){
+
+	TaskManager* taskManagerInstance = TaskManager::getInstance();
+
+	if (_taskNumber <= 0 || _taskNumber > taskManagerInstance->getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+	Task currentTask = TaskManager::getTask(_taskNumber);
+
+	if (!currentTask.getTaskMarked()){
 		return new CommandUnmark(_taskNumber);
 	}
 	else{
 		return nullptr;
 	}
 }
+
+const string CommandMark::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
+const string CommandMark::MESSAGE_MARKED = "Marked Task #%d";
+const string CommandMark::MESSAGE_NOT_MARKED = "Task #%d is already marked!";
+char CommandMark::buffer[255];

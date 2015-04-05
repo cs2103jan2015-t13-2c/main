@@ -7,7 +7,6 @@ char CommandUnmark::buffer[255];
 CommandUnmark::CommandUnmark(int taskNumber)
 {
 	_taskNumber = taskNumber;
-	_hasInverseCommand = false;
 }
 
 CommandUnmark::~CommandUnmark()
@@ -24,12 +23,10 @@ string CommandUnmark::execute(){
 
 	//only mark the task if not already marked
 	if (currentTask.getTaskMarked() == false){
-		_hasInverseCommand = false;
 		sprintf_s(buffer, MESSAGE_NOT_UNMARKED.c_str(), _taskNumber);
 		return buffer;
 	}
 	else{
-		_hasInverseCommand = true;
 		TaskManager::unmarkTask(_taskNumber);
 		sprintf_s(buffer, MESSAGE_UNMARKED.c_str(), _taskNumber);
 		return buffer;
@@ -38,10 +35,20 @@ string CommandUnmark::execute(){
 }
 
 Command* CommandUnmark::getInverseCommand(){
-	if (_hasInverseCommand){
+
+	TaskManager* taskManagerInstance = TaskManager::getInstance();
+
+	if (_taskNumber <= 0 || _taskNumber > taskManagerInstance->getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+	Task currentTask = TaskManager::getTask(_taskNumber);
+
+	if (currentTask.getTaskMarked()){
 		return new CommandMark(_taskNumber);
 	}
 	else{
 		return nullptr;
 	}
 }
+
+const string CommandUnmark::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";

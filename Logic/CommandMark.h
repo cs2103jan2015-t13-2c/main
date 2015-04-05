@@ -6,6 +6,7 @@
 #include "TaskManager.h"
 #include <vector>
 #include "CommandUnmark.h"
+#include "CommandException.h"
 
 class CommandMark: public Command
 {
@@ -19,8 +20,9 @@ public:
 	static const string CommandMark::MESSAGE_NOT_MARKED;
 	static char CommandMark::buffer[255];
 
+	static const string CommandMark::ERROR_MESSAGE_COMMAND_TASKNUM;
+
 private:
 	int _taskNumber;
-	bool _hasInverseCommand;
 };
 

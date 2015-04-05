@@ -15,6 +15,7 @@
 #include "CommandMark.h"
 #include "CommandUnmark.h"
 #include "CommandSearch.h"
+#include "CommandSort.h"
 
 using namespace std;
 
@@ -23,7 +24,7 @@ class CommandBuilder
 public:
 
 	enum CommandType {
-		Add, Display, Update, Delete, Exit, Invalid, Undo, Mark, Unmark, Search
+		Add, Display, Update, Delete, Exit, Invalid, Undo, Mark, Unmark, Search, Sort
 	};
 
 	CommandBuilder();
@@ -74,5 +75,7 @@ private:
 	Task::Recurrence _taskRecurrence;
 	Task::Priority _taskPriority;
 	bool _taskMarked;
+	bool _foundMarked;
+	bool _foundPriority;
 };
 

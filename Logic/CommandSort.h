@@ -14,6 +14,10 @@ public:
 	CommandSort();
 	~CommandSort();
 
-	string execute();
+	virtual string execute();
+	virtual Command* getInverseCommand();
+
+private:
+	vector<int> undoIndexes;
 };
 

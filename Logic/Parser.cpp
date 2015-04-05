@@ -8,6 +8,8 @@ Date* Parser::_taskDeadline = nullptr;
 Task::Recurrence Parser::_taskRecurrence;
 Task::Priority Parser::_taskPriority;
 bool Parser::_taskMarked;
+bool Parser::_foundMarked;
+bool Parser::_foundPriority;
 
 Parser::Parser(){
 	clearPreviousParse();
@@ -22,6 +24,8 @@ void Parser::clearPreviousParse(){
 	_taskPriority = Task::NORMAL;
 	_taskMarked = false;
 	_taskNumber = -1;
+	_foundMarked = false;
+	_foundPriority = false;
 }
 
 string Parser::getTaskDetails(){
@@ -54,6 +58,14 @@ bool Parser::getTaskMarked(){
 
 int Parser::getTaskNumber(){
 	return _taskNumber;
+}
+
+bool Parser::getFoundMarked(){
+	return _foundMarked;
+}
+
+bool Parser::getFoundPriority(){
+	return _foundPriority;
 }
 
 Parser::~Parser(){
@@ -291,12 +303,13 @@ void Parser::parseCommandSearch(string userCommand){
 
 	string text = removeFirstWord(userCommand);
 	ostringstream temp;
+	string timeString;
 
 	vector<string> textVec = splitParameters(text);
 	textVec.push_back("\n");
 	vector<string>::iterator iter = textVec.begin();
 
-	while (!isKeyword(*iter)){
+	while (!isSearchKeyword(*iter)){
 		temp << *iter << " ";
 		iter++;
 	};
@@ -304,48 +317,69 @@ void Parser::parseCommandSearch(string userCommand){
 	_taskDetails = temp.str();
 	temp.str("");
 
-	//by date using from and to
+	//Adding task start time (if it is timed task)
 	if (*iter == "from"){
-
-		while (*iter != "to") {
-			temp << *iter << " ";
-			iter++;
-			if (iter == textVec.end())
-				break;
-		}
-		_taskStartTime = (parseTimeString(temp.str()));
-		temp.str("");
-
 		iter++;
-		while (*iter != "#impt") {
+		while (*iter != "to"){
 			temp << *iter << " ";
 			iter++;
-			if (iter == textVec.end())
-				break;
-		}
-		_taskEndTime = (parseTimeString(temp.str()));
+
+			if (iter == textVec.end()){
+				throw CommandException(ERROR_MESSAGE_COMMAND_ENDTIME);
+			}
+		};
+		timeString = temp.str();
+		_taskStartTime = parseTimeString(timeString);
+		temp.str("");
+
+		//Adding task end time
+		iter++;
+		while (!isSearchKeyword(*iter)){
+			temp << *iter << " ";
+			iter++;
+		};
+		timeString = temp.str();
+		_taskEndTime = parseTimeString(timeString);
 		temp.str("");
 	}
 
-	//by date using before and after
 	if (*iter == "before"){
-
-		while (*iter != "#impt") {
+		iter++;
+		while (!isSearchKeyword(*iter)){
 			temp << *iter << " ";
 			iter++;
-			if (iter == textVec.end())
-				break;
-		}
-		_taskStartTime = (parseTimeString(temp.str()));
+		};
+		timeString = temp.str();
+		_taskEndTime = parseTimeString(timeString);
 		temp.str("");
 	}
-	//by priority
 
-	//by just task name
+	if (*iter == "after"){
+		iter++;
+		while (!isSearchKeyword(*iter)){
+			temp << *iter << " ";
+			iter++;
+		};
+		timeString = temp.str();
+		_taskStartTime = parseTimeString(timeString);
+		temp.str("");
+	}
 
+	if (*iter == "done"){
+		_taskMarked = true;
+		_foundMarked = true;
+	}else if (*iter == "undone"){
+		_taskMarked = false;
+		_foundMarked = true;
+	}
 
-	else if (*iter == "date"){
-
+	if (*iter == "#impt" || *iter == "#high"){
+		_taskPriority = Task::Priority::HIGH;
+		_foundPriority = true;
+	}
+	else if (*iter == "#low"){
+		_taskPriority = Task::Priority::LOW;
+		_foundPriority = true;
 	}
 
 }
@@ -437,6 +471,12 @@ string Parser::replace(string a, string b, string c) {
 bool Parser::isKeyword(string word){
 	return (word == "by" || word == "from" || word == "every" || word == "#impt" ||
 			word == "#high" || word == "#low" || word == "\n");
+}
+
+bool Parser::isSearchKeyword(string word){
+	return (word == "by" || word == "from" || word == "before" || word == "after" ||
+		word == "#high" || word == "#low" || word == "#impt" || word == "\n"
+		|| word == "done" || word == "undone");
 }
 
 Date* Parser::parseTimeString(string timeStr){

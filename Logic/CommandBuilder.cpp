@@ -21,6 +21,8 @@ void CommandBuilder::clearPreviousCommand(){
 	_taskPriority = Task::NORMAL;
 	_taskMarked = false;
 	_taskNumber = -1;
+	_foundMarked = false;
+	_foundPriority = false;
 }
 
 string CommandBuilder::getTaskDetails(){
@@ -64,6 +66,8 @@ void CommandBuilder::setAttributesFromParser(Parser parser){
 	_taskPriority = parser.getTaskPriority();
 	_taskMarked = parser.getTaskMarked();
 	_taskNumber = parser.getTaskNumber();
+	_foundMarked = parser.getFoundMarked();
+	_foundPriority = parser.getFoundPriority();
 }
 
 
@@ -146,7 +150,11 @@ Command* CommandBuilder::parseCommand(string userInput){
 		CommandBuilder::setAttributesFromParser(parser);
 
 		return new CommandSearch(_taskDetails, _taskStartTime, _taskEndTime,
-			_taskDeadline, _taskRecurrence, _taskPriority);
+			_taskDeadline, _taskRecurrence, _taskPriority, _taskMarked, _foundMarked, _foundPriority);
+
+	case CommandType::Sort:
+
+		return new CommandSort();
 
 	default:
 		return new CommandInvalid(userInput);
@@ -183,7 +191,7 @@ CommandBuilder::CommandType CommandBuilder::determineCommandType(string commandT
 		return CommandType::Unmark;
 	}
 	else if (equalsIgnoreCase(commandTypeString, "sort")) {
-		return CommandType::Unmark;
+		return CommandType::Sort;
 	}
 	else if (equalsIgnoreCase(commandTypeString, "search")) {
 		return CommandType::Search;

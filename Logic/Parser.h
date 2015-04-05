@@ -35,6 +35,8 @@ public:
 	static Task::Priority getTaskPriority();
 	static bool getTaskMarked();
 	static int Parser::getTaskNumber();
+	static bool Parser::getFoundMarked();
+	static bool Parser::getFoundPriority();
 
 	static string removeFirstWord(string userCommand);
 	static string getFirstWord(string userCommand);
@@ -47,6 +49,7 @@ public:
 	static int parseInt(string str);
 	static string replace(string a, string b, string c);
 	static bool isKeyword(string word);
+	static bool isSearchKeyword(string word);
 	static Date* Parser::parseTimeString(string timeStr);
 	static int parseDayName(string dayName);
 	static int parseMonthName(string monthName);
@@ -72,4 +75,6 @@ private:
 	static Task::Recurrence _taskRecurrence;
 	static Task::Priority _taskPriority;
 	static bool _taskMarked;
+	static bool _foundMarked;
+	static bool _foundPriority;
 };
