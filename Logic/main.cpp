@@ -41,7 +41,7 @@ void main() {
 	//userName + 
 	string fileName = "Save.txt";
 	//vector<Task> tempSave;
-	TaskManager::setAllCurrentTasks(Storage::readFromFile());
+	TaskManager::loadAllCurrentTasks(Storage::readFromFile());
 
 	//cin.ignore();
 	while (true) {
