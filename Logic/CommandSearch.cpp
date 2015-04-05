@@ -6,13 +6,20 @@ CommandSearch::CommandSearch(string taskDetails,
 	Date *taskEndTime,
 	Date *taskDeadline,
 	Task::Recurrence taskRecurrence,
-	Task::Priority taskPriority) {
+	Task::Priority taskPriority,
+	bool taskMarked,
+	bool foundMarked,
+	bool foundPriority) {
+
 	_taskDetails = taskDetails;
 	_taskStartTime = taskStartTime;
 	_taskEndTime = taskEndTime;
 	_taskDeadline = taskDeadline;
 	_taskRecurrence = taskRecurrence;
 	_taskPriority = taskPriority;
+	_taskMarked = taskMarked;
+	_foundMarked = foundMarked;
+	_foundPriority = foundPriority;
 }
 
 
@@ -25,6 +32,9 @@ string CommandSearch::execute() {
 	TaskManager instance = *TaskManager::getInstance();
 
 	if (_taskDetails != "") {
+		if (_taskStartTime != NULL || _taskEndTime != NULL || _taskPriority != NULL){
+			throw CommandException(ERROR_TOOMANY_SEARCH_ARGUMENTS);
+		}
 		return searchByName(_taskDetails);
 	}
 	else if (_taskStartTime != NULL) {
@@ -40,8 +50,11 @@ string CommandSearch::execute() {
 			return searchBeforeDate(*_taskEndTime);
 		}
 	}
-	else if (_taskPriority != NULL) {
+	if (_foundPriority == true) {
 		return searchPriority(_taskPriority);
+	}
+	if (_foundMarked == true) {
+		return searchMarked(_taskMarked);
 	}
 
 	return "Invalid search funtion\n";
@@ -234,6 +247,40 @@ string CommandSearch::searchPriority(Task::Priority priority) {
 
 }
 
+string CommandSearch::searchMarked(bool marked) {
+
+	ostringstream oss;
+
+	vector<Task> TaskVector = *(TaskManager::getAllCurrentTasks());
+	vector<Task>::iterator iter;
+	int count = 0;
+	int position = 1;
+
+	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
+		if (marked == iter->getTaskMarked()) {
+			if (count == 0) {
+				oss << "List of Tasks:\n";
+			}
+			oss << CommandSearch::printTask(*iter, position);
+			++count;
+		}
+		++position;
+	}
+
+	if (count == 0) {
+		if (marked){
+			oss << "No done tasks!\n";
+		}
+		else{
+			oss << "No undone tasks!\n";
+		}
+		
+	}
+
+	return oss.str();
+
+}
+
 string CommandSearch::printTask(Task toPrint, int taskNumber) {
 	ostringstream oss;
 
@@ -312,3 +359,5 @@ string CommandSearch::printTask(Task toPrint, int taskNumber) {
 
 	return oss.str();
 }
+
+const string CommandSearch::ERROR_TOOMANY_SEARCH_ARGUMENTS = "Enter only 1 search argument!";

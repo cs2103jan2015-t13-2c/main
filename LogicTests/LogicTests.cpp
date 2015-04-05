@@ -25,6 +25,7 @@
 #include "TaskDisplayer.cpp"
 #include "CommandSearch.cpp"
 #include "CommandException.cpp"
+#include "CommandSort.cpp"
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

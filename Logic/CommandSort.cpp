@@ -86,5 +86,14 @@ string CommandSort::execute(){
 		}
 	}
 
+	//iterate through, get index of where each task has been sorted as compared to the original
+	//push all these indexes into my undoIndex vector
+
 	return "Task has been sorted\n";
+}
+
+Command* CommandSort::getInverseCommand(){
+	//pop all the indexes from my undoIndex vector
+	//1 by 1, insert all these tasks back into those indexes
+	return new CommandSort();
 }

@@ -19,8 +19,9 @@ public:
 	static const string CommandUnmark::MESSAGE_NOT_UNMARKED;
 	static char CommandUnmark::buffer[255];
 
+	static const string CommandUnmark::ERROR_MESSAGE_COMMAND_TASKNUM;
+
 private:
 	int _taskNumber;
-	bool _hasInverseCommand;
 };
 
