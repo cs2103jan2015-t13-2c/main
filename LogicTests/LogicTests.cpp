@@ -26,6 +26,8 @@
 #include "CommandSearch.cpp"
 #include "CommandException.cpp"
 #include "CommandSort.cpp"
+#include "CommandChangeFileLocation.cpp"
+#include "CommandCheckFileLocation.cpp"
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

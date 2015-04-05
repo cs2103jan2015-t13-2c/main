@@ -90,6 +90,12 @@
     <ClInclude Include="CommandException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CommandChangeFileLocation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandCheckFileLocation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Task.cpp">
@@ -168,6 +174,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CommandException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandChangeFileLocation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandCheckFileLocation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
