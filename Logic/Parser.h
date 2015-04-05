@@ -65,6 +65,7 @@ public:
 	static const string Parser::ERROR_MESSAGE_PARSING_MONTHNAME;
 	static const string Parser::ERROR_MESSAGE_COMMAND_ENDTIME;
 	static const string Parser::ERROR_MESSAGE_PARSING_TASK;
+	static const string Parser::ERROR_MESSAGE_DELETE_TASKNUM;
 
 private:
 	static int _taskNumber;

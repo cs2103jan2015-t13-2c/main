@@ -41,7 +41,29 @@ Command* CommandMark::getInverseCommand(){
 	Task currentTask = TaskManager::getTask(_taskNumber);
 
 	if (!currentTask.getTaskMarked()){
-		return new CommandUnmark(_taskNumber);
+
+		//preparing marked task to add
+		Task currentTask = TaskManager::getTask(_taskNumber);
+		string taskDetails = currentTask.getTaskDetails();
+		Date* taskStartTime = currentTask.getTaskStartTime();
+		Date* taskEndTime = currentTask.getTaskEndTime();
+		Date* taskDeadline = currentTask.getTaskDeadline();
+		Task::Priority taskPriority = currentTask.getTaskPriority();
+		Task taskToAdd = Task(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority);
+		taskToAdd.setTaskMarked(true);
+
+		//deleting unmarked task
+		TaskManager::removeTask(_taskNumber);
+
+		//adding and deleting marked task to get index
+		int indexToUnmark = TaskManager::addTask(taskToAdd);
+		TaskManager::removeTask(indexToUnmark + 1);
+
+		//adding back unmarked task
+		taskToAdd.setTaskMarked(false);
+		TaskManager::addTask(taskToAdd);
+
+		return new CommandUnmark(indexToUnmark + 1);
 	}
 	else{
 		return nullptr;

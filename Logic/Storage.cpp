@@ -1,6 +1,8 @@
 #include "Storage.h"
 
 Storage* Storage::_instance = NULL;
+const string Storage::DIRECTORY_ERROR = "Directory not found";
+const string Storage::FILENAME_NOT_FOUND = "New User detected. To help you get started, type help";
 
 Storage::Storage()
 {
@@ -17,6 +19,8 @@ void Storage::writeToFile(){
 
 	vector<Task> TaskVector = *(TaskManager::getAllCurrentTasks());
 	vector<Task>::iterator iter;
+
+	string filename = determineFileName();
 
 	rapidjson::Document document;
 
@@ -36,10 +40,10 @@ void Storage::writeToFile(){
 	int len;
 
 	if (TaskVector.empty()) {
-		remove("Save.json");
+		remove(filename.c_str());
 
 		//write empty json
-		FILE* fp = fopen("Save.json", "wb"); // non-Windows use "w"
+		FILE* fp = fopen(filename.c_str(), "wb"); // non-Windows use "w"
 
 		fclose(fp);
 
@@ -86,7 +90,7 @@ void Storage::writeToFile(){
 				endTime.SetNull();
 
 				Date time = *(iter->getTaskDeadline());
-				
+
 				deadline.SetObject();
 				deadline.AddMember("day", time.getDay(), allocator);
 				deadline.AddMember("month", time.getMonth(), allocator);
@@ -130,36 +134,36 @@ void Storage::writeToFile(){
 			object.AddMember("priority", priority, allocator);
 
 			document.PushBack(object, document.GetAllocator());
-
-			//writing to file
-			FILE* fp = fopen("Save.json", "wb"); // non-Windows use "w"
-			char writeBuffer[65536];
-
-			rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
-			rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
-			document.Accept(writer);
-
-			fclose(fp);
-
 		}
+		//writing to file
+		FILE* fp = fopen(filename.c_str(), "wb"); // non-Windows use "w"
+		char writeBuffer[65536];
 
-		
+		rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+		rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
+		document.Accept(writer);
+
+		fclose(fp);
 	}
 	return;
 }
 
 vector<Task> Storage::readFromFile() {
 
-	if (FILE *file = fopen("Save.json", "r")) {
+	string filename = determineFileName();
+
+	if (FILE *file = fopen(filename.c_str(), "r")) {
 		fclose(file);
 	}
 	else {
-		FILE* createFile = fopen("Save.json", "wb"); // non-Windows use "w"
+		cout << FILENAME_NOT_FOUND << endl;
+		FILE* createFile = fopen(filename.c_str(), "wb"); // non-Windows use "w"
 		fclose(createFile);
 	}
 
+
 	//open file
-	FILE* fp = fopen("Save.json", "rb"); // non-Windows use "r"
+	FILE* fp = fopen(filename.c_str(), "rb"); // non-Windows use "r"
 	char readBuffer[65536];
 
 	rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
@@ -263,11 +267,46 @@ vector<Task> Storage::readFromFile() {
 
 			++i;
 		}
-
-
-
 		return TaskVector;
 	}
+
+}
+
+
+string Storage::findProgramDirectory(){
+	char cCurrentPath[FILENAME_MAX];
+
+	if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
+	{
+		cout << DIRECTORY_ERROR << endl;
+	}
+
+	return cCurrentPath;
+}
+
+string Storage::determineFileName(){
+	string filename;
+	string fileDirectory = CommandCheckFileLocation::getFileLocation();
+	if (fileDirectory == "default") {
+		filename = findProgramDirectory() + "/Save.json";
+	}
+	else {
+		filename = fileDirectory + "/Save.json";
+	}
+
+	return filename;
+}
+
+bool Storage::dirExists(const std::string& dirName_in)
+{
+	DWORD ftyp = GetFileAttributesA(dirName_in.c_str());
+	if (ftyp == INVALID_FILE_ATTRIBUTES)
+		return false;  //something is wrong with your path!
+
+	if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
+		return true;   // this is a directory!
+
+	return false;    // this is not a directory!
 }
 
 /*
