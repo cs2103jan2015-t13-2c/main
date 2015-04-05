@@ -71,6 +71,8 @@
     <ClInclude Include="Command.h" />
     <ClInclude Include="CommandAdd.h" />
     <ClInclude Include="CommandBuilder.h" />
+    <ClInclude Include="CommandChangeFileLocation.h" />
+    <ClInclude Include="CommandCheckFileLocation.h" />
     <ClInclude Include="CommandDelete.h" />
     <ClInclude Include="CommandDisplay.h" />
     <ClInclude Include="CommandException.h" />
@@ -99,6 +101,8 @@
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandAdd.cpp" />
     <ClCompile Include="CommandBuilder.cpp" />
+    <ClCompile Include="CommandChangeFileLocation.cpp" />
+    <ClCompile Include="CommandCheckFileLocation.cpp" />
     <ClCompile Include="CommandDelete.cpp" />
     <ClCompile Include="CommandDisplay.cpp" />
     <ClCompile Include="CommandException.cpp" />

@@ -329,6 +329,16 @@ void Parser::parseCommandSearch(string userCommand){
 
 }
 
+
+void Parser::parseCommandChangeFileLocation(string userCommand){
+	Parser::clearPreviousParse();
+
+	//get usercommand without the first word
+	string text = removeFirstWord(userCommand);
+
+	_taskDetails = text;
+}
+
 /*
 * ====================================================================
 *  Additional functions
