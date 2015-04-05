@@ -16,6 +16,8 @@
 #include "CommandUnmark.h"
 #include "CommandSearch.h"
 #include "CommandSort.h"
+#include "CommandChangeFileLocation.h"
+#include "CommandCheckFileLocation.h"
 
 using namespace std;
 
@@ -24,7 +26,8 @@ class CommandBuilder
 public:
 
 	enum CommandType {
-		Add, Display, Update, Delete, Exit, Invalid, Undo, Mark, Unmark, Search, Sort
+		Add, Display, Update, Delete, Exit, Invalid, Undo, Mark, Unmark, 
+		Search, Sort, CheckFileLocation, ChangeFileLocation
 	};
 
 	CommandBuilder();

@@ -156,6 +156,18 @@ Command* CommandBuilder::parseCommand(string userInput){
 
 		return new CommandSort();
 
+	case CommandType::ChangeFileLocation:
+
+		parser.parseCommandChangeFileLocation(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandChangeFileLocation(_taskDetails);
+
+	case CommandType::CheckFileLocation:
+
+		return new CommandCheckFileLocation();
+
 	default:
 		return new CommandInvalid(userInput);
 	}
@@ -195,6 +207,12 @@ CommandBuilder::CommandType CommandBuilder::determineCommandType(string commandT
 	}
 	else if (equalsIgnoreCase(commandTypeString, "search")) {
 		return CommandType::Search;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "checkfileloc")) {
+		return CommandType::CheckFileLocation;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "changefileloc")) {
+		return CommandType::ChangeFileLocation;
 	}
 	else {
 		return CommandType::Invalid;
