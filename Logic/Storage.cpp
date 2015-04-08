@@ -153,15 +153,17 @@ vector<Task> Storage::readFromFile() {
 
 	//check if saveFile location is valid
 	if (!dirExists(CommandCheckFileLocation::getFileLocation())) {
-		remove("saveFileLocation.txt");
+		if (CommandCheckFileLocation::getFileLocation() != "default"){
+			remove("saveFileLocation.txt");
 
-		ofstream writeFile("saveFileLocation.txt");
-		if (writeFile.is_open()){
-			writeFile << "default";
-			writeFile.close();
+			ofstream writeFile("saveFileLocation.txt");
+			if (writeFile.is_open()){
+				writeFile << "default";
+				writeFile.close();
+			}
+
+			cout << FILE_LOCATION_INVALID << endl;
 		}
-
-		cout << FILE_LOCATION_INVALID << endl;
 	}
 
 		string filename = determineFileName();
