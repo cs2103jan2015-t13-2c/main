@@ -15,7 +15,6 @@
 #include "CommandMark.h"
 #include "CommandUnmark.h"
 #include "CommandSearch.h"
-#include "CommandSort.h"
 #include "CommandRedo.h"
 #include "CommandChangeFileLocation.h"
 #include "CommandCheckFileLocation.h"
@@ -45,6 +44,7 @@ public:
 	Date* getTaskEndTime();
 	Date* getTaskDeadline();
 	Task::Priority getTaskPriority();
+	string getDuration();
 	bool getTaskMarked();
 	int getTaskNumber();
 

@@ -25,7 +25,6 @@
 #include "TaskDisplayer.cpp"
 #include "CommandSearch.cpp"
 #include "CommandException.cpp"
-#include "CommandSort.cpp"
 #include "CommandRedo.cpp"
 #include "CommandChangeFileLocation.cpp"
 #include "CommandCheckFileLocation.cpp"

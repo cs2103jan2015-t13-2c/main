@@ -45,6 +45,10 @@ Task::Priority CommandBuilder::getTaskPriority(){
 	return _taskPriority;
 }
 
+string CommandBuilder::getDuration(){
+	return _duration;
+}
+
 bool CommandBuilder::getTaskMarked(){
 	return _taskMarked;
 }
@@ -147,10 +151,6 @@ Command* CommandBuilder::parseCommand(string userInput){
 
 		return new CommandSearch(_taskDetails, _taskStartTime, _taskEndTime,
 			_taskDeadline, _taskPriority, _duration, _taskMarked, _foundMarked, _foundPriority);
-
-	case CommandType::Sort:
-
-		return new CommandSort();
 	
 	case CommandType::Redo:
 
@@ -201,9 +201,6 @@ CommandBuilder::CommandType CommandBuilder::determineCommandType(string commandT
 	}
 	else if (equalsIgnoreCase(commandTypeString, "unmark")) {
 		return CommandType::Unmark;
-	}
-	else if (equalsIgnoreCase(commandTypeString, "sort")) {
-		return CommandType::Sort;
 	}
 	else if (equalsIgnoreCase(commandTypeString, "search")) {
 		return CommandType::Search;

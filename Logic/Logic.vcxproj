@@ -81,7 +81,6 @@
     <ClInclude Include="CommandMark.h" />
     <ClInclude Include="CommandRedo.h" />
     <ClInclude Include="CommandSearch.h" />
-    <ClInclude Include="CommandSort.h" />
     <ClInclude Include="CommandUndo.h" />
     <ClInclude Include="CommandUnmark.h" />
     <ClInclude Include="CommandUpdate.h" />
@@ -111,7 +110,6 @@
     <ClCompile Include="CommandMark.cpp" />
     <ClCompile Include="CommandRedo.cpp" />
     <ClCompile Include="CommandSearch.cpp" />
-    <ClCompile Include="CommandSort.cpp" />
     <ClCompile Include="CommandUndo.cpp" />
     <ClCompile Include="CommandUnmark.cpp" />
     <ClCompile Include="CommandUpdate.cpp" />

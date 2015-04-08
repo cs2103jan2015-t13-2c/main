@@ -230,6 +230,10 @@ void Parser::parseCommandDelete(string userCommand){
 	//get usercommand without the first word
 	string text = removeFirstWord(userCommand);
 
+	if (text == ""){
+		throw ParseException(ERROR_MESSAGE_DELETE_TASKNUM);
+	}
+
 	string task_number_str = getFirstWord(text);
 	text = removeFirstWord(text);
 	_taskNumber = atoi(task_number_str.c_str());
@@ -643,3 +647,4 @@ const string Parser::ERROR_MESSAGE_PARSING_DAYNAME = "Day is invalid";
 const string Parser::ERROR_MESSAGE_PARSING_MONTHNAME = "Month is invalid";
 const string Parser::ERROR_MESSAGE_COMMAND_ENDTIME = "Please enter the ending time!";
 const string Parser::ERROR_MESSAGE_PARSING_TASK = "Please enter a task to add!";
+const string Parser::ERROR_MESSAGE_DELETE_TASKNUM = "Please enter a task number to delete!";
