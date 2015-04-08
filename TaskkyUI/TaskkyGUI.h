@@ -39,7 +39,7 @@ namespace TaskkyUI {
 			//
 			//TODO: Add the constructor code here
 			//
-			TaskManager::setAllCurrentTasks(Storage::readFromFile());
+			TaskManager::loadAllCurrentTasks(Storage::readFromFile());
 		}
 
 
@@ -73,6 +73,7 @@ namespace TaskkyUI {
 	private:
 
 	private: System::Windows::Forms::ColumnHeader^  columnHeader2;
+	private: System::Windows::Forms::ColumnHeader^  columnHeader3;
 	private: System::ComponentModel::IContainer^  components;
 
 
@@ -114,6 +115,7 @@ namespace TaskkyUI {
 			this->listView1 = (gcnew System::Windows::Forms::ListView());
 			this->columnHeader1 = (gcnew System::Windows::Forms::ColumnHeader());
 			this->columnHeader2 = (gcnew System::Windows::Forms::ColumnHeader());
+			this->columnHeader3 = (gcnew System::Windows::Forms::ColumnHeader());
 			this->SuspendLayout();
 			// 
 			// textBox1
@@ -177,7 +179,7 @@ namespace TaskkyUI {
 			this->label2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 72, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label2->ForeColor = System::Drawing::Color::Snow;
-			this->label2->Location = System::Drawing::Point(63, 174);
+			this->label2->Location = System::Drawing::Point(65, 153);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(289, 108);
 			this->label2->TabIndex = 15;
@@ -218,7 +220,10 @@ namespace TaskkyUI {
 			this->listView1->Alignment = System::Windows::Forms::ListViewAlignment::Left;
 			this->listView1->BackColor = System::Drawing::SystemColors::Window;
 			this->listView1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->listView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::ColumnHeader^  >(2) { this->columnHeader1, this->columnHeader2 });
+			this->listView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::ColumnHeader^  >(3) {
+				this->columnHeader1, this->columnHeader2,
+					this->columnHeader3
+			});
 			listViewGroup1->Header = L"Task With Deadline";
 			listViewGroup1->Name = L"Task with Deadline";
 			listViewGroup2->Header = L"Floating Task";
@@ -238,9 +243,9 @@ namespace TaskkyUI {
 				listViewItem1, listViewItem2,
 					listViewItem3, listViewItem4, listViewItem5
 			});
-			this->listView1->Location = System::Drawing::Point(538, 189);
+			this->listView1->Location = System::Drawing::Point(429, 70);
 			this->listView1->Name = L"listView1";
-			this->listView1->Size = System::Drawing::Size(465, 382);
+			this->listView1->Size = System::Drawing::Size(459, 405);
 			this->listView1->TabIndex = 20;
 			this->listView1->UseCompatibleStateImageBehavior = false;
 			this->listView1->View = System::Windows::Forms::View::Details;
@@ -248,13 +253,18 @@ namespace TaskkyUI {
 			// 
 			// columnHeader1
 			// 
-			this->columnHeader1->Text = L"Task";
-			this->columnHeader1->Width = 133;
+			this->columnHeader1->Text = L"Start";
+			this->columnHeader1->Width = 78;
 			// 
 			// columnHeader2
 			// 
-			this->columnHeader2->Text = L"Deadline";
+			this->columnHeader2->Text = L"End";
 			this->columnHeader2->Width = 83;
+			// 
+			// columnHeader3
+			// 
+			this->columnHeader3->Text = L"Task";
+			this->columnHeader3->Width = 293;
 			// 
 			// TaskkyGUI
 			// 

@@ -503,12 +503,12 @@ string CommandSearch::printTask(Task toPrint, int taskNumber) {
 
 string CommandSearch::removeFirstWord(string userCommand){
 
-	//in case the old function gives problem
-	//size_t firstSpace = userCommand.find_first_of(' ');
-	//return userCommand.substr(firstSpace + 1, userCommand.npos);
+	
+	size_t firstSpace = userCommand.find_first_of(' ');
+	return userCommand.substr(firstSpace + 1, userCommand.npos);
 
 	//old function
-	return trim(replace(userCommand, getFirstWord(userCommand), ""));
+	//return trim(replace(userCommand, getFirstWord(userCommand), ""));
 }
 
 string CommandSearch::getFirstWord(string userCommand){

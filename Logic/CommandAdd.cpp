@@ -27,8 +27,12 @@ string CommandAdd::execute(){
 
 Command* CommandAdd::getInverseCommand(){
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
-	//no logic to add tasks in chronological order yet, just adding tasks to the bottom
-	//thats why i just delete task from the bottom
-	int taskNumber = taskManagerInstance->getNumberOfTasks();
-	return new CommandDelete(taskNumber+1);
+	
+	//getting index to delete
+	Task taskToAdd = Task(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
+		_taskPriority);
+	int indexToDelete = TaskManager::addTask(taskToAdd);
+	TaskManager::removeTask(indexToDelete+1);
+
+	return new CommandDelete(indexToDelete+1);
 }
