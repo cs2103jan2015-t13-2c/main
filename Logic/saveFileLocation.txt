@@ -1,4 +1,1 @@
-<<<<<<< HEAD
-=======
-abcd
->>>>>>> origin/master
+default

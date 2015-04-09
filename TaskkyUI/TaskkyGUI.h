@@ -95,6 +95,17 @@ namespace TaskkyUI {
 			System::Windows::Forms::ListViewGroup^  listViewGroup1 = (gcnew System::Windows::Forms::ListViewGroup(L"Task With Deadline", System::Windows::Forms::HorizontalAlignment::Left));
 			System::Windows::Forms::ListViewGroup^  listViewGroup2 = (gcnew System::Windows::Forms::ListViewGroup(L"Floating Task", System::Windows::Forms::HorizontalAlignment::Left));
 			System::Windows::Forms::ListViewGroup^  listViewGroup3 = (gcnew System::Windows::Forms::ListViewGroup(L"Mark as Done", System::Windows::Forms::HorizontalAlignment::Left));
+			
+			
+			TaskManager* taskManager = TaskManager::getInstance();
+			vector<Task>* allTimedTasks = taskManager->getAllTimedTasks();
+			
+			for (unsigned int i = 0; i < allTimedTasks->size(); i++){
+
+			}
+			
+			
+			
 			System::Windows::Forms::ListViewItem^  listViewItem1 = (gcnew System::Windows::Forms::ListViewItem(gcnew cli::array< System::String^  >(2) {
 				L"test lalala",
 					L"hehehehe"
@@ -197,11 +208,11 @@ namespace TaskkyUI {
 			this->label4->Font = (gcnew System::Drawing::Font(L"Consolas", 20.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label4->ForeColor = System::Drawing::Color::White;
-			this->label4->Location = System::Drawing::Point(98, 292);
+			this->label4->Location = System::Drawing::Point(77, 309);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(105, 32);
+			this->label4->Size = System::Drawing::Size(285, 32);
 			this->label4->TabIndex = 16;
-			this->label4->Text = L"label4";
+			this->label4->Text = L"Welcome to Taskky!";
 			this->label4->TextChanged += gcnew System::EventHandler(this, &TaskkyGUI::label4_TextChanged);
 			this->label4->Click += gcnew System::EventHandler(this, &TaskkyGUI::label4_Click);
 			// 
@@ -254,12 +265,12 @@ namespace TaskkyUI {
 			// columnHeader1
 			// 
 			this->columnHeader1->Text = L"Start";
-			this->columnHeader1->Width = 78;
+			this->columnHeader1->Width = 82;
 			// 
 			// columnHeader2
 			// 
 			this->columnHeader2->Text = L"End";
-			this->columnHeader2->Width = 83;
+			this->columnHeader2->Width = 74;
 			// 
 			// columnHeader3
 			// 
@@ -304,16 +315,22 @@ namespace TaskkyUI {
 			//get data from the textbox
 
 			result = Controller::processUserInput(command);
-			result2 = Controller::processUserInput("display");
 
 			label6->Text = gcnew String(result.c_str());
 
+			//to solve the issue of overflow when u press display
 			if (command == "display"){
-
 				label6->Visible = false;
 			}
+
+
+			//update the list view
+			listView1->Items->Clear();
+
+			result2 = Controller::processUserInput("display");
 			richTextBox1->Text = gcnew String(result2.c_str());
-			listView1->Items->Add(gcnew String(result2.c_str()));
+			listView1->Items->Add(gcnew String(result.c_str()));
+			
 
 
 			//listView1->Groups->Insert(1, gcnew String(result2.c_str()));
@@ -426,3 +443,7 @@ private: System::Void dataGridView1_CellContentClick(System::Object^  sender, Sy
 }
 };
 }
+
+//private: System::Void updateListView(){
+
+//}

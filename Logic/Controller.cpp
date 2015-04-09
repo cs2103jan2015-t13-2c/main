@@ -8,6 +8,7 @@ vector<Command*>* Controller::_redoStack = NULL;
 
 Controller::Controller()
 {
+	ErrorLogger* errorLogger = ErrorLogger::getInstance();
 }
 
 Controller* Controller::getInstance(){
@@ -30,6 +31,7 @@ vector<Command*>* Controller::getRedoStack(){
 
 string Controller::processUserInput(string userInput){
 
+	ErrorLogger* errorLogger = ErrorLogger::getInstance();
 	string feedback;
 
 	try{
@@ -51,11 +53,13 @@ string Controller::processUserInput(string userInput){
 	catch (ParseException& e){
 
 		feedback = e.getMessage();
+		errorLogger->logError(feedback);
 
 	}
 	catch (CommandException& e){
 
 		feedback = e.getMessage();
+		errorLogger->logError(feedback);
 
 	}
 

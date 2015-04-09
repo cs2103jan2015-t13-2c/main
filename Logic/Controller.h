@@ -8,6 +8,7 @@
 #include "SuggestionBuilder.h"
 #include "ParseException.h"
 #include "CommandException.h"
+#include "ErrorLogger.h"
 
 using namespace std;
 

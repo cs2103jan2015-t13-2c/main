@@ -28,6 +28,7 @@
 #include "CommandRedo.cpp"
 #include "CommandChangeFileLocation.cpp"
 #include "CommandCheckFileLocation.cpp"
+#include "ErrorLogger.cpp"
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

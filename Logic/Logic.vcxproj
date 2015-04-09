@@ -87,6 +87,7 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="CustomException.h" />
     <ClInclude Include="Date.h" />
+    <ClInclude Include="ErrorLogger.h" />
     <ClInclude Include="ParseException.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Storage.h" />
@@ -116,6 +117,7 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="CustomException.cpp" />
     <ClCompile Include="Date.cpp" />
+    <ClCompile Include="ErrorLogger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ParseException.cpp" />
     <ClCompile Include="Parser.cpp" />
