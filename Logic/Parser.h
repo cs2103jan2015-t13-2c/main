@@ -33,6 +33,7 @@ public:
 	static Date* getTaskEndTime();
 	static Date* getTaskDeadline();
 	static Task::Priority getTaskPriority();
+	static string getDuration();
 	static bool getTaskMarked();
 	static int Parser::getTaskNumber();
 	static bool Parser::getFoundMarked();
@@ -74,6 +75,7 @@ private:
 	static Date *_taskEndTime;
 	static Date *_taskDeadline;
 	static Task::Priority _taskPriority;
+	static string _duration;
 	static bool _taskMarked;
 	static bool _foundMarked;
 	static bool _foundPriority;

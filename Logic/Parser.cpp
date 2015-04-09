@@ -6,6 +6,7 @@ Date* Parser::_taskStartTime = nullptr;
 Date* Parser::_taskEndTime = nullptr;
 Date* Parser::_taskDeadline = nullptr;
 Task::Priority Parser::_taskPriority;
+string Parser::_duration;
 bool Parser::_taskMarked;
 bool Parser::_foundMarked;
 bool Parser::_foundPriority;
@@ -44,6 +45,10 @@ Date* Parser::getTaskDeadline(){
 
 Task::Priority Parser::getTaskPriority(){
 	return _taskPriority;
+}
+
+string Parser::getDuration(){
+	return _duration;
 }
 
 bool Parser::getTaskMarked(){
@@ -339,6 +344,19 @@ void Parser::parseCommandSearch(string userCommand){
 		_foundPriority = true;
 	}
 
+	if (*iter == "next"){
+		iter++;
+		if (*iter == "available") {
+			iter++;
+		}
+		while (!isSearchKeyword(*iter)){
+			temp << *iter << " ";
+			iter++;
+		}
+		_duration = temp.str();
+	}
+	
+
 }
 
 
@@ -358,6 +376,12 @@ void Parser::parseCommandChangeFileLocation(string userCommand){
 */
 
 string Parser::removeFirstWord(string userCommand){
+	
+	//in case the old function gives problem
+	//size_t firstSpace = userCommand.find_first_of(' ');
+	//return userCommand.substr(firstSpace + 1, userCommand.npos);
+
+	//old function
 	return trim(replace(userCommand, getFirstWord(userCommand), ""));
 }
 
@@ -443,7 +467,7 @@ bool Parser::isKeyword(string word){
 bool Parser::isSearchKeyword(string word){
 	return (word == "by" || word == "from" || word == "before" || word == "after" ||
 		word == "#high" || word == "#low" || word == "#impt" || word == "\n"
-		|| word == "done" || word == "undone");
+		|| word == "done" || word == "undone" || word == "next");
 }
 
 Date* Parser::parseTimeString(string timeStr){

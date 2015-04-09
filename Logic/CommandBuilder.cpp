@@ -18,6 +18,7 @@ void CommandBuilder::clearPreviousCommand(){
 	_taskEndTime = NULL;
 	_taskDeadline = NULL;
 	_taskPriority = Task::NORMAL;
+	_duration = "";
 	_taskMarked = false;
 	_taskNumber = -1;
 	_foundMarked = false;
@@ -44,6 +45,10 @@ Task::Priority CommandBuilder::getTaskPriority(){
 	return _taskPriority;
 }
 
+string CommandBuilder::getDuration(){
+	return _duration;
+}
+
 bool CommandBuilder::getTaskMarked(){
 	return _taskMarked;
 }
@@ -58,6 +63,7 @@ void CommandBuilder::setAttributesFromParser(Parser parser){
 	_taskEndTime = parser.getTaskEndTime();
 	_taskDeadline = parser.getTaskDeadline();
 	_taskPriority = parser.getTaskPriority();
+	_duration = parser.getDuration();
 	_taskMarked = parser.getTaskMarked();
 	_taskNumber = parser.getTaskNumber();
 	_foundMarked = parser.getFoundMarked();
@@ -144,7 +150,7 @@ Command* CommandBuilder::parseCommand(string userInput){
 		CommandBuilder::setAttributesFromParser(parser);
 
 		return new CommandSearch(_taskDetails, _taskStartTime, _taskEndTime,
-			_taskDeadline, _taskPriority, _taskMarked, _foundMarked, _foundPriority);
+			_taskDeadline, _taskPriority, _duration, _taskMarked, _foundMarked, _foundPriority);
 	
 	case CommandType::Redo:
 

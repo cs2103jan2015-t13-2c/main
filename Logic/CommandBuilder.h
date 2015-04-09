@@ -44,6 +44,7 @@ public:
 	Date* getTaskEndTime();
 	Date* getTaskDeadline();
 	Task::Priority getTaskPriority();
+	string getDuration();
 	bool getTaskMarked();
 	int getTaskNumber();
 
@@ -75,6 +76,7 @@ private:
 	Date *_taskEndTime;
 	Date *_taskDeadline;
 	Task::Priority _taskPriority;
+	string _duration;
 	bool _taskMarked;
 	bool _foundMarked;
 	bool _foundPriority;
