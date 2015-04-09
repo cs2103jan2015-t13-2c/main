@@ -54,6 +54,7 @@ public:
 	static Date* Parser::parseTimeString(string timeStr);
 	static int parseDayName(string dayName);
 	static int parseMonthName(string monthName);
+	static bool parseTime(string time, int &hour, int &minute);
 
 	static char buffer[255];
 	static const int INVALID_NUMBER_FORMAT = -1;
@@ -64,7 +65,9 @@ public:
 	static const string Parser::ERROR_MESSAGE_PARSING_DATEPASSED;
 	static const string Parser::ERROR_MESSAGE_PARSING_DAYNAME;
 	static const string Parser::ERROR_MESSAGE_PARSING_MONTHNAME;
-	static const string Parser::ERROR_MESSAGE_COMMAND_ENDTIME;
+	static const string Parser::ERROR_MESSAGE_PARSING_INVALIDTIME;
+	static const string Parser::ERROR_MESSAGE_COMMAND_NOENDTIME;
+	static const string Parser::ERROR_MESSAGE_COMMAND_INVALIDENDTIME;
 	static const string Parser::ERROR_MESSAGE_PARSING_TASK;
 	static const string Parser::ERROR_MESSAGE_DELETE_TASKNUM;
 
