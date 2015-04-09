@@ -68,12 +68,18 @@ namespace TaskkyUI {
 
 	private: System::Windows::Forms::Label^  label6;
 
-	private: System::Windows::Forms::ListView^  listView1;
-	public: System::Windows::Forms::ColumnHeader^  columnHeader1;
 	private:
 
-	private: System::Windows::Forms::ColumnHeader^  columnHeader2;
-	private: System::Windows::Forms::ColumnHeader^  columnHeader3;
+	public:
+
+
+
+
+
+	private:
+
+
+
 	private: System::ComponentModel::IContainer^  components;
 
 
@@ -92,17 +98,6 @@ namespace TaskkyUI {
 		void InitializeComponent(void)
 		{
 			this->components = (gcnew System::ComponentModel::Container());
-			System::Windows::Forms::ListViewGroup^  listViewGroup1 = (gcnew System::Windows::Forms::ListViewGroup(L"Task With Deadline", System::Windows::Forms::HorizontalAlignment::Left));
-			System::Windows::Forms::ListViewGroup^  listViewGroup2 = (gcnew System::Windows::Forms::ListViewGroup(L"Floating Task", System::Windows::Forms::HorizontalAlignment::Left));
-			System::Windows::Forms::ListViewGroup^  listViewGroup3 = (gcnew System::Windows::Forms::ListViewGroup(L"Mark as Done", System::Windows::Forms::HorizontalAlignment::Left));
-			System::Windows::Forms::ListViewItem^  listViewItem1 = (gcnew System::Windows::Forms::ListViewItem(gcnew cli::array< System::String^  >(2) {
-				L"test lalala",
-					L"hehehehe"
-			}, -1));
-			System::Windows::Forms::ListViewItem^  listViewItem2 = (gcnew System::Windows::Forms::ListViewItem(L"test lelele"));
-			System::Windows::Forms::ListViewItem^  listViewItem3 = (gcnew System::Windows::Forms::ListViewItem(L"test lilili"));
-			System::Windows::Forms::ListViewItem^  listViewItem4 = (gcnew System::Windows::Forms::ListViewItem(L"lululu"));
-			System::Windows::Forms::ListViewItem^  listViewItem5 = (gcnew System::Windows::Forms::ListViewItem(L"lolololo"));
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(TaskkyGUI::typeid));
 			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
@@ -112,10 +107,6 @@ namespace TaskkyUI {
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->label6 = (gcnew System::Windows::Forms::Label());
-			this->listView1 = (gcnew System::Windows::Forms::ListView());
-			this->columnHeader1 = (gcnew System::Windows::Forms::ColumnHeader());
-			this->columnHeader2 = (gcnew System::Windows::Forms::ColumnHeader());
-			this->columnHeader3 = (gcnew System::Windows::Forms::ColumnHeader());
 			this->SuspendLayout();
 			// 
 			// textBox1
@@ -194,14 +185,13 @@ namespace TaskkyUI {
 			// 
 			this->label4->AutoSize = true;
 			this->label4->BackColor = System::Drawing::Color::Transparent;
-			this->label4->Font = (gcnew System::Drawing::Font(L"Consolas", 20.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->label4->Font = (gcnew System::Drawing::Font(L"Consolas", 11.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label4->ForeColor = System::Drawing::Color::White;
-			this->label4->Location = System::Drawing::Point(98, 292);
+			this->label4->Location = System::Drawing::Point(56, 389);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(105, 32);
+			this->label4->Size = System::Drawing::Size(0, 18);
 			this->label4->TabIndex = 16;
-			this->label4->Text = L"label4";
 			this->label4->TextChanged += gcnew System::EventHandler(this, &TaskkyGUI::label4_TextChanged);
 			this->label4->Click += gcnew System::EventHandler(this, &TaskkyGUI::label4_Click);
 			// 
@@ -215,57 +205,6 @@ namespace TaskkyUI {
 			this->label6->Size = System::Drawing::Size(0, 13);
 			this->label6->TabIndex = 18;
 			// 
-			// listView1
-			// 
-			this->listView1->Alignment = System::Windows::Forms::ListViewAlignment::Left;
-			this->listView1->BackColor = System::Drawing::SystemColors::Window;
-			this->listView1->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->listView1->Columns->AddRange(gcnew cli::array< System::Windows::Forms::ColumnHeader^  >(3) {
-				this->columnHeader1, this->columnHeader2,
-					this->columnHeader3
-			});
-			listViewGroup1->Header = L"Task With Deadline";
-			listViewGroup1->Name = L"Task with Deadline";
-			listViewGroup2->Header = L"Floating Task";
-			listViewGroup2->Name = L"Floating Task";
-			listViewGroup3->Header = L"Mark as Done";
-			listViewGroup3->Name = L"Mark as Done";
-			this->listView1->Groups->AddRange(gcnew cli::array< System::Windows::Forms::ListViewGroup^  >(3) {
-				listViewGroup1, listViewGroup2,
-					listViewGroup3
-			});
-			listViewItem1->Group = listViewGroup1;
-			listViewItem2->Group = listViewGroup2;
-			listViewItem3->Group = listViewGroup3;
-			listViewItem4->Group = listViewGroup2;
-			listViewItem5->Group = listViewGroup1;
-			this->listView1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ListViewItem^  >(5) {
-				listViewItem1, listViewItem2,
-					listViewItem3, listViewItem4, listViewItem5
-			});
-			this->listView1->Location = System::Drawing::Point(429, 70);
-			this->listView1->Name = L"listView1";
-			this->listView1->Size = System::Drawing::Size(459, 405);
-			this->listView1->TabIndex = 20;
-			this->listView1->UseCompatibleStateImageBehavior = false;
-			this->listView1->View = System::Windows::Forms::View::Details;
-			this->listView1->SelectedIndexChanged += gcnew System::EventHandler(this, &TaskkyGUI::listView1_SelectedIndexChanged);
-			// 
-			// columnHeader1
-			// 
-			this->columnHeader1->Text = L"Start";
-			this->columnHeader1->Width = 78;
-			// 
-			// columnHeader2
-			// 
-			this->columnHeader2->Text = L"End";
-			this->columnHeader2->Width = 83;
-			// 
-			// columnHeader3
-			// 
-			this->columnHeader3->Text = L"Task";
-			this->columnHeader3->Width = 293;
-			// 
 			// TaskkyGUI
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -273,7 +212,6 @@ namespace TaskkyUI {
 			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
 			this->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 			this->ClientSize = System::Drawing::Size(960, 540);
-			this->Controls->Add(this->listView1);
 			this->Controls->Add(this->label6);
 			this->Controls->Add(this->label4);
 			this->Controls->Add(this->label2);
@@ -313,8 +251,7 @@ namespace TaskkyUI {
 				label6->Visible = false;
 			}
 			richTextBox1->Text = gcnew String(result2.c_str());
-			listView1->Items->Add(gcnew String(result2.c_str()));
-
+			
 
 			//listView1->Groups->Insert(1, gcnew String(result2.c_str()));
 			
@@ -337,8 +274,11 @@ namespace TaskkyUI {
 
 
 		if (e->KeyChar == (char)32){
-			label4->Text = "e.g: lalalalala";
-			label4->ForeColor = System::Drawing::Color::FromArgb(255, 98, 48);
+			if (command == "add"){
+				label4->Text = "e.g: add cs2103 from 2 may to 5 may";
+			}
+			//label4->Text = "e.g: lalalalala";
+			//label4->ForeColor = System::Drawing::Color::FromArgb(255, 98, 48);
 		}
 
 	
