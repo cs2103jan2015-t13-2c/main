@@ -525,7 +525,6 @@ Date* Parser::parseTimeString(string timeStr){
 				++year;
 			}
 		}
-
 		return (new Date(year, mon, day, hour, minute));
 	}
 
