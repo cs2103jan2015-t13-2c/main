@@ -75,10 +75,10 @@ void Parser::parseCommandAdd(string userCommand){
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
 
 	string text = removeFirstWord(userCommand);
-
 	if (text == ""){
 		throw ParseException(ERROR_MESSAGE_PARSING_ADD);
 	}
+	transform(text.begin(), text.end(), text.begin(), ::tolower);
 
 	string timeString;
 	ostringstream temp;
