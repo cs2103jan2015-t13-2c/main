@@ -80,7 +80,7 @@ namespace LogicTests
 		{
 			//constructor and toString test
 			Date nowDate = Date(2015,9,13,17,00);
-			Assert::AreEqual<std::string>("Tue Oct 13 17:00:00 2015", nowDate.toString());
+			Assert::AreEqual<std::string>("13 Oct 2015 (Tue), 05:00PM", nowDate.toString());
 
 			//comparator test
 			Date earlierDate = Date(2015, 9, 13, 17, 00);
