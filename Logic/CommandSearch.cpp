@@ -77,28 +77,21 @@ string CommandSearch::searchByName(string taskname) {
 	int position = 1;
 	ostringstream oss;
 
-	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
-		if (iter->getTaskDetails().find(taskname.c_str()) != string::npos) {
-			if (count == 0) {
-				oss << "Similar results:\n";
-			}
-			oss << CommandSearch::printTask(*iter, position);
+	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter){
+		if (iter->getTaskDetails().find(taskname.c_str()) != string::npos){
+			++count;
+			foundTasksIndices.push_back(position);
 		}
-		else if (StringDistance::LD(taskname.c_str(), iter->getTaskDetails().c_str()) <= CommandSearch::ACCEPTABLE_DISTANCE) {
-			if (count == 0) {
-				oss << "Similar results:\n";
-			}
-			oss << CommandSearch::printTask(*iter, position);
+		else if (StringDistance::LD(taskname.c_str(), iter->getTaskDetails().c_str()) <= 
+			CommandSearch::ACCEPTABLE_DISTANCE){
 			count++;
+			foundTasksIndices.push_back(position);
 		}
 		++position;
 	}
 
-	if (count == 0) {
-		oss << "No similar results found!\n";
-	}
-
-	return oss.str();
+	sprintf_s(buffer, MESSAGE_FOUND_TASKS.c_str(), count);
+	return buffer;
 
 }
 
@@ -115,21 +108,15 @@ string CommandSearch::searchDateRange(Date dateFrom, Date dateTo) {
 		if (iter->getTaskType() == Task::DEADLINE) {
 			if (dateFrom.isEarlierThan(*(iter->getTaskDeadline())) >= 0) {
 				if (dateTo.isEarlierThan(*(iter->getTaskDeadline())) <= 0) {
-					if (count == 0) {
-						oss << "List of Tasks:\n";
-					}
-					oss << CommandSearch::printTask(*iter, position);
 					++count;
+					foundTasksIndices.push_back(position);
 				}
 			}
 		}
 		else if (iter->getTaskType() == Task::TIMED) {
 			if (dateFrom.isEarlierThan(*(iter->getTaskStartTime())) >= 0) {
 				if (dateTo.isEarlierThan(*(iter->getTaskStartTime())) <= 0) {
-					if (count == 0) {
-						oss << "List of Tasks:\n";
-					}
-					oss << CommandSearch::printTask(*iter, position);
+					foundTasksIndices.push_back(position);
 					++count;
 				}
 			}
@@ -137,11 +124,9 @@ string CommandSearch::searchDateRange(Date dateFrom, Date dateTo) {
 		++position;
 	}
 
-	if (count == 0) {
-		oss << "No Task within date range!\n";
-	}
 
-	return oss.str();
+	sprintf_s(buffer, MESSAGE_FOUND_TASKS.c_str(), count);
+	return buffer;
 
 }
 
@@ -157,30 +142,21 @@ string CommandSearch::searchAfterDate(Date dateAfter) {
 	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
 		if (iter->getTaskType() == Task::DEADLINE) {
 			if (dateAfter.isEarlierThan(*(iter->getTaskDeadline())) >= 0) {
-				if (count == 0) {
-					oss << "List of Tasks:\n";
-				}
-				oss << CommandSearch::printTask(*iter, position);
+				foundTasksIndices.push_back(position);
 				++count;
 			}
 		}
 		else if (iter->getTaskType() == Task::TIMED) {
 			if (dateAfter.isEarlierThan(*(iter->getTaskStartTime())) >= 0) {
-				if (count == 0) {
-					oss << "List of Tasks:\n";
-				}
-				oss << CommandSearch::printTask(*iter, position);
+				foundTasksIndices.push_back(position);
 				++count;
 			}
 		}
 		++position;
 	}
 
-	if (count == 0) {
-		oss << "No Tasks after specified date!\n";
-	}
-
-	return oss.str();
+	sprintf_s(buffer, MESSAGE_FOUND_TASKS.c_str(), count);
+	return buffer;
 
 }
 
@@ -196,30 +172,21 @@ string CommandSearch::searchBeforeDate(Date dateBefore) {
 	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
 		if (iter->getTaskType() == Task::DEADLINE) {
 			if (dateBefore.isEarlierThan(*(iter->getTaskDeadline())) <= 0) {
-				if (count == 0) {
-					oss << "List of Tasks:\n";
-				}
-				oss << CommandSearch::printTask(*iter, position);
+				foundTasksIndices.push_back(position);
 				++count;
 			}
 		}
 		else if (iter->getTaskType() == Task::TIMED) {
 			if (dateBefore.isEarlierThan(*(iter->getTaskStartTime())) <= 0) {
-				if (count == 0) {
-					oss << "List of Tasks:\n";
-				}
-				oss << CommandSearch::printTask(*iter, position);
+				foundTasksIndices.push_back(position);
 				++count;
 			}
 		}
 		++position;
 	}
 
-	if (count == 0) {
-		oss << "No Tasks before specified date!\n";
-	}
-
-	return oss.str();
+	sprintf_s(buffer, MESSAGE_FOUND_TASKS.c_str(), count);
+	return buffer;
 
 }
 
@@ -234,20 +201,14 @@ string CommandSearch::searchPriority(Task::Priority priority) {
 
 	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
 		if (priority == iter->getTaskPriority()) {
-			if (count == 0) {
-				oss << "List of Tasks:\n";
-			}
-			oss << CommandSearch::printTask(*iter, position);
+			foundTasksIndices.push_back(position);
 			++count;
 		}
 		++position;
 	}
 
-	if (count == 0) {
-		oss << "No Task with specified priority found!\n";
-	}
-
-	return oss.str();
+	sprintf_s(buffer, MESSAGE_FOUND_TASKS.c_str(), count);
+	return buffer;
 
 }
 
@@ -262,26 +223,14 @@ string CommandSearch::searchMarked(bool marked) {
 
 	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
 		if (marked == iter->getTaskMarked()) {
-			if (count == 0) {
-				oss << "List of Tasks:\n";
-			}
-			oss << CommandSearch::printTask(*iter, position);
+			foundTasksIndices.push_back(position);
 			++count;
 		}
 		++position;
 	}
 
-	if (count == 0) {
-		if (marked){
-			oss << "No done tasks!\n";
-		}
-		else{
-			oss << "No undone tasks!\n";
-		}
-		
-	}
-
-	return oss.str();
+	sprintf_s(buffer, MESSAGE_FOUND_TASKS.c_str(), count);
+	return buffer;
 
 }
 
@@ -437,64 +386,6 @@ int CommandSearch::parseDurationToMinutes(string duration){
 	return 0;
 }
 
-string CommandSearch::printTask(Task toPrint, int taskNumber) {
-	ostringstream oss;
-
-	//Prints Task Number
-	oss << "=============================" << endl;
-	oss << "Task #" << setw(8) << setfill('0') << taskNumber << endl;
-	oss << "=============================" << endl;
-
-	oss << (toPrint).getTaskDetails() << endl;
-
-	//Prints Task Start/End Time or Deadline (if any)
-	Task::Type checkType = (toPrint).getTaskType();
-	switch (checkType) {
-	case Task::TIMED: {
-		oss << "START: " << (toPrint).getTaskStartTime()->toString() << endl;
-		oss << "END: " << (toPrint).getTaskEndTime()->toString() << endl;
-		break;
-	}
-	case Task::DEADLINE: {
-		oss << "DEADLINE: " << (toPrint).getTaskDeadline()->toString() << endl;
-		break;
-	}
-	default:
-		break;
-	}
-
-	//Prints Task Priority
-	Task::Priority checkPri = (toPrint).getTaskPriority();
-	switch (checkPri) {
-	case Task::LOW: {
-		oss << "PRIORITY: LOW" << endl;
-		break;
-	}
-	case Task::HIGH: {
-		oss << "PRIORITY: HIGH" << endl;
-		break;
-	}
-	default: {
-		oss << "PRIORITY: NORMAL" << endl;
-		break;
-	}
-	}
-
-	bool checkMarked = (toPrint).getTaskMarked();
-	switch (checkMarked) {
-	case true: {
-		oss << "MARKED: " << "YES" << endl;
-		break;
-	}
-	case false: {
-		oss << "MARKED: " << "NO" << endl;
-		break;
-	}
-	}
-
-	return oss.str();
-}
-
 /*
 * ====================================================================
 *  Additional functions
@@ -591,3 +482,4 @@ char CommandSearch::buffer[255];
 const string CommandSearch::ERROR_TOOMANY_SEARCH_ARGUMENTS = "Enter only 1 search argument!";
 const string CommandSearch::INVALID_DURATION = "Invalid search duration input. Please input in the following format:\n1. __ day(s) __ hour(s) __ minute(s) (all numbers are integers)\n2. __ day(s) __ hour(s) (all numbers are integers)\n3. __ days (number can be  integer or with decimal)\n4. __ hour(s) __ minute(s) (all numbers are integers)\n5. __ hour(s) (number can be integer or with decimals)\n6. __ minute(s) (number can only be integer)\nNOTE: smallest valid duration is 1 minute";
 const string CommandSearch::MESSAGE_NEXT_AVAILABLE_SLOT = "Next available %sis from %s.";
+const string CommandSearch::MESSAGE_FOUND_TASKS = "There are %d tasks found.";
