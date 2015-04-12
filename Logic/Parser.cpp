@@ -465,6 +465,7 @@ bool Parser::isSearchKeyword(string word){
 Date* Parser::parseTimeString(string timeStr){
 	if (timeStr == ""){
 		//throw error
+		throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);
 	}
 	
 	int year = Date().getYear();
@@ -482,13 +483,21 @@ Date* Parser::parseTimeString(string timeStr){
 		day = Date().getDay();
 	}
 
+	else if (temp == "tomorrow"){
+		mon = Date().getMonth();
+		day = Date().getDay() + 1;
+	}
+
 	//E.g. User types in "this thursday"
 	else if (temp == "this"){
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
 		temp = (getFirstWord(timeStr));
 		int taskDay = parseDayName(temp);
 		int diffinDays = taskDay - Date().getDayName();
-		//throw error if negative
+		//if negative, refer to next week
+		if (diffinDays < 0){
+			diffinDays = diffinDays + 7;
+		}
 
 		mon = Date().getMonth();
 		day = Date().getDay() + diffinDays;
@@ -500,7 +509,6 @@ Date* Parser::parseTimeString(string timeStr){
 		temp = (getFirstWord(timeStr));
 		int taskDay = parseDayName(temp);
 		int diffinDays = taskDay - Date().getDayName() + 7;
-		throw ParseException(ERROR_MESSAGE_PARSING_DATEPASSED);
 
 		mon = Date().getMonth();
 		day = Date().getDay() + diffinDays;
@@ -509,7 +517,13 @@ Date* Parser::parseTimeString(string timeStr){
 	//E.g. User types in "9 apr"
 	else {
 		day = parseInt(temp);
+		if (day > 31 || day < 0){
+			throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);
+		}
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
+		if (timeStr == ""){
+			throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);
+		}
 		temp = (getFirstWord(timeStr));
 		mon = parseMonthName(temp);
 	}
@@ -531,6 +545,9 @@ Date* Parser::parseTimeString(string timeStr){
 	//Checks if user keyed in a year (Default is set to current year)
 	if (parseInt(temp) != -1) {
 		year = parseInt(temp);
+		if (year < 2015){
+			throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);
+		}
 
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
 		if (timeStr != "") {
