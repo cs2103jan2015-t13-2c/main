@@ -243,6 +243,9 @@ vector<Task> Storage::parseSaveFileToVector(string filename){
 					deadline = NULL;
 				}
 				else if (d[i]["deadline"].IsObject()){
+					startTime = NULL;
+					endTime = NULL;
+
 					int day = d[i]["deadline"]["day"].GetInt();
 					int month = d[i]["deadline"]["month"].GetInt();
 					int year = d[i]["deadline"]["year"].GetInt();
@@ -253,6 +256,8 @@ vector<Task> Storage::parseSaveFileToVector(string filename){
 				}
 			}
 			else if (d[i]["startTime"].IsObject()) {
+				deadline = NULL;
+
 				int day = d[i]["startTime"]["day"].GetInt();
 				int month = d[i]["startTime"]["month"].GetInt();
 				int year = d[i]["startTime"]["year"].GetInt();
@@ -271,10 +276,7 @@ vector<Task> Storage::parseSaveFileToVector(string filename){
 			}
 
 			//Task Priority
-			if (d[i]["priority"].GetString() == p_low) {
-				priority = Task::Priority::LOW;
-			}
-			else if (d[i]["priority"].GetString() == p_normal) {
+			if (d[i]["priority"].GetString() == p_normal) {
 				priority = Task::Priority::NORMAL;
 			}
 			else if (d[i]["priority"].GetString() == p_high) {
@@ -375,20 +377,12 @@ rapidjson::Value Storage::convertTaskToJSON(Task task, rapidjson::Document::Allo
 		int leng = sprintf(prior, "HIGH");
 
 		priority.SetString(prior, leng, allocator);
-	}
-	else if (task.getTaskPriority() == Task::Priority::NORMAL) {
+	} else if (task.getTaskPriority() == Task::Priority::NORMAL) {
 		char prior[1024];
 		int leng = sprintf(prior, "NORMAL");
 
 		priority.SetString(prior, leng, allocator);
-	}
-	else if (task.getTaskPriority() == Task::Priority::LOW) {
-		char prior[1024];
-		int leng = sprintf(prior, "LOW");
-
-		priority.SetString(prior, leng, allocator);
-	}
-	else {
+	} else {
 		char prior[1024];
 		int leng = sprintf(prior, "NORMAL");
 
@@ -445,9 +439,11 @@ bool Storage::dirExists(const std::string& dirName_in)
 	return false;    // this is not a directory!
 }
 
-/**********************************************************
-Constant Variables Declarations
-**********************************************************/
+/*
+* ====================================================================
+*  Variables and Messages Declaration
+* ====================================================================
+*/
 
 Storage* Storage::_instance = NULL;
 const string Storage::DIRECTORY_ERROR = "Directory not found";
