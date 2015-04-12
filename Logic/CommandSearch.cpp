@@ -159,8 +159,6 @@ string CommandSearch::searchByName(string taskname) {
 //@return: feedback on number of match found
 string CommandSearch::searchDateRange(Date dateFrom, Date dateTo) {
 
-	ostringstream oss;
-
 	vector<Task> TaskVector = *(TaskManager::getAllCurrentTasks());
 	vector<Task>::iterator iter;
 	int count = 0;
@@ -170,8 +168,8 @@ string CommandSearch::searchDateRange(Date dateFrom, Date dateTo) {
 		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING;
 		++iter){
 		if (iter->getTaskType() == Task::DEADLINE) {
-			if (dateFrom.isEarlierThan(*(iter->getTaskDeadline())) >= 0) {
-				if (dateTo.isEarlierThan(*(iter->getTaskDeadline())) <= 0) {
+			if (dateFrom.isEarlierThan(*(iter->getTaskDeadline())) >= 0){
+				if (dateTo.isEarlierThan(*(iter->getTaskDeadline())) <= 0){
 					++count;
 					foundTasksIndices->push_back(position);
 				}
