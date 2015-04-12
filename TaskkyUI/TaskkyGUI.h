@@ -600,8 +600,8 @@ namespace TaskkyUI {
 
 					//setting new parameters to add next task
 					taskNumber += 1;
-					string startDate = "";
-					string endDate = task.getTaskDeadline()->toString();
+					string startDate = task.getTaskDeadline()->toString();
+					string endDate = "";
 					string taskDetails = task.getTaskDetails();
 					string marked;
 					if (task.getTaskMarked()){
