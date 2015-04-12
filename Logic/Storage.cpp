@@ -17,274 +17,27 @@ Storage* Storage::getInstance(){
 
 
 void Storage::writeToFile(){
-
-	vector<Task> TaskVector = *(TaskManager::getAllCurrentTasks());
-	vector<Task>::iterator iter;
-
-	string filename = determineFileName();
-
-	rapidjson::Document document;
-
-	rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
-
-	rapidjson::Value taskname;
-
-	rapidjson::Value startTime;
-
-	rapidjson::Value endTime;
-
-	rapidjson::Value deadline;
-
-	rapidjson::Value priority;
-
-	char buffer[1024];
-	int len;
-
-	if (TaskVector.empty()) {
-		remove(filename.c_str());
-
-		//write empty json
-		FILE* fp = fopen(filename.c_str(), "wb"); // non-Windows use "w"
-
-		fclose(fp);
-
+	std::string filename = determineFileName();
+	if ((TaskManager::getAllCurrentTasks())->empty()){
+		clearSaveFile(filename);
 	}
 	else {
-
-		document.SetArray();
-
-		for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
-
-			//Check Task Details
-			len = sprintf(buffer, iter->getTaskDetails().c_str());
-			taskname.SetString(buffer, len, allocator);
-
-			//Check Task Type and Time
-			if (iter->getTaskType() == Task::FLOATING) {
-				startTime.SetNull();
-				endTime.SetNull();
-				deadline.SetNull();
-			}
-			else if (iter->getTaskType() == Task::TIMED) {
-				Date time = *(iter->getTaskStartTime());
-
-				startTime.SetObject();
-				startTime.AddMember("day", time.getDay(), allocator);
-				startTime.AddMember("month", time.getMonth(), allocator);
-				startTime.AddMember("year", time.getYear(), allocator);
-				startTime.AddMember("hour", time.getHour(), allocator);
-				startTime.AddMember("minutes", time.getMinute(), allocator);
-
-				time = *(iter->getTaskEndTime());
-
-				endTime.SetObject();
-				endTime.AddMember("day", time.getDay(), allocator);
-				endTime.AddMember("month", time.getMonth(), allocator);
-				endTime.AddMember("year", time.getYear(), allocator);
-				endTime.AddMember("hour", time.getHour(), allocator);
-				endTime.AddMember("minutes", time.getMinute(), allocator);
-
-				deadline.SetNull();
-			}
-			else if (iter->getTaskType() == Task::DEADLINE) {
-				startTime.SetNull();
-				endTime.SetNull();
-
-				Date time = *(iter->getTaskDeadline());
-
-				deadline.SetObject();
-				deadline.AddMember("day", time.getDay(), allocator);
-				deadline.AddMember("month", time.getMonth(), allocator);
-				deadline.AddMember("year", time.getYear(), allocator);
-				deadline.AddMember("hour", time.getHour(), allocator);
-				deadline.AddMember("minutes", time.getMinute(), allocator);
-			}
-
-			//Check Task Priority
-			if (iter->getTaskPriority() == Task::Priority::HIGH) {
-				char prior[1024];
-				int leng = sprintf(prior, "HIGH");
-
-				priority.SetString(prior, leng, allocator);
-			}
-			else if (iter->getTaskPriority() == Task::Priority::NORMAL) {
-				char prior[1024];
-				int leng = sprintf(prior, "NORMAL");
-
-				priority.SetString(prior, leng, allocator);
-			}
-			else if (iter->getTaskPriority() == Task::Priority::LOW) {
-				char prior[1024];
-				int leng = sprintf(prior, "LOW");
-
-				priority.SetString(prior, leng, allocator);
-			}
-			else {
-				char prior[1024];
-				int leng = sprintf(prior, "NORMAL");
-
-				priority.SetString(prior, leng, allocator);
-			}
-
-			//Convert to json values
-			rapidjson::Value object(rapidjson::kObjectType);
-			object.AddMember("taskname", taskname, allocator);
-			object.AddMember("startTime", startTime, allocator);
-			object.AddMember("endTime", endTime, allocator);
-			object.AddMember("deadline", deadline, allocator);
-			object.AddMember("priority", priority, allocator);
-
-			document.PushBack(object, document.GetAllocator());
-		}
-		//writing to file
-		FILE* fp = fopen(filename.c_str(), "wb"); // non-Windows use "w"
-		char writeBuffer[65536];
-
-		rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
-		rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
-		document.Accept(writer);
-
-		fclose(fp);
+		writeJSONtoFile(filename, parseVectorToJSON(*(TaskManager::getAllCurrentTasks())));
 	}
 	return;
 }
 
 vector<Task> Storage::readFromFile() {
-
-	//check if saveFile location is valid
-	if (!dirExists(CommandCheckFileLocation::getFileLocation())) {
+	//check valid directory for save file location
+	if (!dirExists(CommandCheckFileLocation::getFileLocation())){
 		if (CommandCheckFileLocation::getFileLocation() != "default"){
-			remove("saveFileLocation.txt");
-
-			ofstream writeFile("saveFileLocation.txt");
-			if (writeFile.is_open()){
-				writeFile << "default";
-				writeFile.close();
-			}
-
-			cout << FILE_LOCATION_INVALID << endl;
+			setLocationAsDefault();
+			std::cout << FILE_LOCATION_INVALID << endl; //Print error message: save file location invalid
 		}
 	}
-
-		string filename = determineFileName();
-
-		if (FILE *file = fopen(filename.c_str(), "r")) {
-			fclose(file);
-		}
-		else {
-			cout << FILENAME_NOT_FOUND << endl;
-			FILE* createFile = fopen(filename.c_str(), "wb"); // non-Windows use "w"
-			fclose(createFile);
-		}
-
-
-		//open file
-		FILE* fp = fopen(filename.c_str(), "rb"); // non-Windows use "r"
-		char readBuffer[65536];
-
-		rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
-
-		rapidjson::Document d;
-		d.ParseStream(is);
-
-		fclose(fp);
-
-		//variables
-		vector<Task> TaskVector;
-
-		string taskname;
-
-		string startTime_str;
-		Date* startTime = NULL;
-
-		string endTime_str;
-		Date* endTime = NULL;
-
-		string deadline_str;
-		Date* deadline = NULL;
-
-		Task::Priority priority;
-		string p_low = "LOW";
-		string p_normal = "NORMAL";
-		string p_high = "HIGH";
-
-		//check if empty
-		if (d.IsNull()) {
-			return TaskVector;
-		}
-		else {
-
-
-			//Parse and construct Task Vector
-
-			int i = 0;
-			for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr) {
-
-
-				//Task Details
-				taskname = d[i]["taskname"].GetString();
-
-				//Task Time
-				if (d[i]["startTime"].IsNull()) {
-					if (d[i]["deadline"].IsNull())
-					{
-						//startTime_str = "";
-						startTime = NULL;
-						//endTime_str = "";
-						endTime = NULL;
-						//deadline_str = "";
-						deadline = NULL;
-					}
-					else if (d[i]["deadline"].IsObject()) {
-						int day = d[i]["deadline"]["day"].GetInt();
-						int month = d[i]["deadline"]["month"].GetInt();
-						int year = d[i]["deadline"]["year"].GetInt();
-						int hour = d[i]["deadline"]["hour"].GetInt();
-						int minutes = d[i]["deadline"]["minutes"].GetInt();
-
-						deadline = new Date(year, month, day, hour, minutes);
-					}
-				}
-				else if (d[i]["startTime"].IsObject()) {
-					int day = d[i]["startTime"]["day"].GetInt();
-					int month = d[i]["startTime"]["month"].GetInt();
-					int year = d[i]["startTime"]["year"].GetInt();
-					int hour = d[i]["startTime"]["hour"].GetInt();
-					int minutes = d[i]["startTime"]["minutes"].GetInt();
-
-					startTime = new Date(year, month, day, hour, minutes);
-
-					day = d[i]["endTime"]["day"].GetInt();
-					month = d[i]["endTime"]["month"].GetInt();
-					year = d[i]["endTime"]["year"].GetInt();
-					hour = d[i]["endTime"]["hour"].GetInt();
-					minutes = d[i]["endTime"]["minutes"].GetInt();
-
-					endTime = new Date(year, month, day, hour, minutes);
-				}
-
-				//Task Priority
-				if (d[i]["priority"].GetString() == p_low) {
-					priority = Task::Priority::LOW;
-				}
-				else if (d[i]["priority"].GetString() == p_normal) {
-					priority = Task::Priority::NORMAL;
-				}
-				else if (d[i]["priority"].GetString() == p_high) {
-					priority = Task::Priority::HIGH;
-				}
-
-
-				//construct task object
-				Task task(taskname, startTime, endTime, deadline, priority);
-
-				//Push into taskVector
-				TaskVector.push_back(task);
-
-				++i;
-			}
-			return TaskVector;
-		}
+	std::string filename = determineFileName();
+	checkSaveFile(filename); //if file doesn't exist assume new user and create new saveFile.
+	return parseSaveFileToVector(filename); //Parse saveFile document into TaskVector
 }
 
 
@@ -293,15 +46,15 @@ string Storage::findProgramDirectory(){
 
 	if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
 	{
-		cout << DIRECTORY_ERROR << endl;
+		std::cout << DIRECTORY_ERROR << endl;
 	}
 
 	return cCurrentPath;
 }
 
 string Storage::determineFileName(){
-	string filename;
-	string fileDirectory = CommandCheckFileLocation::getFileLocation();
+	std::string filename;
+	std::string fileDirectory = CommandCheckFileLocation::getFileLocation();
 	if (fileDirectory == "default") {
 		filename = findProgramDirectory() + "/Save.json";
 	}
@@ -322,6 +75,261 @@ bool Storage::dirExists(const std::string& dirName_in)
 		return true;   // this is a directory!
 
 	return false;    // this is not a directory!
+}
+
+void Storage::setLocationAsDefault(){
+	remove("saveFileLocation.txt");
+	ofstream writeFile("saveFileLocation.txt");
+	if (writeFile.is_open()){
+		writeFile << "default";
+		writeFile.close();
+	}
+	return;
+}
+
+void Storage::checkSaveFile(string filename){
+	if (FILE *file = fopen(filename.c_str(), "r")) {
+		fclose(file);
+	}
+	else {
+		std::cout << FILENAME_NOT_FOUND << endl;
+		FILE* createFile = fopen(filename.c_str(), "wb"); // non-Windows use "w"
+		fclose(createFile);
+	}
+}
+
+vector<Task> Storage::parseSaveFileToVector(string filename){
+
+	//open file
+	FILE* fp = fopen(filename.c_str(), "rb"); // non-Windows use "r"
+	char readBuffer[65536];
+
+	rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+	rapidjson::Document d;
+	d.ParseStream(is);
+
+	fclose(fp);
+
+	//variables declarations
+	vector<Task> TaskVector;
+
+	std::string taskname;
+
+	std::string startTime_str;
+	Date* startTime = NULL;
+
+	std::string endTime_str;
+	Date* endTime = NULL;
+
+	std::string deadline_str;
+	Date* deadline = NULL;
+
+	Task::Priority priority;
+	std::string p_low = "LOW";
+	std::string p_normal = "NORMAL";
+	std::string p_high = "HIGH";
+
+	//check if empty
+	if (d.IsNull()) {
+		return TaskVector;
+	}
+	else {
+
+
+		//Parse and construct Task Vector
+
+		int i = 0;
+		for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr){
+
+
+			//Task Details
+			if (d[i].HasMember("taskname")){
+				taskname = d[i]["taskname"].GetString();
+			}
+
+			//Task Time
+			if (d[i]["startTime"].IsNull()) {
+				if (d[i]["deadline"].IsNull())
+				{
+					startTime = NULL;
+					endTime = NULL;
+					deadline = NULL;
+				}
+				else if (d[i]["deadline"].IsObject()) {
+					int day = d[i]["deadline"]["day"].GetInt();
+					int month = d[i]["deadline"]["month"].GetInt();
+					int year = d[i]["deadline"]["year"].GetInt();
+					int hour = d[i]["deadline"]["hour"].GetInt();
+					int minutes = d[i]["deadline"]["minutes"].GetInt();
+
+					deadline = new Date(year, month, day, hour, minutes);
+				}
+			}
+			else if (d[i]["startTime"].IsObject()) {
+				int day = d[i]["startTime"]["day"].GetInt();
+				int month = d[i]["startTime"]["month"].GetInt();
+				int year = d[i]["startTime"]["year"].GetInt();
+				int hour = d[i]["startTime"]["hour"].GetInt();
+				int minutes = d[i]["startTime"]["minutes"].GetInt();
+
+				startTime = new Date(year, month, day, hour, minutes);
+
+				day = d[i]["endTime"]["day"].GetInt();
+				month = d[i]["endTime"]["month"].GetInt();
+				year = d[i]["endTime"]["year"].GetInt();
+				hour = d[i]["endTime"]["hour"].GetInt();
+				minutes = d[i]["endTime"]["minutes"].GetInt();
+
+				endTime = new Date(year, month, day, hour, minutes);
+			}
+
+			//Task Priority
+			if (d[i]["priority"].GetString() == p_low) {
+				priority = Task::Priority::LOW;
+			}
+			else if (d[i]["priority"].GetString() == p_normal) {
+				priority = Task::Priority::NORMAL;
+			}
+			else if (d[i]["priority"].GetString() == p_high) {
+				priority = Task::Priority::HIGH;
+			}
+
+
+			//construct task object
+			Task task(taskname, startTime, endTime, deadline, priority);
+
+			//Push into taskVector
+			TaskVector.push_back(task);
+
+			++i;
+		}
+		return TaskVector;
+	}
+}
+
+void Storage::clearSaveFile(string filename){
+	remove(filename.c_str());
+
+	//write empty json
+	FILE* fp = fopen(filename.c_str(), "wb"); // non-Windows use "w"
+
+	fclose(fp);
+}
+
+rapidjson::Document Storage::parseVectorToJSON(vector<Task> TaskVector){
+	vector<Task>::iterator iter;
+	rapidjson::Document document;
+	rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
+	rapidjson::Value taskname;
+	rapidjson::Value startTime;
+	rapidjson::Value endTime;
+	rapidjson::Value deadline;
+	rapidjson::Value priority;
+	char buffer[1024];
+	int len;
+
+	document.SetArray();
+
+	//Parse vector of Tasks into JSON object
+	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
+
+		//Check Task Details
+		len = sprintf(buffer, iter->getTaskDetails().c_str());
+		taskname.SetString(buffer, len, allocator);
+
+		//Check Task Type and Time
+		if (iter->getTaskType() == Task::FLOATING) {
+			startTime.SetNull();
+			endTime.SetNull();
+			deadline.SetNull();
+		}
+		else if (iter->getTaskType() == Task::TIMED) {
+			Date time = *(iter->getTaskStartTime());
+
+			startTime.SetObject();
+			startTime.AddMember("day", time.getDay(), allocator);
+			startTime.AddMember("month", time.getMonth(), allocator);
+			startTime.AddMember("year", time.getYear(), allocator);
+			startTime.AddMember("hour", time.getHour(), allocator);
+			startTime.AddMember("minutes", time.getMinute(), allocator);
+
+			time = *(iter->getTaskEndTime());
+
+			endTime.SetObject();
+			endTime.AddMember("day", time.getDay(), allocator);
+			endTime.AddMember("month", time.getMonth(), allocator);
+			endTime.AddMember("year", time.getYear(), allocator);
+			endTime.AddMember("hour", time.getHour(), allocator);
+			endTime.AddMember("minutes", time.getMinute(), allocator);
+
+			deadline.SetNull();
+		}
+		else if (iter->getTaskType() == Task::DEADLINE) {
+			startTime.SetNull();
+			endTime.SetNull();
+
+			Date time = *(iter->getTaskDeadline());
+
+			deadline.SetObject();
+			deadline.AddMember("day", time.getDay(), allocator);
+			deadline.AddMember("month", time.getMonth(), allocator);
+			deadline.AddMember("year", time.getYear(), allocator);
+			deadline.AddMember("hour", time.getHour(), allocator);
+			deadline.AddMember("minutes", time.getMinute(), allocator);
+		}
+
+		//Check Task Priority
+		if (iter->getTaskPriority() == Task::Priority::HIGH) {
+			char prior[1024];
+			int leng = sprintf(prior, "HIGH");
+
+			priority.SetString(prior, leng, allocator);
+		}
+		else if (iter->getTaskPriority() == Task::Priority::NORMAL) {
+			char prior[1024];
+			int leng = sprintf(prior, "NORMAL");
+
+			priority.SetString(prior, leng, allocator);
+		}
+		else if (iter->getTaskPriority() == Task::Priority::LOW) {
+			char prior[1024];
+			int leng = sprintf(prior, "LOW");
+
+			priority.SetString(prior, leng, allocator);
+		}
+		else {
+			char prior[1024];
+			int leng = sprintf(prior, "NORMAL");
+
+			priority.SetString(prior, leng, allocator);
+		}
+
+		//Convert to json values
+		rapidjson::Value object(rapidjson::kObjectType);
+		object.AddMember("taskname", taskname, allocator);
+		object.AddMember("startTime", startTime, allocator);
+		object.AddMember("endTime", endTime, allocator);
+		object.AddMember("deadline", deadline, allocator);
+		object.AddMember("priority", priority, allocator);
+
+		document.PushBack(object, document.GetAllocator());
+	}
+
+	return document;
+}
+
+void Storage::writeJSONtoFile(string filename, rapidjson::Document document){
+	FILE* fp = fopen(filename.c_str(), "wb"); // non-Windows use "w"
+	char writeBuffer[65536];
+
+	rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+	rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
+	document.Accept(writer);
+
+	fclose(fp);
+
+	return;
 }
 
 /*
