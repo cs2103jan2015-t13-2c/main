@@ -1,3 +1,18 @@
+/*
+This class is to manipulate the location of the save file for TASKKY.
+
+Functionalities include writing the vector of Tasks into the save file and parsing the saved
+file into a vector of Tasks.
+
+The save file has to be named "Save.json", but location of the file can be anywhere, handled
+by the CommandChangeFileLocation and CommandCheckFileLocation classes.
+
+Save.json should not be tampered by user manually, as editing it may cause error in parsing
+should the format of the document does not match the JSON Object standard.
+
+@author: A0094024M Adisurya Nataprawira
+*/
+
 #include "CommandChangeFileLocation.h"
 
 const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_CHANGED = "File location changed succesfully";

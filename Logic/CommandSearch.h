@@ -58,6 +58,7 @@ private:
 	static const int INVALID_NUMBER_FORMAT = -1;
 	static const int DAYS_TO_MINUTES = 1440;
 	static const int HOURS_TO_MINUTES = 60;
+	static const string CommandSearch::INVALID_SEARCH_FUNCTION;
 	static const string CommandSearch::ERROR_TOOMANY_SEARCH_ARGUMENTS;
 	static const string CommandSearch::INVALID_DURATION;
 	static const string CommandSearch::MESSAGE_NEXT_AVAILABLE_SLOT;
