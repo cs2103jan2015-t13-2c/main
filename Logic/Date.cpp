@@ -47,7 +47,6 @@ string Date::parseDateToDisplay(){
 }
 
 
-
 Date *Date::toDate(string date_str){
 
 	//NEED TO CHANGE IF FUNCTION toString CHANGE, created specific to toString function only.

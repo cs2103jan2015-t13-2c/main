@@ -33,6 +33,9 @@ public:
 	static void setAllCurrentTasks();
 	static void loadAllCurrentTasks(vector<Task> allCurrentTasks);
 
+	static int TaskManager::getIndex(Task task);
+	static vector<Task>* TaskManager::getVector(Task task);
+
 	static int getIndexToInsert(Task task); 
 	static int getFloatingIndexToInsert(Task task, vector<Task>* floatingTasks);
 	static int getTimedIndexToInsert(Task task, vector<Task>* timedTasks);

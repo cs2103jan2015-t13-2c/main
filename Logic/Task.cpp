@@ -26,6 +26,13 @@ Task::Task(string taskDetails,
 	}
 }
 
+Task Task::clone(){
+	Task task = Task(_taskDetails, _taskStartTime, 
+		_taskEndTime, _taskDeadline, _taskPriority);
+	task.setTaskMarked(getTaskMarked());
+	return task;
+}
+
 //Destructor
 Task::~Task(){
 }

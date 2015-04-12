@@ -30,7 +30,6 @@ public:
 	};
 
 	CommandBuilder();
-	~CommandBuilder();
 
 	void clearPreviousCommand();
 

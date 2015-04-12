@@ -10,14 +10,16 @@
 class CommandUpdate: public Command
 {
 public:
+
 	CommandUpdate(string taskDetails,
 		Date *taskStartTime,
 		Date *taskEndTime,
 		Date *taskDeadline,
 		Task::Priority taskPriority,
 		int taskNumber);
-	~CommandUpdate();
+
 	virtual string execute();
+
 	virtual Command* getInverseCommand();
 
 	static const string CommandUpdate::MESSAGE_UPDATED;

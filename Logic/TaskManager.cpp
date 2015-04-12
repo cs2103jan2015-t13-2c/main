@@ -1,6 +1,13 @@
 #include "TaskManager.h"
 
 
+/*
+When a task is added, it is auto sorted following this method:
+1. Timed tasks come first, in chronological then alphabetical order
+2. Floating tasks come next, in alphabetical order
+3. Marked timed tasks come next, in chronological then alphabetical order
+4. Marked floating tasks come last
+*/
 //This class is used to manage the program's internal representation of all current Tasks
 //It is a singleton class, so that there will only be 1 instance of the tasks
 
@@ -78,34 +85,77 @@ void TaskManager::loadAllCurrentTasks(vector<Task> allCurrentTasks){
 
 void TaskManager::addTask(Task task){
 
-	int indexToInsert = getIndexToInsert(task);
+	int indexToInsert = getIndex(task);
+	vector<Task>* vectorToInsert = getVector(task);
 
-	int timedTaskSize = _allTimedTasks->size();
-	int floatingTaskSize = _allFloatingTasks->size();
-	int markedTimedTaskSize = _allMarkedTimedTasks->size();
-	int markedFloatingTaskSize = _allMarkedFloatingTasks->size();
-
-	if (indexToInsert <= timedTaskSize){
-		_allTimedTasks->insert(_allTimedTasks->begin() + indexToInsert, task);
-	}
-	else if (indexToInsert <= timedTaskSize + floatingTaskSize){
-		int index = indexToInsert - timedTaskSize;
-		_allFloatingTasks->insert(_allFloatingTasks->begin() + index, task);
-	}
-	else if (indexToInsert <= timedTaskSize + floatingTaskSize + markedTimedTaskSize){
-		int index = indexToInsert - timedTaskSize - floatingTaskSize;
-		_allMarkedTimedTasks->insert(_allMarkedTimedTasks->begin() + index, task);
-	}
-	else if (indexToInsert <= timedTaskSize + floatingTaskSize + markedTimedTaskSize +
-		markedFloatingTaskSize){
-		int index = indexToInsert - timedTaskSize - floatingTaskSize - markedTimedTaskSize;
-		_allMarkedFloatingTasks->insert(_allMarkedFloatingTasks->begin() + index, task);
-	}
-	else{
-		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
-	}
+	vectorToInsert->insert(vectorToInsert->begin() + indexToInsert, task);
 
 	setAllCurrentTasks();
+}
+
+int TaskManager::getIndex(Task task){
+
+	//task should be added to the _allTimedTasks vector
+	if ((task.getTaskType() == Task::DEADLINE || task.getTaskType() == Task::TIMED)
+		&& !task.getTaskMarked()){
+
+		return getTimedIndexToInsert(task, _allTimedTasks);
+
+	}
+
+	//task should be added to the _allFloatingTasks vector
+	else if ((task.getTaskType() == Task::FLOATING) && !task.getTaskMarked()){
+
+		return getFloatingIndexToInsert(task, _allFloatingTasks);
+
+	}
+
+	//task should be added to the _allMarkedTimedTasks vector
+	else if (task.getTaskType() == Task::DEADLINE || task.getTaskType() == Task::TIMED){
+
+		return getTimedIndexToInsert(task, _allMarkedTimedTasks);
+
+	}
+
+	//task should be added to the _allMarkedFloatingTasks vector
+	else{
+
+		return getFloatingIndexToInsert(task, _allMarkedFloatingTasks);
+
+	}
+
+}
+
+vector<Task>* TaskManager::getVector(Task task){
+
+	//task should be added to the _allTimedTasks vector
+	if ((task.getTaskType() == Task::DEADLINE || task.getTaskType() == Task::TIMED)
+		&& !task.getTaskMarked()){
+
+		return _allTimedTasks;
+
+	}
+
+	//task should be added to the _allFloatingTasks vector
+	else if ((task.getTaskType() == Task::FLOATING) && !task.getTaskMarked()){
+
+		return _allFloatingTasks;
+
+	}
+
+	//task should be added to the _allMarkedTimedTasks vector
+	else if (task.getTaskType() == Task::DEADLINE || task.getTaskType() == Task::TIMED){
+
+		return _allMarkedTimedTasks;
+
+	}
+
+	//task should be added to the _allMarkedFloatingTasks vector
+	else{
+
+		return _allMarkedFloatingTasks;
+
+	}
 }
 
 

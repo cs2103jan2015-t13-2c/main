@@ -27,6 +27,8 @@ public:
 	//Destructor
 	Task::~Task();
 
+	Task clone();
+
 	//Modifiers
 	void Task::setTaskDetails(string taskDetails);
 	void Task::setTaskStartTime(Date* taskStartTime);

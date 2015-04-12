@@ -11,18 +11,20 @@
 class CommandMark: public Command
 {
 public:
+
 	CommandMark(int taskNumber);
-	~CommandMark();
+
 	virtual string execute();
+
 	virtual Command* getInverseCommand();
 
 	static const string CommandMark::MESSAGE_MARKED;
 	static const string CommandMark::MESSAGE_NOT_MARKED;
+	static const string CommandMark::ERROR_MESSAGE_COMMAND_TASKNUM;
 	static char CommandMark::buffer[255];
 
-	static const string CommandMark::ERROR_MESSAGE_COMMAND_TASKNUM;
-
 private:
+
 	int _taskNumber;
 };
 

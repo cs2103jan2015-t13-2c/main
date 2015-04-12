@@ -4,7 +4,6 @@
 // Global static pointer used to ensure a single instance of the class.
 Controller* Controller::_instance = NULL;
 vector<Command*>* Controller::_undoStack = NULL;
-vector<Command*>* Controller::_redoStack = NULL;
 
 Controller::Controller()
 {
@@ -23,12 +22,6 @@ vector<Command*>* Controller::getUndoStack(){
 	return _undoStack;
 }
 
-vector<Command*>* Controller::getRedoStack(){
-	if (!_redoStack)
-		_redoStack = new vector<Command*>;
-	return _redoStack;
-}
-
 string Controller::processUserInput(string userInput){
 
 	ErrorLogger* errorLogger = ErrorLogger::getInstance();
@@ -44,7 +37,6 @@ string Controller::processUserInput(string userInput){
 		
 		if (undoCommand != nullptr){
 			getUndoStack()->push_back(undoCommand);
-			getRedoStack()->clear();
 		}
 
 		feedback = command->execute();

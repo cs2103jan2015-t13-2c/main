@@ -17,8 +17,5 @@ Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c5619
 Class TaskkyUI.TaskkyGUI: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
   :System.Windows.Forms.Form
     Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
-<<<<<<< HEAD
-=======
   Methods:
     textBox1_TextChanged(Object, EventArgs): PrivateScope, Public, HideBySig
->>>>>>> origin/master

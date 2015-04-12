@@ -11,15 +11,18 @@ using namespace std;
 class CommandAdd: public Command
 {
 public:
+
 	CommandAdd(string taskDetails,
 		Date *taskStartTime,
 		Date *taskEndTime,
 		Date *taskDeadline,
 		Task::Priority taskPriority);
 
-	~CommandAdd();
 	virtual string execute();
+	
 	virtual Command* getInverseCommand();
+
+	static const string CommandAdd::MESSAGE_ADDED;
 
 private:
 	string _taskDetails;
