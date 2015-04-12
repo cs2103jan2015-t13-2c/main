@@ -151,10 +151,6 @@ Command* CommandBuilder::parseCommand(string userInput){
 
 		return new CommandSearch(_taskDetails, _taskStartTime, _taskEndTime,
 			_taskDeadline, _taskPriority, _duration, _taskMarked, _foundMarked, _foundPriority);
-	
-	case CommandType::Redo:
-
-		return new CommandRedo();
 
 	case CommandType::ChangeFileLocation:
 
@@ -204,9 +200,6 @@ CommandBuilder::CommandType CommandBuilder::determineCommandType(string commandT
 	}
 	else if (equalsIgnoreCase(commandTypeString, "search")) {
 		return CommandType::Search;
-	}
-	else if (equalsIgnoreCase(commandTypeString, "redo")) {
-		return CommandType::Redo;
 	}
 	else if (equalsIgnoreCase(commandTypeString, "checkfileloc")) {
 		return CommandType::CheckFileLocation;

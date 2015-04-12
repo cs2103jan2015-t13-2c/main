@@ -59,9 +59,6 @@
     <ClCompile Include="CommandMark.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
-    <ClCompile Include="CommandRedo.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
     <ClCompile Include="CommandSearch.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
@@ -131,9 +128,6 @@
       <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="CommandMark.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandRedo.h">
       <Filter>Commands</Filter>
     </ClInclude>
     <ClInclude Include="CommandSearch.h">

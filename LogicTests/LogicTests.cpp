@@ -25,7 +25,6 @@
 #include "TaskDisplayer.cpp"
 #include "CommandSearch.cpp"
 #include "CommandException.cpp"
-#include "CommandRedo.cpp"
 #include "CommandChangeFileLocation.cpp"
 #include "CommandCheckFileLocation.cpp"
 #include "ErrorLogger.cpp"
@@ -107,12 +106,16 @@ namespace LogicTests
 			Assert::AreEqual<bool>(false, earlierDate.sameDate(tmrDate));
 			
 		}
+
 		TEST_METHOD(TaskManagerTest)
 		{
 			//checking both instances are the same, singleton class
 			TaskManager* instance1 = TaskManager::getInstance();
 			TaskManager* instance2 = TaskManager::getInstance();
 			Assert::AreEqual<bool>(true, typeid(*instance1) == typeid(*instance2));
+
+			//Adding new tasks
+			Task newFloating1 = Task("Do Something", nullptr, nullptr, nullptr, Task::Priority::HIGH);
 		}
 		
 		TEST_METHOD(ControllerTest)
@@ -473,11 +476,11 @@ namespace LogicTests
 			Assert::AreEqual<bool>(true, Parser::getTaskPriority() == Task::HIGH);
 
 
-			Parser::parseCommandAdd("add task from 23 dec to 27 dec #low");
+			Parser::parseCommandAdd("add task from 23 dec to 27 dec");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
 			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "23 Dec 2015 (Wed), 11:59PM");
 			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "27 Dec 2015 (Sun), 11:59PM");
-			Assert::AreEqual<bool>(true, Parser::getTaskPriority() == Task::LOW);
+			Assert::AreEqual<bool>(true, Parser::getTaskPriority() == Task::NORMAL);
 		}
 
 		TEST_METHOD(ParserUpdateTest) {

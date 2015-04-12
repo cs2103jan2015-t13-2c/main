@@ -105,8 +105,6 @@ void Parser::parseCommandAdd(string userCommand){
 	//Adding task priority
 	if (*iter == "#impt" || *iter == "#high"){
 		_taskPriority = Task::Priority::HIGH;
-	} else if (*iter == "#low"){
-		_taskPriority = Task::Priority::LOW;
 	}
 }
 
@@ -169,9 +167,7 @@ void Parser::parseCommandUpdate(string userCommand){
 		_taskEndTime = (parseTimeString(updatedStr+" "));
 	} 
 	else if (attributeToChange == "priority"){
-		if (updatedStr == "low"){
-			_taskPriority = Task::Priority::LOW;
-		} else if (updatedStr == "normal"){
+		if (updatedStr == "normal"){
 			_taskPriority = Task::Priority::NORMAL;
 		} else if (updatedStr == "high"){
 			_taskPriority = Task::Priority::HIGH;
@@ -320,10 +316,7 @@ void Parser::parseCommandSearch(string userCommand){
 	if (*iter == "#impt" || *iter == "#high"){
 		_taskPriority = Task::Priority::HIGH;
 		_foundPriority = true;
-	} else if (*iter == "#low"){
-		_taskPriority = Task::Priority::LOW;
-		_foundPriority = true;
-	}
+	} 
 
 	//Search for next available timeslot
 	if (*iter == "next"){
