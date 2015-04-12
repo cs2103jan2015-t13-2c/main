@@ -75,10 +75,10 @@ void Parser::parseCommandAdd(string userCommand){
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
 
 	string text = removeFirstWord(userCommand);
-
 	if (text == ""){
 		throw ParseException(ERROR_MESSAGE_PARSING_ADD);
 	}
+	transform(text.begin(), text.end(), text.begin(), ::tolower);
 
 	string timeString;
 	ostringstream temp;
@@ -116,15 +116,11 @@ void Parser::parseCommandAdd(string userCommand){
 	if (*iter == "from"){
 		iter++;
 		while (*iter != "to"){
+			if (iter == textVec.end()){
+				throw CommandException(ERROR_MESSAGE_COMMAND_NOENDTIME);
+			}
 			temp << *iter << " ";
 			iter++;
-
-			//if (*iter != "\n"){
-			//}
-
-			if (iter == textVec.end()){
-				throw CommandException(ERROR_MESSAGE_COMMAND_ENDTIME);
-			}
 		};
 		timeString = temp.str();
 		_taskStartTime = parseTimeString(timeString);
@@ -138,13 +134,9 @@ void Parser::parseCommandAdd(string userCommand){
 		};
 		timeString = temp.str();
 		_taskEndTime = parseTimeString(timeString);
+
 		if (_taskEndTime->isEarlierThan(*(_taskStartTime)) == 1) {
-			Date* tempEndTime = _taskEndTime;
-			_taskEndTime = new Date(tempEndTime->getYear() + 1, 
-				tempEndTime->getMonth(), 
-				tempEndTime->getDay(), 
-				tempEndTime->getHour(), 
-				tempEndTime->getMinute());
+			throw CommandException(ERROR_MESSAGE_COMMAND_INVALIDENDTIME);
 		}
 		temp.str("");
 	}
@@ -287,7 +279,7 @@ void Parser::parseCommandSearch(string userCommand){
 			iter++;
 
 			if (iter == textVec.end()){
-				throw CommandException(ERROR_MESSAGE_COMMAND_ENDTIME);
+				throw CommandException(ERROR_MESSAGE_COMMAND_NOENDTIME);
 			}
 		};
 		timeString = temp.str();
@@ -478,14 +470,20 @@ Date* Parser::parseTimeString(string timeStr){
 	int year = Date().getYear();
 	int mon(0); 
 	int day(0); 
-	int hour(0);
-	int minute(0);
+	int hour(23);
+	int minute(59);
 	string temp;
 
 	temp = getFirstWord(timeStr);
 
+	//e.g. user types in "today"
+	if (temp == "today"){
+		mon = Date().getMonth();
+		day = Date().getDay();
+	}
+
 	//E.g. User types in "this thursday"
-	if (temp == "this"){
+	else if (temp == "this"){
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
 		temp = (getFirstWord(timeStr));
 		int taskDay = parseDayName(temp);
@@ -508,15 +506,6 @@ Date* Parser::parseTimeString(string timeStr){
 		day = Date().getDay() + diffinDays;
 	}
 
-	//e.g. user types in "today"
-	else if (temp == "today"){
-		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
-		mon = Date().getMonth();
-		day = Date().getDay();
-		hour = 23;
-		minute = 59;
-	}
-
 	//E.g. User types in "9 apr"
 	else {
 		day = parseInt(temp);
@@ -536,7 +525,6 @@ Date* Parser::parseTimeString(string timeStr){
 				++year;
 			}
 		}
-
 		return (new Date(year, mon, day, hour, minute));
 	}
 
@@ -552,31 +540,10 @@ Date* Parser::parseTimeString(string timeStr){
 		}
 	}
 
-	//Checks if time is in AM/PM 
-	bool afterNoon = false;
-	if (temp.find("pm") != string::npos) {
-			afterNoon = true;
-		}
+	bool isTime = parseTime(temp, hour, minute);
 
-	char chars[] = ".:apmhrs";
-	for (unsigned int i = 0; i < strlen(chars); ++i) {
-		temp.erase(remove(temp.begin(), temp.end(), chars[i]), temp.end());
-	}
-	int time = parseInt(temp);
-
-	//Checks if time is in format 12pm or 12:00pm
-	if (time / 100 == 0) {
-		hour = time % 100;
-	} else {
-		hour = time / 100;
-		minute = time % 100;
-	}
-
-	if (hour < 12 && afterNoon){
-		hour += 12;
-	}
-	if (hour == 12 && !afterNoon){
-		hour = 0;
+	if (!isTime){
+		throw ParseException(ERROR_MESSAGE_PARSING_INVALIDTIME);
 	}
 
 	return (new Date(year, mon, day, hour, minute));
@@ -638,6 +605,44 @@ int Parser::parseMonthName(string monthName) {
 	return mon;
 }
 
+bool Parser::parseTime(string time, int &hour, int &minute){
+	hour = 0;
+	minute = 0;
+
+	//Checks if time is in AM/PM 
+	bool afterNoon = false;
+	if (time.find("pm") != string::npos) {
+		afterNoon = true;
+	}
+
+	char chars[] = ".:apmhrs";
+	for (unsigned int i = 0; i < strlen(chars); ++i) {
+		time.erase(remove(time.begin(), time.end(), chars[i]), time.end());
+	}
+	int t = parseInt(time);
+	if (t == -1){
+		return false;
+	}
+
+	//Checks if time is in format 12pm or 12:00pm
+	if (t / 100 == 0) {
+		hour = t % 100;
+	}
+	else {
+		hour = t / 100;
+		minute = t % 100;
+	}
+
+	if (hour < 12 && afterNoon){
+		hour += 12;
+	}
+	if (hour == 12 && !afterNoon){
+		hour = 0;
+	}
+
+	return true;
+}
+
 const string Parser::ERROR_MESSAGE_PARSING_ADD = "There is no task to add"; 
 const string Parser::ERROR_MESSAGE_PARSING_UPDATEARGUMENTS = "There are no arguments to update";
 const string Parser::ERROR_MESSAGE_PARSING_RECURRENCE = "Please enter a valid Recurrence: DAY, WEEK, MONTH";
@@ -645,6 +650,8 @@ const string Parser::ERROR_MESSAGE_PARSING_PRIORITY = "Please enter a valid Prio
 const string Parser::ERROR_MESSAGE_PARSING_DATEPASSED = "This date has already passed";
 const string Parser::ERROR_MESSAGE_PARSING_DAYNAME = "Day is invalid";
 const string Parser::ERROR_MESSAGE_PARSING_MONTHNAME = "Month is invalid";
-const string Parser::ERROR_MESSAGE_COMMAND_ENDTIME = "Please enter the ending time!";
+const string Parser::ERROR_MESSAGE_PARSING_INVALIDTIME = "Time is invalid";
+const string Parser::ERROR_MESSAGE_COMMAND_NOENDTIME = "Please enter the ending time!";
+const string Parser::ERROR_MESSAGE_COMMAND_INVALIDENDTIME = "End time must be after start time!";
 const string Parser::ERROR_MESSAGE_PARSING_TASK = "Please enter a task to add!";
 const string Parser::ERROR_MESSAGE_DELETE_TASKNUM = "Please enter a task number to delete!";

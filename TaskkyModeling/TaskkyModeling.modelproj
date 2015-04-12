@@ -25,6 +25,13 @@
     <Content Include="ModelDefinition\Package_1925.uml">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Taskky.activitydiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Taskky.activitydiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>Taskky.activitydiagram</DependentUpon>
+    </Content>
     <Content Include="Taskky.componentdiagram">
       <SubType>Content</SubType>
     </Content>
@@ -52,6 +59,13 @@
     <Content Include="Storage.classdiagram.layout">
       <SubType>Content</SubType>
       <DependentUpon>Storage.classdiagram</DependentUpon>
+    </Content>
+    <Content Include="Taskky.sequencediagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="Taskky.sequencediagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>Taskky.sequencediagram</DependentUpon>
     </Content>
     <Folder Include="ModelDefinition\" />
     <Content Include="Logic.classdiagram">

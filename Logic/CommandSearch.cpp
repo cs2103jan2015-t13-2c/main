@@ -32,7 +32,7 @@ string CommandSearch::execute() {
 	TaskManager instance = *TaskManager::getInstance();
 
 	if (_taskDetails != "") {
-		if (_taskStartTime != NULL || _taskEndTime != NULL || _taskPriority != NULL){
+		if (_taskStartTime != NULL || _taskEndTime != NULL || _foundPriority != false){
 			throw CommandException(ERROR_TOOMANY_SEARCH_ARGUMENTS);
 		}
 		return searchByName(_taskDetails);
