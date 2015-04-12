@@ -19,13 +19,12 @@
 #include "filewritestream.h"
 #include "writer.h"
 
-//using namespace std;
-
 class Storage
 {
 public:
 
 	static Storage* getInstance();
+
 	void writeToFile();
 	static vector<Task> readFromFile();
 
@@ -39,6 +38,7 @@ public:
 	static void clearSaveFile(string filename);
 	static rapidjson::Document parseVectorToJSON(vector<Task> TaskVector);
 	static void writeJSONtoFile(string filename, rapidjson::Document document);
+	static rapidjson::Value convertTaskToJSON(Task task, rapidjson::Document::AllocatorType& allocator);
 
 private:
 	Storage();

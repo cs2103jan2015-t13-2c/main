@@ -1,3 +1,18 @@
+/*
+This class is to parse the command line for TASKKY.
+
+The parser will parse the user command differently depending on the 
+keyword(ADD, UPDATE, DELETE, etc.), and return the necessary parameters 
+to the Command Builder. 
+
+For example, calling "add task by 10 may" will return _taskDetails = "task" 
+and _taskDeadline = "10 may" to the Command Builder, which will create a 
+task based on these parameters.
+
+
+@author: A0113716M Kelvin Koa
+*/
+
 #include "Parser.h"
 
 int Parser::_taskNumber;
@@ -5,86 +20,32 @@ string Parser::_taskDetails;
 Date* Parser::_taskStartTime = nullptr;
 Date* Parser::_taskEndTime = nullptr;
 Date* Parser::_taskDeadline = nullptr;
-Task::Priority Parser::_taskPriority;
+Task::Priority Parser::_taskPriority = Task::NORMAL;
 string Parser::_duration;
 bool Parser::_taskMarked;
 bool Parser::_foundMarked;
 bool Parser::_foundPriority;
 
-Parser::Parser(){
-	clearPreviousParse();
-}
-
-void Parser::clearPreviousParse(){
-	_taskDetails = "";
-	_taskStartTime = 0;
-	_taskEndTime = 0;
-	_taskDeadline = 0;
-	_taskPriority = Task::NORMAL;
-	_taskMarked = false;
-	_taskNumber = -1;
-	_foundMarked = false;
-	_foundPriority = false;
-}
-
-string Parser::getTaskDetails(){
-	return _taskDetails;
-}
-
-Date* Parser::getTaskStartTime(){
-	return _taskStartTime;
-}
-
-Date* Parser::getTaskEndTime(){
-	return _taskEndTime;
-}
-
-Date* Parser::getTaskDeadline(){
-	return _taskDeadline;
-}
-
-Task::Priority Parser::getTaskPriority(){
-	return _taskPriority;
-}
-
-string Parser::getDuration(){
-	return _duration;
-}
-
-bool Parser::getTaskMarked(){
-	return _taskMarked;
-}
-
-int Parser::getTaskNumber(){
-	return _taskNumber;
-}
-
-bool Parser::getFoundMarked(){
-	return _foundMarked;
-}
-
-bool Parser::getFoundPriority(){
-	return _foundPriority;
-}
-
-Parser::~Parser(){
-}
-
+/*
+* ====================================================================
+*  Parser for Command Add
+* ====================================================================
+*/
 void Parser::parseCommandAdd(string userCommand){
 	Parser::clearPreviousParse();
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
 
 	string text = removeFirstWord(userCommand);
-	if (text == ""){
+// -------------------------Error Catching-------------------------------
+	if (text == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_ADD);
-	}
-	transform(text.begin(), text.end(), text.begin(), ::tolower);
+// ----------------------------------------------------------------------
+	toLowerCase(text);
+	vector<string> textVec = splitParameters(text);
+	textVec.push_back("\n");	//Represents the end of vector
 
 	string timeString;
 	ostringstream temp;
-
-	vector<string> textVec = splitParameters(text);
-	textVec.push_back("\n");	//Represents the end of vector
 	vector<string>::iterator iter = textVec.begin();
 
 	//Adding task details
@@ -92,11 +53,10 @@ void Parser::parseCommandAdd(string userCommand){
 		temp << *iter << " ";
 		iter++;
 	};
-
-	if (temp.str() == ""){
+// -------------------------Error Catching-------------------------------
+	if (temp.str() == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_TASK);
-	}
-
+// ----------------------------------------------------------------------
 	_taskDetails = temp.str();
 	temp.str("");
 
@@ -116,9 +76,10 @@ void Parser::parseCommandAdd(string userCommand){
 	if (*iter == "from"){
 		iter++;
 		while (*iter != "to"){
-			if (iter == textVec.end()){
+// -------------------------Error Catching-------------------------------
+			if (iter == textVec.end())
 				throw CommandException(ERROR_MESSAGE_COMMAND_NOENDTIME);
-			}
+// ----------------------------------------------------------------------			
 			temp << *iter << " ";
 			iter++;
 		};
@@ -134,10 +95,10 @@ void Parser::parseCommandAdd(string userCommand){
 		};
 		timeString = temp.str();
 		_taskEndTime = parseTimeString(timeString);
-
-		if (_taskEndTime->isEarlierThan(*(_taskStartTime)) == 1) {
+// -------------------------Error Catching-------------------------------
+		if (_taskEndTime->isEarlierThan(*(_taskStartTime)) == 1) 
 			throw CommandException(ERROR_MESSAGE_COMMAND_INVALIDENDTIME);
-		}
+// ----------------------------------------------------------------------
 		temp.str("");
 	}
 
@@ -149,12 +110,21 @@ void Parser::parseCommandAdd(string userCommand){
 	}
 }
 
-
+/*
+* ====================================================================
+*  Parser for Command Update
+* ====================================================================
+*/
 void Parser::parseCommandUpdate(string userCommand){
 	Parser::clearPreviousParse();
 
 	ostringstream oss;
 	string text = removeFirstWord(userCommand);
+// -------------------------Error Catching-------------------------------
+	if (text == "")
+		throw ParseException(ERROR_MESSAGE_PARSING_UPDATE);
+// ----------------------------------------------------------------------
+	toLowerCase(text);
 
 	//Getting the task to change
 	string taskNumberStr = getFirstWord(text);
@@ -169,35 +139,34 @@ void Parser::parseCommandUpdate(string userCommand){
 
 	//Getting the attribute to change
 	text = removeFirstWord(text);
-	if (text == ""){
+// -------------------------Error Catching-------------------------------
+	if (text == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_UPDATEARGUMENTS);
-	}
+// ----------------------------------------------------------------------
 	string attributeToChange = getFirstWord(text);
 
-	//User can either type in the changed version or program will prompt
+	//Getting the details to change
 	string updatedStr;
 	text = removeFirstWord(text);
+// -------------------------Error Catching-------------------------------
+	if (text == "")
+		throw ParseException(ERROR_MESSAGE_PARSING_MISSINGDETAILS);
+// ----------------------------------------------------------------------
+	updatedStr = text;
 
-	if (text == ""){
-		cout << "Enter new " << attributeToChange << ": ";
-		getline(cin, updatedStr);
-	}
-	else{
-		updatedStr = text;
-	}
 
 	//Changes are made here
 	if (attributeToChange == "details"){
-		_taskDetails = updatedStr;
+		_taskDetails = updatedStr+" ";
 	} 
 	else if (attributeToChange == "deadline"){
-		_taskDeadline = (parseTimeString(updatedStr));
+		_taskDeadline = (parseTimeString(updatedStr+" "));
 	} 
 	else if (attributeToChange == "starttime"){
-		_taskStartTime = (parseTimeString(updatedStr));
+		_taskStartTime = (parseTimeString(updatedStr+" "));
 	} 
 	else if (attributeToChange == "endtime"){
-		_taskEndTime = (parseTimeString(updatedStr));
+		_taskEndTime = (parseTimeString(updatedStr+" "));
 	} 
 	else if (attributeToChange == "priority"){
 		if (updatedStr == "low"){
@@ -211,30 +180,37 @@ void Parser::parseCommandUpdate(string userCommand){
 		}
 	}
 	else {
-		//throw error
+		throw ParseException(ERROR_MESSAGE_PARSING_UPDATEARGUMENTS);
 	}
 }
 
-
+/*
+* ====================================================================
+*  Parser for Command Delete
+* ====================================================================
+*/
 void Parser::parseCommandDelete(string userCommand){
 	Parser::clearPreviousParse();
 
-	//get usercommand without the first word
 	string text = removeFirstWord(userCommand);
-
-	if (text == ""){
+// -------------------------Error Catching-------------------------------
+	if (text == "")
 		throw ParseException(ERROR_MESSAGE_DELETE_TASKNUM);
-	}
+// ----------------------------------------------------------------------
 
 	string task_number_str = getFirstWord(text);
 	text = removeFirstWord(text);
 	_taskNumber = atoi(task_number_str.c_str());
 }
 
+/*
+* ====================================================================
+*  Parser for Command Mark
+* ====================================================================
+*/
 void Parser::parseCommandMark(string userCommand){
 	Parser::clearPreviousParse();
 
-	//get usercommand without the first word
 	string text = removeFirstWord(userCommand);
 
 	string task_number_str = getFirstWord(text);
@@ -242,10 +218,14 @@ void Parser::parseCommandMark(string userCommand){
 	_taskNumber = atoi(task_number_str.c_str());
 }
 
+/*
+* ====================================================================
+*  Parser for Command Unmark
+* ====================================================================
+*/
 void Parser::parseCommandUnmark(string userCommand){
 	Parser::clearPreviousParse();
 
-	//get usercommand without the first word
 	string text = removeFirstWord(userCommand);
 
 	string task_number_str = getFirstWord(text);
@@ -253,25 +233,31 @@ void Parser::parseCommandUnmark(string userCommand){
 	_taskNumber = atoi(task_number_str.c_str());
 }
 
+/*
+* ====================================================================
+*  Parser for Command Search
+* ====================================================================
+*/
 void Parser::parseCommandSearch(string userCommand){
 
 	string text = removeFirstWord(userCommand);
-	ostringstream temp;
-	string timeString;
-
+	toLowerCase(text);
 	vector<string> textVec = splitParameters(text);
-	textVec.push_back("\n");
+	textVec.push_back("\n");	//Represents the end of vector
+
+	string timeString;
+	ostringstream temp;
 	vector<string>::iterator iter = textVec.begin();
 
+	//Search using task details
 	while (!isSearchKeyword(*iter)){
 		temp << *iter << " ";
 		iter++;
 	};
-
 	_taskDetails = temp.str();
 	temp.str("");
 
-	//Adding task start time (if it is timed task)
+	//Search using task start time 
 	if (*iter == "from"){
 		iter++;
 		while (*iter != "to"){
@@ -286,7 +272,7 @@ void Parser::parseCommandSearch(string userCommand){
 		_taskStartTime = parseTimeString(timeString);
 		temp.str("");
 
-		//Adding task end time
+		//Search using task end time
 		iter++;
 		while (!isSearchKeyword(*iter)){
 			temp << *iter << " ";
@@ -297,6 +283,7 @@ void Parser::parseCommandSearch(string userCommand){
 		temp.str("");
 	}
 
+	//Search for tasks before a certain date
 	if (*iter == "before"){
 		iter++;
 		while (!isSearchKeyword(*iter)){
@@ -308,6 +295,7 @@ void Parser::parseCommandSearch(string userCommand){
 		temp.str("");
 	}
 
+	//Search for tasks after a certain date
 	if (*iter == "after"){
 		iter++;
 		while (!isSearchKeyword(*iter)){
@@ -319,23 +307,25 @@ void Parser::parseCommandSearch(string userCommand){
 		temp.str("");
 	}
 
+	//Search for marked/unmarked tasks
 	if (*iter == "done"){
 		_taskMarked = true;
 		_foundMarked = true;
-	}else if (*iter == "undone"){
+	} else if (*iter == "undone"){
 		_taskMarked = false;
 		_foundMarked = true;
 	}
 
+	//Search using priority
 	if (*iter == "#impt" || *iter == "#high"){
 		_taskPriority = Task::Priority::HIGH;
 		_foundPriority = true;
-	}
-	else if (*iter == "#low"){
+	} else if (*iter == "#low"){
 		_taskPriority = Task::Priority::LOW;
 		_foundPriority = true;
 	}
 
+	//Search for next available timeslot
 	if (*iter == "next"){
 		iter++;
 		if (*iter == "available") {
@@ -347,17 +337,17 @@ void Parser::parseCommandSearch(string userCommand){
 		}
 		_duration = temp.str();
 	}
-	
-
 }
 
-
+/*
+* ====================================================================
+*  Parser for Command Changefileloc
+* ====================================================================
+*/
 void Parser::parseCommandChangeFileLocation(string userCommand){
 	Parser::clearPreviousParse();
 
-	//get usercommand without the first word
 	string text = removeFirstWord(userCommand);
-
 	_taskDetails = text;
 }
 
@@ -366,20 +356,17 @@ void Parser::parseCommandChangeFileLocation(string userCommand){
 *  Additional functions
 * ====================================================================
 */
-
 string Parser::removeFirstWord(string userCommand){
-	
-	//in case the old function gives problem
-	//size_t firstSpace = userCommand.find_first_of(' ');
-	//return userCommand.substr(firstSpace + 1, userCommand.npos);
-
-	//old function
 	return trim(replace(userCommand, getFirstWord(userCommand), ""));
 }
 
 string Parser::getFirstWord(string userCommand){
 	string commandTypeString = splitParameters(userCommand)[0];
 	return commandTypeString;
+}
+
+void Parser::toLowerCase(string &text){
+	transform(text.begin(), text.end(), text.begin(), ::tolower);
 }
 
 // This method only split string based on delimiter space
@@ -463,11 +450,11 @@ bool Parser::isSearchKeyword(string word){
 }
 
 Date* Parser::parseTimeString(string timeStr){
-	if (timeStr == ""){
-		//throw error
+// -------------------------Error Catching-------------------------------
+	if (timeStr == "")
 		throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);
-	}
-	
+// ----------------------------------------------------------------------
+		
 	int year = Date().getYear();
 	int mon(0); 
 	int day(0); 
@@ -477,7 +464,7 @@ Date* Parser::parseTimeString(string timeStr){
 
 	temp = getFirstWord(timeStr);
 
-	//e.g. user types in "today"
+	//e.g. User types in "today"
 	if (temp == "today"){
 		mon = Date().getMonth();
 		day = Date().getDay();
@@ -494,7 +481,7 @@ Date* Parser::parseTimeString(string timeStr){
 		temp = (getFirstWord(timeStr));
 		int taskDay = parseDayName(temp);
 		int diffinDays = taskDay - Date().getDayName();
-		//if negative, refer to next week
+		//If date has passed, refer to next week
 		if (diffinDays < 0){
 			diffinDays = diffinDays + 7;
 		}
@@ -517,13 +504,17 @@ Date* Parser::parseTimeString(string timeStr){
 	//E.g. User types in "9 apr"
 	else {
 		day = parseInt(temp);
-		if (day > 31 || day < 0){
+// -------------------------Error Catching-------------------------------
+		if (day > 31 || day < 0)
 			throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);
-		}
+// ----------------------------------------------------------------------
+
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
-		if (timeStr == ""){
+// -------------------------Error Catching-------------------------------
+		if (timeStr == "")
 			throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);
-		}
+// ----------------------------------------------------------------------
+
 		temp = (getFirstWord(timeStr));
 		mon = parseMonthName(temp);
 	}
@@ -531,36 +522,56 @@ Date* Parser::parseTimeString(string timeStr){
 	timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
 	if (timeStr != "") {
 		temp = getFirstWord(timeStr);
-	} else {
+	} 
+	else {
 		if (mon < Date().getMonth()){
 			++year;
 		} else if (mon == Date().getMonth()){
-			if (day < Date().getDay()){
+			
+		if (day < Date().getDay()){
 				++year;
-			}
 		}
+	}
 		return (new Date(year, mon, day, hour, minute));
 	}
 
 	//Checks if user keyed in a year (Default is set to current year)
 	if (parseInt(temp) != -1) {
 		year = parseInt(temp);
-		if (year < 2015){
-			throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);
+		if (year < Date().getYear()){
+			cout << "Warning: Date has passed." << endl;
 		}
 
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
 		if (timeStr != "") {
 			temp = getFirstWord(timeStr);
-		} else {
+		} 
+		else {
+			if (mon < Date().getMonth()){
+				++year;
+			}
+			else if (mon == Date().getMonth()){
+				if (day < Date().getDay()){
+					++year;
+				}
+			}
 			return (new Date(year, mon, day, hour, minute));
 		}
 	}
 
 	bool isTime = parseTime(temp, hour, minute);
-
-	if (!isTime){
+// -------------------------Error Catching-------------------------------
+	if (!isTime)
 		throw ParseException(ERROR_MESSAGE_PARSING_INVALIDTIME);
+// ----------------------------------------------------------------------
+	
+	if (mon < Date().getMonth()){
+		++year;
+	}
+	else if (mon == Date().getMonth()){
+		if (day < Date().getDay()){
+			++year;
+		}
 	}
 
 	return (new Date(year, mon, day, hour, minute));
@@ -644,8 +655,7 @@ bool Parser::parseTime(string time, int &hour, int &minute){
 	//Checks if time is in format 12pm or 12:00pm
 	if (t / 100 == 0) {
 		hour = t % 100;
-	}
-	else {
+	} else {
 		hour = t / 100;
 		minute = t % 100;
 	}
@@ -660,10 +670,82 @@ bool Parser::parseTime(string time, int &hour, int &minute){
 	return true;
 }
 
+
+/*
+* ====================================================================
+*  Parser Initialization
+* ====================================================================
+*/
+Parser::Parser(){
+	clearPreviousParse();
+}
+
+void Parser::clearPreviousParse(){
+	_taskDetails = "";
+	_taskStartTime = 0;
+	_taskEndTime = 0;
+	_taskDeadline = 0;
+	_taskPriority = Task::NORMAL;
+	_taskMarked = false;
+	_taskNumber = -1;
+	_foundMarked = false;
+	_foundPriority = false;
+}
+
+string Parser::getTaskDetails(){
+	return _taskDetails;
+}
+
+Date* Parser::getTaskStartTime(){
+	return _taskStartTime;
+}
+
+Date* Parser::getTaskEndTime(){
+	return _taskEndTime;
+}
+
+Date* Parser::getTaskDeadline(){
+	return _taskDeadline;
+}
+
+Task::Priority Parser::getTaskPriority(){
+	return _taskPriority;
+}
+
+string Parser::getDuration(){
+	return _duration;
+}
+
+bool Parser::getTaskMarked(){
+	return _taskMarked;
+}
+
+int Parser::getTaskNumber(){
+	return _taskNumber;
+}
+
+bool Parser::getFoundMarked(){
+	return _foundMarked;
+}
+
+bool Parser::getFoundPriority(){
+	return _foundPriority;
+}
+
+Parser::~Parser(){
+}
+
+
+/*
+* ====================================================================
+*  Error Messages
+* ====================================================================
+*/
 const string Parser::ERROR_MESSAGE_PARSING_ADD = "There is no task to add"; 
+const string Parser::ERROR_MESSAGE_PARSING_UPDATE = "Please enter a task number to update";
 const string Parser::ERROR_MESSAGE_PARSING_UPDATEARGUMENTS = "There are no arguments to update";
-const string Parser::ERROR_MESSAGE_PARSING_RECURRENCE = "Please enter a valid Recurrence: DAY, WEEK, MONTH";
-const string Parser::ERROR_MESSAGE_PARSING_PRIORITY = "Please enter a valid Priority: LOW, NORMAL, HIGH";
+const string Parser::ERROR_MESSAGE_PARSING_MISSINGDETAILS = "Task details cannot be empty";
+const string Parser::ERROR_MESSAGE_PARSING_PRIORITY = "Please enter a valid Priority (LOW, NORMAL, HIGH)";
 const string Parser::ERROR_MESSAGE_PARSING_DATEPASSED = "This date has already passed";
 const string Parser::ERROR_MESSAGE_PARSING_DAYNAME = "Day is invalid";
 const string Parser::ERROR_MESSAGE_PARSING_MONTHNAME = "Month is invalid";
@@ -671,4 +753,4 @@ const string Parser::ERROR_MESSAGE_PARSING_INVALIDTIME = "Time is invalid";
 const string Parser::ERROR_MESSAGE_COMMAND_NOENDTIME = "Please enter the ending time!";
 const string Parser::ERROR_MESSAGE_COMMAND_INVALIDENDTIME = "End time must be after start time!";
 const string Parser::ERROR_MESSAGE_PARSING_TASK = "Please enter a task to add!";
-const string Parser::ERROR_MESSAGE_DELETE_TASKNUM = "Please enter a task number to delete!";
+const string Parser::ERROR_MESSAGE_DELETE_TASKNUM = "Please enter a task number to delete";

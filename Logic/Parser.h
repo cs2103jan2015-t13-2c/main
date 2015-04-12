@@ -41,6 +41,7 @@ public:
 
 	static string removeFirstWord(string userCommand);
 	static string getFirstWord(string userCommand);
+	static void toLowerCase(string &text);
 	static vector<string> splitParameters(string commandParametersString);
 	static string trim_right(const string& s, const string& delimiters = " \f\n\r\t\v");
 	static string trim_left(const string& s, const string& delimiters = " \f\n\r\t\v");
@@ -59,8 +60,9 @@ public:
 	static char buffer[255];
 	static const int INVALID_NUMBER_FORMAT = -1;
 	static const string Parser::ERROR_MESSAGE_PARSING_ADD;
+	static const string Parser::ERROR_MESSAGE_PARSING_UPDATE;
 	static const string Parser::ERROR_MESSAGE_PARSING_UPDATEARGUMENTS;
-	static const string Parser::ERROR_MESSAGE_PARSING_RECURRENCE;
+	static const string Parser::ERROR_MESSAGE_PARSING_MISSINGDETAILS;
 	static const string Parser::ERROR_MESSAGE_PARSING_PRIORITY;
 	static const string Parser::ERROR_MESSAGE_PARSING_DATEPASSED;
 	static const string Parser::ERROR_MESSAGE_PARSING_DAYNAME;
