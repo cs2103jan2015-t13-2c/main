@@ -1,6 +1,30 @@
+/*
+This class is to handle the search command. As an object of this class is constructed, it will
+take in the specific attributes as the search objects and search accordingly (e.g. setting 
+taskDetails will result in searching the TaskVector for a similar task details, etc).
+
+Available searches:
+1. Exact task details search
+2. Near match search (including per word near match)
+3. Search tasks within specified date range
+4. Search tasks before specified date
+5. Search tasks after specified date
+6. Search tasks of specified priority
+7. Search tasks that are done / undone (either)
+8. Search next empty slot
+
+@author: A0094024M Adisurya Nataprawira
+*/
+
 #include "CommandSearch.h"
 
+/*
+* ====================================================================
+*  Constructors, Modifiers, Accessors and Destructors
+* ====================================================================
+*/
 
+//Constructor
 CommandSearch::CommandSearch(string taskDetails,
 	Date *taskStartTime,
 	Date *taskEndTime,
@@ -9,7 +33,7 @@ CommandSearch::CommandSearch(string taskDetails,
 	string duration,
 	bool taskMarked,
 	bool foundMarked,
-	bool foundPriority) {
+	bool foundPriority){
 
 	_taskDetails = taskDetails;
 	_taskStartTime = taskStartTime;
@@ -22,11 +46,28 @@ CommandSearch::CommandSearch(string taskDetails,
 	_foundPriority = foundPriority;
 }
 
-
+//Default destructor
 CommandSearch::~CommandSearch()
 {
 }
 
+//Returns the integer vector of the tasks found
+vector<int> CommandSearch::getTasksIndices(){
+	return foundTasksIndices;
+}
+
+/*
+* ====================================================================
+*  Inherited Functions
+* ====================================================================
+*/
+
+//This function executes the search function. It will check the object attributes and search
+//the corresponding attributes that are not null. Returns the feedback for the search function
+//as how many tasks are found, or for search next available slot, the earliest time point available.
+//
+//@param: none
+//@return: feedback string
 string CommandSearch::execute() {
 
 	TaskManager instance = *TaskManager::getInstance();
@@ -65,10 +106,25 @@ string CommandSearch::execute() {
 
 }
 
+//There is no undo function for search, hence this function returns a null pointer
+//
+//@param: none
+//@return: null pointer
 Command* CommandSearch::getInverseCommand() {
 	return nullptr;
 }
 
+/*
+* ====================================================================
+*  Second Abstractions
+* ====================================================================
+*/
+
+//This function iterates through the vector of Tasks an find match based on the Task details.
+//Return the number of near match, updates the vector of found indices.
+//
+//@param: string to be searched
+//@return: feedback on number of match found
 string CommandSearch::searchByName(string taskname) {
 
 	vector<Task> TaskVector = *(TaskManager::getAllCurrentTasks());
@@ -78,12 +134,10 @@ string CommandSearch::searchByName(string taskname) {
 	ostringstream oss;
 
 	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter){
-		if (iter->getTaskDetails().find(taskname.c_str()) != string::npos){
+		if (containExactMatch(taskname, iter->getTaskDetails())){
 			++count;
 			foundTasksIndices.push_back(position);
-		}
-		else if (StringDistance::LD(taskname.c_str(), iter->getTaskDetails().c_str()) <= 
-			CommandSearch::ACCEPTABLE_DISTANCE){
+		} else if (containNearMatch(taskname, iter->getTaskDetails())){
 			count++;
 			foundTasksIndices.push_back(position);
 		}
@@ -95,6 +149,13 @@ string CommandSearch::searchByName(string taskname) {
 
 }
 
+//This function iterates through the vector of Tasks and find all Tasks that have deadline
+//or start time within the range of dates specified.
+//
+//Only iterate through Timed Tasks and Deadline Tasks. Will not consider Floating Tasks
+//
+//@param: range of date (date from, date to)
+//@return: feedback on number of match found
 string CommandSearch::searchDateRange(Date dateFrom, Date dateTo) {
 
 	ostringstream oss;
@@ -104,7 +165,9 @@ string CommandSearch::searchDateRange(Date dateFrom, Date dateTo) {
 	int count = 0;
 	int position = 1;
 
-	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
+	for (iter = TaskVector.begin(); 
+		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING;
+		++iter){
 		if (iter->getTaskType() == Task::DEADLINE) {
 			if (dateFrom.isEarlierThan(*(iter->getTaskDeadline())) >= 0) {
 				if (dateTo.isEarlierThan(*(iter->getTaskDeadline())) <= 0) {
@@ -130,6 +193,13 @@ string CommandSearch::searchDateRange(Date dateFrom, Date dateTo) {
 
 }
 
+//This function iterates through the vector of Tasks and find all Tasks that have deadline
+//or start time after the date specified.
+//
+//Only iterate through Timed Tasks and Deadline Tasks. Will not consider Floating Tasks
+//
+//@param: minimum date
+//@return: feedback on number of match found
 string CommandSearch::searchAfterDate(Date dateAfter) {
 
 	ostringstream oss;
@@ -139,7 +209,9 @@ string CommandSearch::searchAfterDate(Date dateAfter) {
 	int count = 0;
 	int position = 1;
 
-	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
+	for (iter = TaskVector.begin(); 
+		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING; 
+		++iter){
 		if (iter->getTaskType() == Task::DEADLINE) {
 			if (dateAfter.isEarlierThan(*(iter->getTaskDeadline())) >= 0) {
 				foundTasksIndices.push_back(position);
@@ -160,6 +232,13 @@ string CommandSearch::searchAfterDate(Date dateAfter) {
 
 }
 
+//This function iterates through the vector of Tasks and find all Tasks that have deadline
+//or start time before the date specified.
+//
+//Only iterate through Timed Tasks and Deadline Tasks. Will not consider Floating Tasks
+//
+//@param: maximum date
+//@return: feedback on number of match found
 string CommandSearch::searchBeforeDate(Date dateBefore) {
 
 	ostringstream oss;
@@ -169,7 +248,9 @@ string CommandSearch::searchBeforeDate(Date dateBefore) {
 	int count = 0;
 	int position = 1;
 
-	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
+	for (iter = TaskVector.begin();
+		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING;
+		++iter){
 		if (iter->getTaskType() == Task::DEADLINE) {
 			if (dateBefore.isEarlierThan(*(iter->getTaskDeadline())) <= 0) {
 				foundTasksIndices.push_back(position);
@@ -190,6 +271,10 @@ string CommandSearch::searchBeforeDate(Date dateBefore) {
 
 }
 
+//This function iterates through the vector of Tasks and find all Tasks that matching priority
+//
+//@param: priority (high, normal, low)
+//@return: feedback on number of match found
 string CommandSearch::searchPriority(Task::Priority priority) {
 
 	ostringstream oss;
@@ -212,6 +297,10 @@ string CommandSearch::searchPriority(Task::Priority priority) {
 
 }
 
+//This function iterates through the vector of Tasks and find all Tasks that are done/undone.
+//
+//@param: marked / not marked
+//@return: feedback on number of match found
 string CommandSearch::searchMarked(bool marked) {
 
 	ostringstream oss;
@@ -234,18 +323,25 @@ string CommandSearch::searchMarked(bool marked) {
 
 }
 
+//This function iterates through the vector of Tasks and determine the earliest time point 
+//where a specified duration will not clash with any Timed Tasks.
+//
+//This function only considers the Timed Tasks. Deadline Tasks are assumed to only take up
+//one point in time hence will not affect availability of free slot.
+//
+//@param: duration required
+//Valid string inputs:
+//1. xx day(s) yy hour(s) zz minute(s)	xx, yy, zz integers
+//2. xx day(s) yy hour(s)				xx, yy integers
+//3. xx day(s)							xx integer or float
+//4. xx hour(s) yy minute(s)			xx, yy, zz integers
+//5. xx hour(s)							xx integer or float
+//6. xx minute(s)						xx integer
+//Otherwise invalid
+//
+//@return: feedback on number of match found
 string CommandSearch::searchNextEmptySlot(string duration){
-	/*
-	Valid string inputs:
-	1. xx day(s) yy hour(s) zz minute(s)	xx, yy, zz integers
-	2. xx day(s) yy hour(s)					xx, yy integers
-	3. xx day(s)							xx integer or float
-	4. xx hour(s) yy minute(s)				xx, yy, zz integers
-	5. xx hour(s)							xx integer or float
-	6. xx minute(s)							xx integer
-	Otherwise invalid
-	*/
-
+	
 	int durationInMinutes = parseDurationToMinutes(duration);
 
 	vector<Task> TaskVector = *TaskManager::getAllCurrentTasks();
@@ -282,6 +378,16 @@ string CommandSearch::searchNextEmptySlot(string duration){
 	
 }
 
+/*
+* ====================================================================
+*  Third Abstractions
+* ====================================================================
+*/
+
+//This function parse the duration (in string) into the equivalent number of minutes.
+//
+//@param: duration string
+//@return: number of minutes
 int CommandSearch::parseDurationToMinutes(string duration){
 	int numberOfWords = countWordsInString(duration);
 
@@ -384,6 +490,52 @@ int CommandSearch::parseDurationToMinutes(string duration){
 
 	throw CommandException(INVALID_DURATION);
 	return 0;
+}
+
+//This function checks if the string contains an exact line of another string
+//
+//@param: two strings, one to search and one as reference
+//@return: boolean (true/false)
+bool CommandSearch::containExactMatch(string searchName, string taskName){
+	if (taskName.find(searchName) != string::npos){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+//This function checks if the string contains a near match of another string
+//
+//@param: two strings, one to search and one as reference
+//@return: boolean (true/false)
+bool CommandSearch::containNearMatch(string searchName, string taskName){
+	int numWords = countWordsInString(searchName);
+	bool nearMatch = false;
+
+	if (StringDistance::LD(searchName.c_str(), taskName.c_str()) <=
+		CommandSearch::ACCEPTABLE_DISTANCE){
+		nearMatch = true;
+	}
+	
+	if (!nearMatch){
+		vector<string> textVec = splitParameters(taskName);
+		vector<string>::iterator iter;
+		vector<string>::iterator iterToCompare;
+
+		for (iter = textVec.begin(); iter != textVec.end() && nearMatch == false; ++iter){
+			iterToCompare = iter;
+			ostringstream temp;
+			for (int i = 0; i < numWords && iterToCompare != textVec.end(); ++i){
+				temp << *iterToCompare << " ";
+				++iterToCompare;
+			}
+			if (StringDistance::LD(searchName.c_str(), temp.str().c_str()) <=
+				CommandSearch::ACCEPTABLE_DISTANCE){
+				nearMatch = true;
+			}
+		}
+	}
+	return nearMatch;
 }
 
 /*
