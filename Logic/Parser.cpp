@@ -155,6 +155,9 @@ void Parser::parseCommandUpdate(string userCommand){
 
 	ostringstream oss;
 	string text = removeFirstWord(userCommand);
+	if (text == ""){
+		throw ParseException(ERROR_MESSAGE_PARSING_UPDATE);
+	}
 
 	//Getting the task to change
 	string taskNumberStr = getFirstWord(text);
@@ -179,8 +182,7 @@ void Parser::parseCommandUpdate(string userCommand){
 	text = removeFirstWord(text);
 
 	if (text == ""){
-		cout << "Enter new " << attributeToChange << ": ";
-		getline(cin, updatedStr);
+		throw ParseException(ERROR_MESSAGE_PARSING_MISSINGDETAILS);
 	}
 	else{
 		updatedStr = text;
@@ -188,16 +190,16 @@ void Parser::parseCommandUpdate(string userCommand){
 
 	//Changes are made here
 	if (attributeToChange == "details"){
-		_taskDetails = updatedStr;
+		_taskDetails = updatedStr+" ";
 	} 
 	else if (attributeToChange == "deadline"){
-		_taskDeadline = (parseTimeString(updatedStr));
+		_taskDeadline = (parseTimeString(updatedStr+" "));
 	} 
 	else if (attributeToChange == "starttime"){
-		_taskStartTime = (parseTimeString(updatedStr));
+		_taskStartTime = (parseTimeString(updatedStr+" "));
 	} 
 	else if (attributeToChange == "endtime"){
-		_taskEndTime = (parseTimeString(updatedStr));
+		_taskEndTime = (parseTimeString(updatedStr+" "));
 	} 
 	else if (attributeToChange == "priority"){
 		if (updatedStr == "low"){
@@ -370,11 +372,11 @@ void Parser::parseCommandChangeFileLocation(string userCommand){
 string Parser::removeFirstWord(string userCommand){
 	
 	//in case the old function gives problem
-	//size_t firstSpace = userCommand.find_first_of(' ');
-	//return userCommand.substr(firstSpace + 1, userCommand.npos);
+	size_t firstSpace = userCommand.find_first_of(' ');
+	return userCommand.substr(firstSpace + 1, userCommand.npos);
 
 	//old function
-	return trim(replace(userCommand, getFirstWord(userCommand), ""));
+	//return trim(replace(userCommand, getFirstWord(userCommand), ""));
 }
 
 string Parser::getFirstWord(string userCommand){
@@ -677,9 +679,10 @@ bool Parser::parseTime(string time, int &hour, int &minute){
 }
 
 const string Parser::ERROR_MESSAGE_PARSING_ADD = "There is no task to add"; 
+const string Parser::ERROR_MESSAGE_PARSING_UPDATE = "Please enter a task number to update";
 const string Parser::ERROR_MESSAGE_PARSING_UPDATEARGUMENTS = "There are no arguments to update";
-const string Parser::ERROR_MESSAGE_PARSING_RECURRENCE = "Please enter a valid Recurrence: DAY, WEEK, MONTH";
-const string Parser::ERROR_MESSAGE_PARSING_PRIORITY = "Please enter a valid Priority: LOW, NORMAL, HIGH";
+const string Parser::ERROR_MESSAGE_PARSING_MISSINGDETAILS = "Task details cannot be empty";
+const string Parser::ERROR_MESSAGE_PARSING_PRIORITY = "Please enter a valid Priority (LOW, NORMAL, HIGH)";
 const string Parser::ERROR_MESSAGE_PARSING_DATEPASSED = "This date has already passed";
 const string Parser::ERROR_MESSAGE_PARSING_DAYNAME = "Day is invalid";
 const string Parser::ERROR_MESSAGE_PARSING_MONTHNAME = "Month is invalid";
@@ -687,4 +690,4 @@ const string Parser::ERROR_MESSAGE_PARSING_INVALIDTIME = "Time is invalid";
 const string Parser::ERROR_MESSAGE_COMMAND_NOENDTIME = "Please enter the ending time!";
 const string Parser::ERROR_MESSAGE_COMMAND_INVALIDENDTIME = "End time must be after start time!";
 const string Parser::ERROR_MESSAGE_PARSING_TASK = "Please enter a task to add!";
-const string Parser::ERROR_MESSAGE_DELETE_TASKNUM = "Please enter a task number to delete!";
+const string Parser::ERROR_MESSAGE_DELETE_TASKNUM = "Please enter a task number to delete";
