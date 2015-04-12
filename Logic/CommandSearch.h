@@ -52,6 +52,8 @@ private:
 	string searchNextEmptySlot(string duration);
 
 	int parseDurationToMinutes(string duration);
+	bool containExactMatch(string searchName, string taskName);
+	bool containNearMatch(string searchName, string taskName);
 
 	static const int INVALID_NUMBER_FORMAT = -1;
 	static const int DAYS_TO_MINUTES = 1440;

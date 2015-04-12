@@ -1,9 +1,12 @@
 /*
 This class is to manipulate the save file for TASKKY.
+
 Functionalities include writing the vector of Tasks into the save file and parsing the saved 
 file into a vector of Tasks.
+
 The save file has to be named "Save.json", but location of the file can be anywhere, handled
 by the CommandChangeFileLocation and CommandCheckFileLocation classes.
+
 Save.json should not be tampered by user manually, as editing it may cause error in parsing
 should the format of the document does not match the JSON Object standard.
 
@@ -214,6 +217,8 @@ vector<Task> Storage::parseSaveFileToVector(string filename){
 	std::string p_normal = "NORMAL";
 	std::string p_high = "HIGH";
 
+	bool marked = false;
+
 	//check if empty
 	if (d.IsNull()) {
 		return TaskVector;
@@ -237,7 +242,7 @@ vector<Task> Storage::parseSaveFileToVector(string filename){
 					endTime = NULL;
 					deadline = NULL;
 				}
-				else if (d[i]["deadline"].IsObject()) {
+				else if (d[i]["deadline"].IsObject()){
 					int day = d[i]["deadline"]["day"].GetInt();
 					int month = d[i]["deadline"]["month"].GetInt();
 					int year = d[i]["deadline"]["year"].GetInt();
@@ -276,9 +281,17 @@ vector<Task> Storage::parseSaveFileToVector(string filename){
 				priority = Task::Priority::HIGH;
 			}
 
+			//Task Marked
+			if (d[i]["marked"].GetBool() == true){
+				marked = true;
+			}
+			else if (d[i]["marked"].GetBool() == false){
+				marked = false;
+			}
 
 			//construct task object
 			Task task(taskname, startTime, endTime, deadline, priority);
+			task.setTaskMarked(marked);
 
 			//Push into taskVector
 			TaskVector.push_back(task);
@@ -307,6 +320,7 @@ rapidjson::Value Storage::convertTaskToJSON(Task task, rapidjson::Document::Allo
 	rapidjson::Value endTime;
 	rapidjson::Value deadline;
 	rapidjson::Value priority;
+	rapidjson::Value marked;
 	char buffer[1024];
 	int len;
 	
@@ -381,6 +395,13 @@ rapidjson::Value Storage::convertTaskToJSON(Task task, rapidjson::Document::Allo
 		priority.SetString(prior, leng, allocator);
 	}
 
+	//Check if task is marked
+	if (task.getTaskMarked()){
+		marked.SetBool(true);
+	} else {
+		marked.SetBool(false);
+	}
+
 	//Convert to json values
 	rapidjson::Value object(rapidjson::kObjectType);
 	object.AddMember("taskname", taskname, allocator);
@@ -388,6 +409,7 @@ rapidjson::Value Storage::convertTaskToJSON(Task task, rapidjson::Document::Allo
 	object.AddMember("endTime", endTime, allocator);
 	object.AddMember("deadline", deadline, allocator);
 	object.AddMember("priority", priority, allocator);
+	object.AddMember("marked", marked, allocator);
 
 	return object;
 }
