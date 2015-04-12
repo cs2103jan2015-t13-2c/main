@@ -232,7 +232,7 @@ namespace LogicTests
 		}
 
 		
-		TEST_METHOD(ParserTest)
+		TEST_METHOD(ParserAddTest)
 		{   /*-----------------------------------------------
 			Floating Tasks
 			-----------------------------------------------*/
@@ -358,21 +358,18 @@ namespace LogicTests
 
 			if (1 - Date().getDayName() >= 0){
 				day = 1 - Date().getDayName() + Date().getDay();
-			}
-			else {
+			} else {
 				day = 8 - Date().getDayName() + Date().getDay();
 			};
 			Date *starttime1 = new Date(Date().getYear(),
-				Date().getMonth(),
-				day,
-				23, 59);
+										Date().getMonth(),
+										day, 23, 59);
 			Assert::AreEqual<string>(Parser::getTaskStartTime()->toString(), starttime1->toString());
 
 			day = 9 - Date().getDayName() + Date().getDay();
 			Date *endtime1 = new Date(Date().getYear(),
-				Date().getMonth(),
-				day,
-				23, 59);
+									  Date().getMonth(),
+									  day, 23, 59);
 			Assert::AreEqual<string>(Parser::getTaskEndTime()->toString(), endtime1->toString());
 
 
@@ -382,21 +379,18 @@ namespace LogicTests
 
 			if (1 - Date().getDayName() >= 0){
 				day = 1 - Date().getDayName() + Date().getDay();
-			}
-			else {
+			} else {
 				day = 8 - Date().getDayName() + Date().getDay();
 			};
 			Date *starttime2 = new Date(Date().getYear(),
-				Date().getMonth(),
-				day,
-				23, 59);
+										Date().getMonth(),
+										day, 23, 59);
 			Assert::AreEqual<string>(Parser::getTaskStartTime()->toString(), starttime2->toString());
 
 			day = 9 - Date().getDayName() + Date().getDay();
 			Date *endtime2 = new Date(Date().getYear(),
-				Date().getMonth(),
-				day,
-				23, 59);
+									  Date().getMonth(),
+									  day, 23, 59);
 			Assert::AreEqual<string>(Parser::getTaskEndTime()->toString(), endtime2->toString());
 
 
@@ -407,21 +401,18 @@ namespace LogicTests
 
 			if (1 - Date().getDayName() >= 0){
 				day = 1 - Date().getDayName() + Date().getDay();
-			}
-			else {
+			} else {
 				day = 8 - Date().getDayName() + Date().getDay();
 			};
 			Date *starttime3 = new Date(Date().getYear(),
-				Date().getMonth(),
-				day,
-				23, 59);
+										Date().getMonth(),
+										day, 23, 59);
 			Assert::AreEqual<string>(Parser::getTaskStartTime()->toString(), starttime3->toString());
 
 			day = 9 - Date().getDayName() + Date().getDay();
 			Date *endtime3 = new Date(Date().getYear(),
-				Date().getMonth(),
-				day,
-				23, 59);
+									  Date().getMonth(),
+									  day, 23, 59);
 			Assert::AreEqual<string>(Parser::getTaskEndTime()->toString(), endtime3->toString());
 
 
@@ -431,21 +422,18 @@ namespace LogicTests
 
 			if (1 - Date().getDayName() >= 0){
 				day = 1 - Date().getDayName() + Date().getDay();
-			}
-			else {
+			} else {
 				day = 8 - Date().getDayName() + Date().getDay();
 			};
 			Date *starttime4 = new Date(Date().getYear(),
-				Date().getMonth(),
-				day,
-				15, 30);
+										Date().getMonth(),
+										day, 15, 30);
 			Assert::AreEqual<string>(Parser::getTaskStartTime()->toString(), starttime4->toString());
 
 			day = 9 - Date().getDayName() + Date().getDay();
 			Date *endtime4 = new Date(Date().getYear(),
-				Date().getMonth(),
-				day,
-				17, 00);
+									  Date().getMonth(),
+									  day, 17, 00);
 			Assert::AreEqual<string>(Parser::getTaskEndTime()->toString(), endtime4->toString());
 
 
@@ -455,21 +443,18 @@ namespace LogicTests
 
 			if (1 - Date().getDayName() >= 0){
 				day = 1 - Date().getDayName() + Date().getDay();
-			}
-			else {
+			} else {
 				day = 8 - Date().getDayName() + Date().getDay();
 			};
 			Date *starttime5 = new Date(Date().getYear(),
-				Date().getMonth(),
-				day,
-				01, 00);
+										Date().getMonth(),
+										day, 01, 00);
 			Assert::AreEqual<string>(Parser::getTaskStartTime()->toString(), starttime5->toString());
 
 			day = 9 - Date().getDayName() + Date().getDay();
 			Date *endtime5 = new Date(Date().getYear(),
-				Date().getMonth(),
-				day,
-				23, 59);
+									  Date().getMonth(),
+									  day, 23, 59);
 			Assert::AreEqual<string>(Parser::getTaskEndTime()->toString(), endtime5->toString());
 
 
@@ -494,6 +479,18 @@ namespace LogicTests
 			Assert::AreEqual<bool>(true, Parser::getTaskPriority() == Task::LOW);
 		}
 
+		TEST_METHOD(ParserUpdateTest) {
+			Parser::parseCommandAdd("add task from 23 dec to 27 dec #low");
+
+			Parser::parseCommandUpdate("update 1 details new task");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "new task ");
+
+			Parser::parseCommandUpdate("update 1 starttime 25 dec");
+			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "25 Dec 2015 (Fri), 11:59PM");
+
+			Parser::parseCommandUpdate("update 1 priority high");
+			Assert::AreEqual<bool>(true, Parser::getTaskPriority() == Task::HIGH);
+		}
 
 		TEST_METHOD(DirExistTest){
 			/*
