@@ -41,6 +41,7 @@ public:
 
 	static string removeFirstWord(string userCommand);
 	static string getFirstWord(string userCommand);
+	static void toLowerCase(string &text);
 	static vector<string> splitParameters(string commandParametersString);
 	static string trim_right(const string& s, const string& delimiters = " \f\n\r\t\v");
 	static string trim_left(const string& s, const string& delimiters = " \f\n\r\t\v");
