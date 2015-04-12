@@ -368,7 +368,7 @@ namespace LogicTests
 
 		TEST_METHOD(StorageTest) {
 
-			Assert::AreEqual<string>("C:\\Users\\Adi!\\Desktop\\CS2103\\Taskky\\Debug", Storage::findProgramDirectory());
+			//Assert::AreEqual<string>("C:\\Users\\Adi!\\Desktop\\CS2103\\Taskky\\Debug", Storage::findProgramDirectory());
 		}
 	};
 

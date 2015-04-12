@@ -73,9 +73,8 @@ Command* CommandUpdate::getInverseCommand(){
 	//deleting old task
 	TaskManager::removeTask(_taskNumber);
 
-	//adding and deleting new task to get index
-	int indexToUpdate = TaskManager::addTask(taskToAdd);
-	TaskManager::removeTask(indexToUpdate + 1);
+	//getting index to add new updated task to
+	int indexToUpdate = TaskManager::getIndexToInsert(taskToAdd);
 
 	//adding back old task
 	TaskManager::addTask(currentTask);

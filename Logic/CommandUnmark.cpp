@@ -57,9 +57,8 @@ Command* CommandUnmark::getInverseCommand(){
 		//deleting marked task
 		TaskManager::removeTask(_taskNumber);
 
-		//adding and deleting unmarked task to get index
-		int indexToMark = TaskManager::addTask(taskToAdd);
-		TaskManager::removeTask(indexToMark + 1);
+		//getting index to add new updated task to
+		int indexToMark = TaskManager::getIndexToInsert(taskToAdd);
 
 		//adding back marked task
 		taskToAdd.setTaskMarked(true);

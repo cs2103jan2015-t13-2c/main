@@ -49,6 +49,8 @@ string Controller::processUserInput(string userInput){
 
 		feedback = command->execute();
 
+		taskManager->saveTasks();
+
 	}
 	catch (ParseException& e){
 

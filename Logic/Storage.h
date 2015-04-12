@@ -19,15 +19,13 @@
 #include "filewritestream.h"
 #include "writer.h"
 
-using namespace std;
+//using namespace std;
 
 class Storage
 {
 public:
 
 	static Storage* getInstance();
-	//void Storage::loadfromFile(vector<Task> &tempSave, string fileName);
-	//void Storage::writetoFile(vector<Task> tempSave, string fileName);
 	void writeToFile();
 	static vector<Task> readFromFile();
 
@@ -35,17 +33,20 @@ public:
 	static string determineFileName();
 	static string findProgramDirectory();
 	static bool dirExists(const std::string& dirName_in);
+	static void setLocationAsDefault();
+	static void checkSaveFile(string filename);
+	static vector<Task> parseSaveFileToVector(string filename);
+	static void clearSaveFile(string filename);
+	static rapidjson::Document parseVectorToJSON(vector<Task> TaskVector);
+	static void writeJSONtoFile(string filename, rapidjson::Document document);
+
+private:
+	Storage();
 
 	static const string DIRECTORY_ERROR;
 	static const string FILENAME_NOT_FOUND;
 	static const string FILE_LOCATION_INVALID;
 
-private:
-	Storage();
-
-
-
-	//copy constructor is private
 	Storage& operator=(Storage const&){};
 
 	static Storage *_instance;

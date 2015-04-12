@@ -31,8 +31,7 @@ Command* CommandAdd::getInverseCommand(){
 	//getting index to delete
 	Task taskToAdd = Task(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
 		_taskPriority);
-	int indexToDelete = TaskManager::addTask(taskToAdd);
-	TaskManager::removeTask(indexToDelete+1);
+	int indexToDelete = TaskManager::getIndexToInsert(taskToAdd);
 
 	return new CommandDelete(indexToDelete+1);
 }

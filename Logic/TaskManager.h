@@ -20,7 +20,7 @@ public:
 	static TaskManager* getInstance();
 
 	//return int value of the index the task was added to
-	static int addTask(Task task);
+	static void addTask(Task task);
 	static int addFloatingTask(Task task, vector<Task>* floatingTasks);
 	static int addTimedTask(Task task, vector<Task>* timedTasks);
 
@@ -32,6 +32,13 @@ public:
 	static void TaskManager::sortTasks();
 	static void setAllCurrentTasks();
 	static void loadAllCurrentTasks(vector<Task> allCurrentTasks);
+
+	static int getIndexToInsert(Task task); 
+	static int getFloatingIndexToInsert(Task task, vector<Task>* floatingTasks);
+	static int getTimedIndexToInsert(Task task, vector<Task>* timedTasks);
+
+	static bool isAlphabeticallyArranged(Task firstTask, Task secondTask);
+	static bool isChronologicallyArranged(Task firstTask, Task secondTask);
 
 	static const string TaskManager::ERROR_MESSAGE_COMMAND_TASKNUM;
 
