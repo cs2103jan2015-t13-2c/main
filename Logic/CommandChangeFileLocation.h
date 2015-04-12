@@ -26,6 +26,9 @@ private:
 	string _prevName;
 
 	static bool dirExists(const std::string& dirName_in);
+	void checkFileDirectory();
+	void extractDirectoryInformation();
+	void moveSaveFile();
 
 	static const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_CHANGED;
 	static const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_INVALID;
