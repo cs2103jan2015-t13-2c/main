@@ -23,6 +23,7 @@ public:
 	std::chrono::system_clock::time_point getTimePoint();
 
 	string toString();
+	string parseDateToDisplay();
 	static Date *toDate(string date_str);
 
 	int getYear();
