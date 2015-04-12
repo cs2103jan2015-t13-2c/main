@@ -102,7 +102,7 @@ string CommandSearch::execute() {
 		return searchNextEmptySlot(_duration);
 	}
 
-	return "Invalid search funtion\n";
+	return INVALID_SEARCH_FUNCTION;
 
 }
 
@@ -138,7 +138,7 @@ string CommandSearch::searchByName(string taskname) {
 			++count;
 			foundTasksIndices.push_back(position);
 		} else if (containNearMatch(taskname, iter->getTaskDetails())){
-			count++;
+			++count;
 			foundTasksIndices.push_back(position);
 		}
 		++position;
@@ -630,8 +630,15 @@ string CommandSearch::replace(string a, string b, string c) {
 	return a;
 }
 
+/*
+* ====================================================================
+*  Variables and Messages Declaration
+* ====================================================================
+*/
+
 char CommandSearch::buffer[255];
 const string CommandSearch::ERROR_TOOMANY_SEARCH_ARGUMENTS = "Enter only 1 search argument!";
 const string CommandSearch::INVALID_DURATION = "Invalid search duration input. Please input in the following format:\n1. __ day(s) __ hour(s) __ minute(s) (all numbers are integers)\n2. __ day(s) __ hour(s) (all numbers are integers)\n3. __ days (number can be  integer or with decimal)\n4. __ hour(s) __ minute(s) (all numbers are integers)\n5. __ hour(s) (number can be integer or with decimals)\n6. __ minute(s) (number can only be integer)\nNOTE: smallest valid duration is 1 minute";
 const string CommandSearch::MESSAGE_NEXT_AVAILABLE_SLOT = "Next available %sis from %s.";
 const string CommandSearch::MESSAGE_FOUND_TASKS = "There are %d tasks found.";
+const string CommandSearch::INVALID_SEARCH_FUNCTION = "Invalid search function.";

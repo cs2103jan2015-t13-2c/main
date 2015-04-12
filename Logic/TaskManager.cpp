@@ -5,6 +5,16 @@
 //It is a singleton class, so that there will only be 1 instance of the tasks
 
 
+/*
+This class is to manipulate the internal task management for TASKKY.
+
+Functionalities include loading the tasks saved in storage in chronological, and alphabetical order
+
+
+
+@author: A0122357L Lee Kai Yi
+*/
+
 // Global static pointer used to ensure a single instance of the class.
 TaskManager* TaskManager::_instance = NULL;
 
