@@ -26,9 +26,12 @@ class Storage
 public:
 
 	static Storage* getInstance();
+
 	void writeToFile();
 	static vector<Task> readFromFile();
 
+
+	//Smaller functions used for the two main function above
 	static string _filename;
 	static string determineFileName();
 	static string findProgramDirectory();
