@@ -1,1 +1,1 @@
-[{"taskname":"test 2 ","startTime":{"day":13,"month":3,"year":2015,"hour":23,"minutes":59},"endTime":{"day":16,"month":3,"year":2015,"hour":23,"minutes":59},"deadline":null,"priority":"NORMAL"},{"taskname":"test ","startTime":null,"endTime":null,"deadline":{"day":6,"month":5,"year":2015,"hour":23,"minutes":59},"priority":"NORMAL"},{"taskname":"taskky ","startTime":null,"endTime":null,"deadline":null,"priority":"NORMAL"}]
+[{"taskname":"test 2 ","startTime":null,"endTime":null,"deadline":{"day":19,"month":3,"year":2015,"hour":22,"minutes":0},"priority":"NORMAL"}]

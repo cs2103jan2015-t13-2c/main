@@ -27,7 +27,7 @@ void Storage::writeToFile(){
 	return;
 }
 
-vector<Task> Storage::readFromFile() {
+vector<Task> Storage::readFromFile(){
 	//check valid directory for save file location
 	if (!dirExists(CommandCheckFileLocation::getFileLocation())){
 		if (CommandCheckFileLocation::getFileLocation() != "default"){
@@ -221,99 +221,11 @@ rapidjson::Document Storage::parseVectorToJSON(vector<Task> TaskVector){
 	vector<Task>::iterator iter;
 	rapidjson::Document document;
 	rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
-	rapidjson::Value taskname;
-	rapidjson::Value startTime;
-	rapidjson::Value endTime;
-	rapidjson::Value deadline;
-	rapidjson::Value priority;
-	char buffer[1024];
-	int len;
-
 	document.SetArray();
 
-	//Parse vector of Tasks into JSON object
 	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
-
-		//Check Task Details
-		len = sprintf(buffer, iter->getTaskDetails().c_str());
-		taskname.SetString(buffer, len, allocator);
-
-		//Check Task Type and Time
-		if (iter->getTaskType() == Task::FLOATING) {
-			startTime.SetNull();
-			endTime.SetNull();
-			deadline.SetNull();
-		}
-		else if (iter->getTaskType() == Task::TIMED) {
-			Date time = *(iter->getTaskStartTime());
-
-			startTime.SetObject();
-			startTime.AddMember("day", time.getDay(), allocator);
-			startTime.AddMember("month", time.getMonth(), allocator);
-			startTime.AddMember("year", time.getYear(), allocator);
-			startTime.AddMember("hour", time.getHour(), allocator);
-			startTime.AddMember("minutes", time.getMinute(), allocator);
-
-			time = *(iter->getTaskEndTime());
-
-			endTime.SetObject();
-			endTime.AddMember("day", time.getDay(), allocator);
-			endTime.AddMember("month", time.getMonth(), allocator);
-			endTime.AddMember("year", time.getYear(), allocator);
-			endTime.AddMember("hour", time.getHour(), allocator);
-			endTime.AddMember("minutes", time.getMinute(), allocator);
-
-			deadline.SetNull();
-		}
-		else if (iter->getTaskType() == Task::DEADLINE) {
-			startTime.SetNull();
-			endTime.SetNull();
-
-			Date time = *(iter->getTaskDeadline());
-
-			deadline.SetObject();
-			deadline.AddMember("day", time.getDay(), allocator);
-			deadline.AddMember("month", time.getMonth(), allocator);
-			deadline.AddMember("year", time.getYear(), allocator);
-			deadline.AddMember("hour", time.getHour(), allocator);
-			deadline.AddMember("minutes", time.getMinute(), allocator);
-		}
-
-		//Check Task Priority
-		if (iter->getTaskPriority() == Task::Priority::HIGH) {
-			char prior[1024];
-			int leng = sprintf(prior, "HIGH");
-
-			priority.SetString(prior, leng, allocator);
-		}
-		else if (iter->getTaskPriority() == Task::Priority::NORMAL) {
-			char prior[1024];
-			int leng = sprintf(prior, "NORMAL");
-
-			priority.SetString(prior, leng, allocator);
-		}
-		else if (iter->getTaskPriority() == Task::Priority::LOW) {
-			char prior[1024];
-			int leng = sprintf(prior, "LOW");
-
-			priority.SetString(prior, leng, allocator);
-		}
-		else {
-			char prior[1024];
-			int leng = sprintf(prior, "NORMAL");
-
-			priority.SetString(prior, leng, allocator);
-		}
-
-		//Convert to json values
-		rapidjson::Value object(rapidjson::kObjectType);
-		object.AddMember("taskname", taskname, allocator);
-		object.AddMember("startTime", startTime, allocator);
-		object.AddMember("endTime", endTime, allocator);
-		object.AddMember("deadline", deadline, allocator);
-		object.AddMember("priority", priority, allocator);
-
-		document.PushBack(object, document.GetAllocator());
+		rapidjson::Value object = convertTaskToJSON(*iter, allocator); //Process each Task into a JSON object
+		document.PushBack(object, allocator); //Add JSON object into JSON array
 	}
 
 	return document;
@@ -330,6 +242,97 @@ void Storage::writeJSONtoFile(string filename, rapidjson::Document document){
 	fclose(fp);
 
 	return;
+}
+
+rapidjson::Value Storage::convertTaskToJSON(Task task, rapidjson::Document::AllocatorType& allocator){
+	rapidjson::Value taskname;
+	rapidjson::Value startTime;
+	rapidjson::Value endTime;
+	rapidjson::Value deadline;
+	rapidjson::Value priority;
+	char buffer[1024];
+	int len;
+	
+	//Check Task Details
+	len = sprintf(buffer, task.getTaskDetails().c_str());
+	taskname.SetString(buffer, len, allocator);
+
+	//Check Task Type and Time
+	if (task.getTaskType() == Task::FLOATING) {
+		startTime.SetNull();
+		endTime.SetNull();
+		deadline.SetNull();
+	}
+	else if (task.getTaskType() == Task::TIMED) {
+		Date time = *(task.getTaskStartTime());
+
+		startTime.SetObject();
+		startTime.AddMember("day", time.getDay(), allocator);
+		startTime.AddMember("month", time.getMonth(), allocator);
+		startTime.AddMember("year", time.getYear(), allocator);
+		startTime.AddMember("hour", time.getHour(), allocator);
+		startTime.AddMember("minutes", time.getMinute(), allocator);
+
+		time = *(task.getTaskEndTime());
+
+		endTime.SetObject();
+		endTime.AddMember("day", time.getDay(), allocator);
+		endTime.AddMember("month", time.getMonth(), allocator);
+		endTime.AddMember("year", time.getYear(), allocator);
+		endTime.AddMember("hour", time.getHour(), allocator);
+		endTime.AddMember("minutes", time.getMinute(), allocator);
+
+		deadline.SetNull();
+	}
+	else if (task.getTaskType() == Task::DEADLINE) {
+		startTime.SetNull();
+		endTime.SetNull();
+
+		Date time = *(task.getTaskDeadline());
+
+		deadline.SetObject();
+		deadline.AddMember("day", time.getDay(), allocator);
+		deadline.AddMember("month", time.getMonth(), allocator);
+		deadline.AddMember("year", time.getYear(), allocator);
+		deadline.AddMember("hour", time.getHour(), allocator);
+		deadline.AddMember("minutes", time.getMinute(), allocator);
+	}
+
+	//Check Task Priority
+	if (task.getTaskPriority() == Task::Priority::HIGH) {
+		char prior[1024];
+		int leng = sprintf(prior, "HIGH");
+
+		priority.SetString(prior, leng, allocator);
+	}
+	else if (task.getTaskPriority() == Task::Priority::NORMAL) {
+		char prior[1024];
+		int leng = sprintf(prior, "NORMAL");
+
+		priority.SetString(prior, leng, allocator);
+	}
+	else if (task.getTaskPriority() == Task::Priority::LOW) {
+		char prior[1024];
+		int leng = sprintf(prior, "LOW");
+
+		priority.SetString(prior, leng, allocator);
+	}
+	else {
+		char prior[1024];
+		int leng = sprintf(prior, "NORMAL");
+
+		priority.SetString(prior, leng, allocator);
+	}
+
+	//Convert to json values
+	rapidjson::Value object(rapidjson::kObjectType);
+	object.AddMember("taskname", taskname, allocator);
+	object.AddMember("startTime", startTime, allocator);
+	object.AddMember("endTime", endTime, allocator);
+	object.AddMember("deadline", deadline, allocator);
+	object.AddMember("priority", priority, allocator);
+
+	return object;
 }
 
 /*
