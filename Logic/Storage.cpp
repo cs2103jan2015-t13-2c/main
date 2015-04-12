@@ -41,6 +41,8 @@ vector<Task> Storage::readFromFile(){
 }
 
 
+
+//Smaller functions used for the two main function above
 string Storage::findProgramDirectory(){
 	char cCurrentPath[FILENAME_MAX];
 
@@ -55,10 +57,9 @@ string Storage::findProgramDirectory(){
 string Storage::determineFileName(){
 	std::string filename;
 	std::string fileDirectory = CommandCheckFileLocation::getFileLocation();
-	if (fileDirectory == "default") {
+	if (fileDirectory == "default"){
 		filename = findProgramDirectory() + "/Save.json";
-	}
-	else {
+	} else {
 		filename = fileDirectory + "/Save.json";
 	}
 
@@ -90,8 +91,7 @@ void Storage::setLocationAsDefault(){
 void Storage::checkSaveFile(string filename){
 	if (FILE *file = fopen(filename.c_str(), "r")) {
 		fclose(file);
-	}
-	else {
+	} else {
 		std::cout << FILENAME_NOT_FOUND << endl;
 		FILE* createFile = fopen(filename.c_str(), "wb"); // non-Windows use "w"
 		fclose(createFile);
@@ -133,12 +133,8 @@ vector<Task> Storage::parseSaveFileToVector(string filename){
 	//check if empty
 	if (d.IsNull()) {
 		return TaskVector;
-	}
-	else {
-
-
+	} else {
 		//Parse and construct Task Vector
-
 		int i = 0;
 		for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr){
 

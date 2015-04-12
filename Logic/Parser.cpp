@@ -541,7 +541,6 @@ Date* Parser::parseTimeString(string timeStr){
 		}
 		return (new Date(year, mon, day, hour, minute));
 	}
-
 	//Checks if user keyed in a year (Default is set to current year)
 	if (parseInt(temp) != -1) {
 		year = parseInt(temp);
@@ -553,6 +552,14 @@ Date* Parser::parseTimeString(string timeStr){
 		if (timeStr != "") {
 			temp = getFirstWord(timeStr);
 		} else {
+			if (mon < Date().getMonth()){
+				++year;
+			}
+			else if (mon == Date().getMonth()){
+				if (day < Date().getDay()){
+					++year;
+				}
+			}
 			return (new Date(year, mon, day, hour, minute));
 		}
 	}
@@ -561,6 +568,15 @@ Date* Parser::parseTimeString(string timeStr){
 
 	if (!isTime){
 		throw ParseException(ERROR_MESSAGE_PARSING_INVALIDTIME);
+	}
+	
+	if (mon < Date().getMonth()){
+		++year;
+	}
+	else if (mon == Date().getMonth()){
+		if (day < Date().getDay()){
+			++year;
+		}
 	}
 
 	return (new Date(year, mon, day, hour, minute));
