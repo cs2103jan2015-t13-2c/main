@@ -36,6 +36,16 @@ string Date::toString(){
 	return buffer;
 }
 
+string Date::parseDateToDisplay(){
+	
+	ostringstream dateToDisplay;
+
+	dateToDisplay << "[" << getDay() << "/" << getMonth()
+		<< "/" << getYear() << "] " << getDayName();
+
+	return dateToDisplay.str();
+}
+
 
 
 Date *Date::toDate(string date_str){
