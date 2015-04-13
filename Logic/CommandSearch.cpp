@@ -529,7 +529,7 @@ bool CommandSearch::containNearMatch(string searchName, string taskName){
 				++iterToCompare;
 			}
 			if (StringDistance::LD(searchName.c_str(), temp.str().c_str()) <=
-				CommandSearch::ACCEPTABLE_DISTANCE){
+				CommandSearch::ACCEPTABLE_DISTANCE - 1){
 				nearMatch = true;
 			}
 		}

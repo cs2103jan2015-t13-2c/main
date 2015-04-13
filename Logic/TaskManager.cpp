@@ -31,6 +31,8 @@ void TaskManager::loadAllCurrentTasks(vector<Task> allCurrentTasks){
 
 	vector<Task>::iterator iterTasks;
 
+	clearAllCurrentTasks();
+
 	for (iterTasks = allCurrentTasks.begin();
 		iterTasks != allCurrentTasks.end(); ++iterTasks){
 
@@ -184,6 +186,16 @@ int TaskManager::getNumberOfTasks(){
 		return _allCurrentTasks->size();
 
 	}
+}
+
+void TaskManager::clearAllCurrentTasks(){
+
+	_allTimedTasks = new vector<Task>;
+	_allFloatingTasks = new vector<Task>;
+	_allMarkedTimedTasks = new vector<Task>;
+	_allMarkedFloatingTasks = new vector<Task>;
+	setAllCurrentTasks();
+
 }
 
 
@@ -398,7 +410,7 @@ int TaskManager::getFloatingIndexToInsert(Task task, vector<Task>* floatingTasks
 		for (iterFloating = floatingTasks->begin();
 			iterFloating != floatingTasks->end(); ++iterFloating) {
 			
-			if (!isAlphabeticallyArranged(task, *iterFloating)) {
+			if (isAlphabeticallyArranged(task, *iterFloating)) {
 				break;
 			}
 
@@ -425,11 +437,21 @@ int TaskManager::getTimedIndexToInsert(Task task, vector<Task>* timedTasks){
 		for (iterTimed = timedTasks->begin();
 			iterTimed != timedTasks->end(); ++iterTimed) {
 
-			if (!isChronologicallyArranged(task, *iterTimed)){
+			if (isChronologicallyArranged(task, *iterTimed)){
 
-				if (!isAlphabeticallyArranged(task, *iterTimed)){
-					break;
+				if (isChronologicallySame(task, *iterTimed)){
+
+					if (isAlphabeticallyArranged(task, *iterTimed)){
+						break;
+					}
+					else{
+						addedIndex++;
+						continue;
+					}
+
 				}
+
+				break;
 			}
 
 			addedIndex++;
@@ -446,7 +468,7 @@ int TaskManager::getTimedIndexToInsert(Task task, vector<Task>* timedTasks){
 //@return if the firstTask comes earlier alphabetically than the secondTask
 bool TaskManager::isAlphabeticallyArranged(Task firstTask, Task secondTask){
 
-	return firstTask.getTaskDetails().compare(secondTask.getTaskDetails()) > 0;
+	return firstTask.getTaskDetails().compare(secondTask.getTaskDetails()) < 0;
 
 }
 
@@ -462,18 +484,14 @@ bool TaskManager::isChronologicallyArranged(Task firstTask, Task secondTask){
 
 		if (secondTask.getTaskType() == Task::DEADLINE) {
 
-			string comp1 = firstTask.getTaskStartTime()->toString();
-			string comp2 = secondTask.getTaskDeadline()->toString();
-			if (firstTask.getTaskStartTime()->isEarlierThan(*(secondTask.getTaskDeadline())) > 0) {
+			if (firstTask.getTaskStartTime()->isEarlierThan(*(secondTask.getTaskDeadline())) >= 0) {
 				return true;
 			}
 		}
 
 		else if (secondTask.getTaskType() == Task::TIMED) {
 
-			string comp1 = firstTask.getTaskStartTime()->toString();
-			string comp2 = secondTask.getTaskStartTime()->toString();
-			if (firstTask.getTaskStartTime()->isEarlierThan(*(secondTask.getTaskStartTime())) > 0) {
+			if (firstTask.getTaskStartTime()->isEarlierThan(*(secondTask.getTaskStartTime())) >= 0) {
 				return true;
 			}
 		}
@@ -487,24 +505,66 @@ bool TaskManager::isChronologicallyArranged(Task firstTask, Task secondTask){
 
 		if (secondTask.getTaskType() == Task::DEADLINE) {
 
-			string comp1 = firstTask.getTaskDeadline()->toString();
-			string comp2 = secondTask.getTaskDeadline()->toString();
-			if (firstTask.getTaskDeadline()->isEarlierThan(*(secondTask.getTaskDeadline())) > 0) {
+			if (firstTask.getTaskDeadline()->isEarlierThan(*(secondTask.getTaskDeadline())) >= 0) {
 				return true;
 			}
 		}
 
 		else if (secondTask.getTaskType() == Task::TIMED) {
 
-			string comp1 = firstTask.getTaskDeadline()->toString();
-			string comp2 = secondTask.getTaskStartTime()->toString();
-			if (firstTask.getTaskDeadline()->isEarlierThan(*(secondTask.getTaskStartTime())) > 0) {
+			if (firstTask.getTaskDeadline()->isEarlierThan(*(secondTask.getTaskStartTime())) >= 0) {
 				return true;
 			}
 		}
 	}
 	
 	return false;
+}
+
+
+
+bool TaskManager::isChronologicallySame(Task firstTask, Task secondTask){
+
+	if (firstTask.getTaskType() == Task::TIMED) {
+
+		if (secondTask.getTaskType() == Task::DEADLINE) {
+
+			if (firstTask.getTaskStartTime()->isEarlierThan(*(secondTask.getTaskDeadline())) == 0) {
+				return true;
+			}
+		}
+
+		else if (secondTask.getTaskType() == Task::TIMED) {
+
+			if (firstTask.getTaskStartTime()->isEarlierThan(*(secondTask.getTaskStartTime())) == 0) {
+				return true;
+			}
+		}
+
+		else{
+			//throw TaskException
+		}
+	}
+
+	else if (firstTask.getTaskType() == Task::DEADLINE) {
+
+		if (secondTask.getTaskType() == Task::DEADLINE) {
+
+			if (firstTask.getTaskDeadline()->isEarlierThan(*(secondTask.getTaskDeadline())) == 0) {
+				return true;
+			}
+		}
+
+		else if (secondTask.getTaskType() == Task::TIMED) {
+
+			if (firstTask.getTaskDeadline()->isEarlierThan(*(secondTask.getTaskStartTime())) == 0) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+
 }
 
 

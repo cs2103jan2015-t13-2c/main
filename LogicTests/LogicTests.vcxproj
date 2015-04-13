@@ -43,7 +43,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <TargetExt>.exe</TargetExt>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -90,6 +90,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandBuilderTests.cpp" />
+    <ClCompile Include="CommandMarkTest.cpp" />
+    <ClCompile Include="CommandSearchUnitTest.cpp" />
     <ClCompile Include="ControllerTests.cpp" />
     <ClCompile Include="ParserTest.cpp" />
     <ClCompile Include="stdafx.cpp">

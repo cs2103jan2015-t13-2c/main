@@ -35,6 +35,7 @@ public:
 	static void TaskManager::unmarkTask(int taskNumber);
 	static void setAllCurrentTasks();
 	static void loadAllCurrentTasks(vector<Task> allCurrentTasks);
+	static void clearAllCurrentTasks();
 
 	static TaskType determineTaskType(Task task);
 
@@ -46,6 +47,7 @@ public:
 	static int getTimedIndexToInsert(Task task, vector<Task>* timedTasks);
 	static bool isAlphabeticallyArranged(Task firstTask, Task secondTask);
 	static bool isChronologicallyArranged(Task firstTask, Task secondTask);
+	static bool isChronologicallySame(Task firstTask, Task secondTask);
 
 	static const string TaskManager::ERROR_MESSAGE_COMMAND_TASKNUM;
 
