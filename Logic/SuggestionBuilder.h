@@ -29,6 +29,8 @@ public:
 	static bool isPredictedCommandUndo(string userInput);
 	static bool isPredictedCommandUnmark(string userInput);
 	static bool isPredictedCommandUpdate(string userInput);
+	static bool isPredictedCommandCheckSavedFileLocation(string userInput);
+	static bool isPredictedChangeFileLocation(string userInput);
 
 	//getting predicted string
 	static string predictedString(string text);

@@ -1,4 +1,4 @@
-Error Log Resetted on: 13 Apr 2015 (Mon), 06:12PM
+Error Log Resetted on: 13 Apr 2015 (Mon), 06:16PM
 
-13 Apr 2015 (Mon), 06:13PM | Input parsing error: Please enter a valid Priority (LOW, NORMAL, HIGH) | 
+13 Apr 2015 (Mon), 06:16PM | Input parsing error: Month is invalid | 
 
