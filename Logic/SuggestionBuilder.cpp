@@ -36,7 +36,7 @@ string SuggestionBuilder::suggestCommandType(string userInput){
 	userInput = getFirstWord(userInput);
 	
 	if (isPredictedCommandAdd(userInput)){
-		return "add cs2103 from 6may to 7may #high";
+		return "add cs2103 from 6 may 13:00 to 7 may 14:00 #high";
 	}
 
 	else if (isPredictedCommandDelete(userInput)){
@@ -65,6 +65,12 @@ string SuggestionBuilder::suggestCommandType(string userInput){
 
 	else if (isPredictedCommandUpdate(userInput)){
 		return "update [taskNumber] details/deadline/start end";
+	}
+	else if (isPredictedCommandCheckSavedFileLocation(userInput)){
+		return "checkfileloc";
+	}
+	else if (isPredictedChangeFileLocation(userInput)){
+		return "changefileloc [New Directory]";
 	}
 
 	return "invalid";
@@ -565,6 +571,45 @@ bool SuggestionBuilder::isPredictedCommandUpdate(string userInput){
 
 	return false;
 }
+
+
+
+bool SuggestionBuilder::isPredictedCommandCheckSavedFileLocation(string userInput){
+	
+	if (userInput == "c" || userInput == "ch" ||
+		userInput == "che" || userInput == "chec" ||
+		userInput == "check" || userInput == "checkf" || 
+		userInput == "checkfi" || userInput == "checkfil" ||
+		userInput == "checkfile" || userInput == "checkfilel" ||
+		userInput == "checkfilelo" || userInput == "checkfileloc"){
+		return true;
+	}
+
+	if (StringDistance::LD(userInput.c_str(), "checkfileloc") <= 1){
+		return true;
+	}
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedChangeFileLocation(string userInput){
+
+	if (userInput == "c" || userInput == "ch" ||
+		userInput == "cha" || userInput == "chan" ||
+		userInput == "chang" || userInput == "change" ||
+		userInput == "changef" || userInput == "changefi" ||
+		userInput == "changefil" || userInput == "changefile" ||
+		userInput == "changefilel" || userInput == "changefilelo" ||
+		userInput == "changefileloc"){
+		return true;
+	}
+
+	if (StringDistance::LD(userInput.c_str(), "checkfileloc") <= 1){
+		return true;
+	}
+	return false;
+}
+
+
 
 /*
 * ====================================================================
