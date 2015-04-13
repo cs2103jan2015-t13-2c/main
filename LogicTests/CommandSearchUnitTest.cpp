@@ -21,6 +21,8 @@ namespace LogicTests
 			Assert::AreEqual<bool>(true, test1.getTasksIndices()->empty());
 		}
 		TEST_METHOD(searchExactName2){
+			clearTasks();
+			addStandardTasks();
 			CommandSearch test2("Task", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
 				false, false);
 
@@ -35,6 +37,8 @@ namespace LogicTests
 			}
 		}
 		TEST_METHOD(searchExactName3){
+			clearTasks();
+			addStandardTasks();
 			CommandSearch test3("deadline", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
 				false, false);
 			Assert::AreEqual<string>("There are 1 tasks found.", test3.execute());
@@ -42,6 +46,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(1, test3.getTasksIndices()->front());
 		}
 		TEST_METHOD(searchNearMatch1){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			Assert::AreEqual<string>("Deadline Task - will be indexed as 1", TaskManager::getAllCurrentTasks()->front().getTaskDetails());
 			CommandSearch test4("task", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
@@ -59,6 +65,8 @@ namespace LogicTests
 			}
 		}
 		TEST_METHOD(searchNearMatch2){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			Assert::AreEqual<string>("Deadline Task - will be indexed as 1", TaskManager::getAllCurrentTasks()->front().getTaskDetails());
 			CommandSearch test5("Normak", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
@@ -70,6 +78,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(3, test5.getTasksIndices()->front());
 		}
 		TEST_METHOD(searchDateRange1){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test6("", new Date(), new Date(2016, 1, 2, 0, 0), NULL,
 				Task::Priority::NORMAL, "", false, false, false);
@@ -85,6 +95,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(2, *iter);
 		}
 		TEST_METHOD(searchDateRange2){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test7("", new Date(), new Date(2015, 11, 1, 0, 0), NULL,
 				Task::Priority::NORMAL, "", false, false, false);
@@ -98,6 +110,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(1, *iter);
 		}
 		TEST_METHOD(searchDateRange3){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test8("", new Date(2015, 11, 1, 0, 0), new Date(2016, 0, 1, 0, 0), NULL,
 				Task::Priority::NORMAL, "", false, false, false);
@@ -111,6 +125,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(2, *iter);
 		}
 		TEST_METHOD(searchAfter){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test9("", new Date(2015, 11, 1, 0, 0), NULL, NULL,
 				Task::Priority::NORMAL, "", false, false, false);
@@ -124,6 +140,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(2, *iter);
 		}
 		TEST_METHOD(searchBefore){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test10("", NULL, new Date(2015, 11, 1, 0, 0), NULL,
 				Task::Priority::NORMAL, "", false, false, false);
@@ -137,6 +155,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(1, *iter);
 		}
 		TEST_METHOD(searchPriority){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test11("", NULL, NULL, NULL,
 				Task::Priority::HIGH, "", false, false, true);
@@ -151,6 +171,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(4, *iter);
 		}
 		TEST_METHOD(searchMarked){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test12("", NULL, NULL, NULL,
 				Task::Priority::HIGH, "", true, true, false);
@@ -163,6 +185,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(4, *iter);
 		}
 		TEST_METHOD(searchEmptySlot1){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test13("", NULL, NULL, NULL,
 				Task::Priority::NORMAL, "1 day 5 hours", false, false, false);
@@ -170,6 +194,8 @@ namespace LogicTests
 			Assert::AreEqual<string>("Next available 1 day 5 hoursis from now!.", test13.execute());
 		}
 		TEST_METHOD(searchEmptySlot2){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test14("", NULL, NULL, NULL,
 				Task::Priority::NORMAL, "365 days", false, false, false);

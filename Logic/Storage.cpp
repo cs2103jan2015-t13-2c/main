@@ -50,6 +50,7 @@ void Storage::writeToFile(){
 		clearSaveFile(filename);
 	}
 	else {
+		checkSaveFile(filename);
 		writeJSONtoFile(filename, parseVectorToJSON(*(TaskManager::getAllCurrentTasks())));
 	}
 	return;
@@ -174,7 +175,7 @@ void Storage::checkSaveFile(string filename){
 		fclose(file);
 	}
 	else {
-		std::cout << FILENAME_NOT_FOUND << endl;
+		//std::cout << FILENAME_NOT_FOUND << endl;
 		FILE* createFile = fopen(filename.c_str(), "wb"); // non-Windows use "w"
 		fclose(createFile);
 	}
