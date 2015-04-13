@@ -1,4 +1,2 @@
-Error Log Resetted on: 13 Apr 2015 (Mon), 06:16PM
-
-13 Apr 2015 (Mon), 06:16PM | Input parsing error: Month is invalid | 
+Error Log Resetted on: 13 Apr 2015 (Mon), 06:29PM
 

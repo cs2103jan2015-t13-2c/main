@@ -18,8 +18,6 @@ string SuggestionBuilder::suggestUserInput(string userInput){
 	std::transform(userInput.begin(), userInput.end(), userInput.begin(), ::tolower);
 
 	string commandType = suggestCommandType(userInput);
-	
-	//string suggestedCommandArguments = suggestCommandArguments(commandType, userInput);
 
 	string suggestedUserInput = commandType;// +suggestedCommandArguments;
 
