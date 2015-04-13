@@ -1,3 +1,4 @@
+//@author A0122357L
 #include "CommandDelete.h"
 
 
@@ -51,6 +52,9 @@ Command* CommandDelete::getInverseCommand(){
 
 const string CommandDelete::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
 
+
+//@author A0094024M -unused
+//Unused due to code restructuring. Logic of the new Command Delete was intially derived from the code below
 /*
 command for delete will be "delete /task_name"
 keep as comment in case we wanna change to this kind of delete ^^

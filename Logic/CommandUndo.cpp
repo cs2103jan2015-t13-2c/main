@@ -1,3 +1,4 @@
+//@author A0122357L
 #include "CommandUndo.h"
 
 const string CommandUndo::MESSAGE_NOTHING_TO_UNDO = "There is nothing to undo!";

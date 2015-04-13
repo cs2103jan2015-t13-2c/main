@@ -1,3 +1,4 @@
+//@author A0122357L
 #include "Date.h"
 
 //Default is construct current date
@@ -46,7 +47,7 @@ string Date::parseDateToDisplay(){
 	return dateToDisplay.str();
 }
 
-
+//@author A0094024M
 Date *Date::toDate(string date_str){
 
 	//NEED TO CHANGE IF FUNCTION toString CHANGE, created specific to toString function only.
@@ -80,6 +81,7 @@ Date *Date::toDate(string date_str){
 
 }
 
+//@author A0122357L
 bool Date::sameDate(Date dateToCompare){
 	if (getYear() == dateToCompare.getYear() &&
 		getMonth() == dateToCompare.getMonth() &&
@@ -160,6 +162,8 @@ int Date::getMinute(){
 	return local_tm.tm_min;
 }
 
+//@author A0122357L-reused
+//from TextBuddy
 //for toDate Parsing
 
 string Date::removeFirstWord(string userCommand){
@@ -209,6 +213,7 @@ bool Date::equalsIgnoreCase(const string& str1, const string& str2){
 	return true;
 }
 
+//@author A0122357L
 int Date::parseInt(string str){
 	char c;
 	int i = 0;
@@ -222,6 +227,8 @@ int Date::parseInt(string str){
 	}
 }
 
+//@author A0122357L-reused
+//from TextBuddy
 string Date::replace(string a, string b, string c){
 	int pos;
 	do {
@@ -231,6 +238,7 @@ string Date::replace(string a, string b, string c){
 	return a;
 }
 
+//@author A0122357L
 int Date::parseMonthName(string monthName){
 	int mon = 0;
 
