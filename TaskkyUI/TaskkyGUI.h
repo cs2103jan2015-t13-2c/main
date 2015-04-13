@@ -13,7 +13,6 @@
 #include "TaskkyGUI.h"
 #include "Storage.h"
 #include "TaskManager.h"
-#include "TaskDisplayer.h"
 #include "Date.h"
 #include <shellapi.h>
 
