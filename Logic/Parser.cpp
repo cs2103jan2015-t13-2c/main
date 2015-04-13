@@ -102,7 +102,7 @@ void Parser::parseCommandAdd(string userCommand){
 	}
 
 	//Adding task priority
-	if (equalsIgnoreCase(*iter, "#impt") || equalsIgnoreCase(*iter, "high")){
+	if (equalsIgnoreCase(*iter, "#impt") || equalsIgnoreCase(*iter, "#high")){
 		_taskPriority = Task::Priority::HIGH;
 	} 
 }
