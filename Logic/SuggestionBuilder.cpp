@@ -17,9 +17,9 @@ string SuggestionBuilder::suggestUserInput(string userInput){
 
 	string commandType = suggestCommandType(userInput);
 	
-	string suggestedCommandArguments = suggestCommandArguments(commandType, userInput);
+	//string suggestedCommandArguments = suggestCommandArguments(commandType, userInput);
 
-	string suggestedUserInput = commandType + suggestedCommandArguments;
+	string suggestedUserInput = commandType;// +suggestedCommandArguments;
 
 	return suggestedUserInput;
 }
@@ -29,18 +29,18 @@ string SuggestionBuilder::suggestCommandType(string userInput){
 	
 	if (userInput == ""){
 
-		throw ParseException("");
+		return "e.g: add, delete, update, search, mark, unmark, undo, checkfilelocation, changefilelocation, help";
 
 	}
 
 	userInput = getFirstWord(userInput);
 	
 	if (isPredictedCommandAdd(userInput)){
-		return "add";
+		return "add cs2103 from 6may to 7may #high";
 	}
 
 	else if (isPredictedCommandDelete(userInput)){
-		return "delete";
+		return "delete [taskNumber]";
 	}
 
 	else if (isPredictedCommandDisplay(userInput)){
@@ -52,7 +52,7 @@ string SuggestionBuilder::suggestCommandType(string userInput){
 	}
 
 	else if (isPredictedCommandMark(userInput)){
-		return "mark";
+		return "mark [taskNumber]";
 	}
 
 	else if (isPredictedCommandUndo(userInput)){
@@ -60,11 +60,11 @@ string SuggestionBuilder::suggestCommandType(string userInput){
 	}
 
 	else if (isPredictedCommandUnmark(userInput)){
-		return "unmark";
+		return "unmark [taskNumber]";
 	}
 
 	else if (isPredictedCommandUpdate(userInput)){
-		return "update";
+		return "update [taskNumber] details/deadline/start end";
 	}
 
 	return "invalid";

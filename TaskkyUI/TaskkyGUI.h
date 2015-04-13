@@ -14,6 +14,7 @@
 #include "TaskManager.h"
 #include "TaskDisplayer.h"
 #include "Date.h"
+#include <shellapi.h>
 
 namespace TaskkyUI {
 
@@ -32,8 +33,6 @@ namespace TaskkyUI {
 	/// Summary for TaskkyGUI
 	/// </summary>
 
-
-
 	public ref class TaskkyGUI : public System::Windows::Forms::Form
 	{
 	public:
@@ -46,6 +45,10 @@ namespace TaskkyUI {
 			TaskManager::loadAllCurrentTasks(Storage::readFromFile());
 
 		}
+
+	public: System::Windows::Forms::TextBox^  textBox1;
+			
+
 
 
 	protected:
@@ -62,7 +65,7 @@ namespace TaskkyUI {
 
 	protected:
 
-	private: System::Windows::Forms::TextBox^  textBox1;
+	
 
 
 	private: System::Windows::Forms::Label^  label3;
@@ -83,6 +86,8 @@ namespace TaskkyUI {
 	private: System::Windows::Forms::Label^  label9;
 	private: System::Windows::Forms::Label^  label10;
 	private: System::Windows::Forms::Label^  label11;
+	private: System::Windows::Forms::Label^  label12;
+	private: System::Windows::Forms::Label^  label13;
 
 
 
@@ -135,6 +140,8 @@ namespace TaskkyUI {
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->label10 = (gcnew System::Windows::Forms::Label());
 			this->label11 = (gcnew System::Windows::Forms::Label());
+			this->label12 = (gcnew System::Windows::Forms::Label());
+			this->label13 = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// textBox1
@@ -153,6 +160,7 @@ namespace TaskkyUI {
 			this->textBox1->Size = System::Drawing::Size(696, 30);
 			this->textBox1->TabIndex = 6;
 			this->textBox1->TextChanged += gcnew System::EventHandler(this, &TaskkyGUI::textBox1_TextChanged_1);
+			this->textBox1->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &TaskkyGUI::textBox1_KeyDown);
 			this->textBox1->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &TaskkyGUI::textBox1_KeyPress);
 			// 
 			// label3
@@ -201,12 +209,12 @@ namespace TaskkyUI {
 			// 
 			this->label4->AutoSize = true;
 			this->label4->BackColor = System::Drawing::Color::Transparent;
-			this->label4->Font = (gcnew System::Drawing::Font(L"Consolas", 11.25F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+			this->label4->Font = (gcnew System::Drawing::Font(L"Consolas", 9.75F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->label4->ForeColor = System::Drawing::Color::White;
 			this->label4->Location = System::Drawing::Point(23, 187);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(0, 18);
+			this->label4->Size = System::Drawing::Size(0, 15);
 			this->label4->TabIndex = 16;
 			this->label4->TextChanged += gcnew System::EventHandler(this, &TaskkyGUI::label4_TextChanged);
 			this->label4->Click += gcnew System::EventHandler(this, &TaskkyGUI::label4_Click);
@@ -248,7 +256,7 @@ namespace TaskkyUI {
 			// columnHeader3
 			// 
 			this->columnHeader3->Text = L"EndTime";
-			this->columnHeader3->Width = 117;
+			this->columnHeader3->Width = 161;
 			// 
 			// columnHeader4
 			// 
@@ -326,6 +334,27 @@ namespace TaskkyUI {
 			this->label11->TabIndex = 25;
 			this->label11->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			// 
+			// label12
+			// 
+			this->label12->AutoSize = true;
+			this->label12->Location = System::Drawing::Point(682, 196);
+			this->label12->Name = L"label12";
+			this->label12->Size = System::Drawing::Size(29, 13);
+			this->label12->TabIndex = 26;
+			this->label12->Text = L"Hide";
+			this->label12->Click += gcnew System::EventHandler(this, &TaskkyGUI::label12_Click);
+			this->label12->DoubleClick += gcnew System::EventHandler(this, &TaskkyGUI::label12_DoubleClick);
+			// 
+			// label13
+			// 
+			this->label13->AutoSize = true;
+			this->label13->Location = System::Drawing::Point(633, 196);
+			this->label13->Name = L"label13";
+			this->label13->Size = System::Drawing::Size(41, 13);
+			this->label13->TabIndex = 27;
+			this->label13->Text = L"Unhide";
+			this->label13->Click += gcnew System::EventHandler(this, &TaskkyGUI::label13_Click);
+			// 
 			// TaskkyGUI
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -334,6 +363,8 @@ namespace TaskkyUI {
 			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
 			this->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 			this->ClientSize = System::Drawing::Size(758, 556);
+			this->Controls->Add(this->label13);
+			this->Controls->Add(this->label12);
 			this->Controls->Add(this->label11);
 			this->Controls->Add(this->label10);
 			this->Controls->Add(this->label9);
@@ -355,6 +386,7 @@ namespace TaskkyUI {
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"TaskkyGUI";
 			this->Load += gcnew System::EventHandler(this, &TaskkyGUI::timer1_Tick);
+			this->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &TaskkyGUI::TaskkyGUI_KeyPress);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -367,369 +399,329 @@ namespace TaskkyUI {
 	public: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 
 	}
-	private: System::Void textBox1_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
 
+	public: System::Windows::Forms::ListViewItem^ addNewItem(int taskNumber, 
+		string startDate, string endDate, string taskDetails, int taskPriority,
+		bool taskMarked) {
+		
+		ListViewItem^ newItem;
+
+		//adding first item of the row
+		newItem = gcnew ListViewItem(Convert::ToString(taskNumber));
+
+		//adding second, third and forth item of the row
+		newItem->SubItems->Add(gcnew String(startDate.c_str()));
+		newItem->SubItems->Add(gcnew String(endDate.c_str()));
+		newItem->SubItems->Add(gcnew String(taskDetails.c_str()));
+		newItem->SubItems->Add(Convert::ToString(taskPriority));
+
+		if (taskMarked){
+
+			newItem->ForeColor = Color::DarkGray;
+		}
+
+		else{
+
+			if (taskPriority == Task::HIGH){
+
+				newItem->ForeColor = Color::DarkRed;
+
+			}
+
+		}
+
+		return newItem;
+	}
+
+
+
+
+	public: System::Void textBox1_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
+
+		//When Enter is pressed
 		if (e->KeyChar == (char)13){
 			//get data from the textbox
 
-			result = Controller::processUserInput(command);
-			result2 = Controller::processUserInput("display");
+			Controller* controllerInstance = Controller::getInstance();
+
+			result = controllerInstance->processUserInput(command);
 
 			label6->Text = gcnew String(result.c_str());
-
 			if (command == "display"){
-
 				label6->Visible = false;
 			}
-			
-			
-			//if (removeFirstWord == "search"){}
-			
+
 			listView1->Items->Clear();
 
-			
-			TaskManager *taskManager = TaskManager::getInstance();
-			int taskNumber = 0;
-			int taskUrgent = 0;
-			int taskDueToday = 0;
-			int taskOverdue = 0;
 
-			//adding all current timed tasks
-			vector<Task> *allTimedTasks;
-			allTimedTasks = taskManager->getAllTimedTasks();
+			if (controllerInstance->getIsSearchCommand()){
 
-			for (int i = 0; i != allTimedTasks->size(); i++){
-				Task task = (*allTimedTasks)[i];
-				//check here
-				
-				
-				if (task.getTaskType() == Task::TIMED)
+				vector<int>* taskIndices = controllerInstance->getTaskIndices();
 
-				{
-					if (task.getTaskPriority() == Task::HIGH){
-						taskUrgent += 1;
+				vector<Task>* allCurrentTasks = TaskManager::getAllCurrentTasks();
+
+				for (int i = 0; i != taskIndices->size(); i++){
+
+					int index = (*taskIndices)[i];
+
+					Task task = (*allCurrentTasks)[index - 1];
+
+					ListViewItem^ newEntry;
+
+					if (task.getTaskType() == Task::FLOATING){
+
+						ListViewItem^ newEntry = addNewItem(index, "--------",
+							"--------", task.getTaskDetails(),
+							task.getTaskPriority(), task.getTaskMarked());
+
+						array<ListViewItem^>^FloatingTasks = { newEntry };
+						listView1->Items->AddRange(FloatingTasks);
+
 					}
-					
-					//setting new parameters to add next task
 
-					taskNumber += 1;
-					string startDate = task.getTaskStartTime()->toString();
-					string endDate = task.getTaskEndTime()->toString();
+					else if (task.getTaskType() == Task::DEADLINE){
 
-					string taskDetails = task.getTaskDetails();
+						ListViewItem^ newEntry = addNewItem(index,
+							task.getTaskDeadline()->parseDateToDisplay(),
+							"--------", task.getTaskDetails(),
+							task.getTaskPriority(), task.getTaskMarked());
 
-					int taskPriority = task.getTaskPriority();
-					
+						array<ListViewItem^>^DeadlineTasks = { newEntry };
+						listView1->Items->AddRange(DeadlineTasks);
 
-					ListViewItem^ defaultEntry;
+					}
 
-					//adding first item of the row
-					defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
+					else{
 
-					//adding second, third and forth item of the row
+						ListViewItem^ newEntry = addNewItem(index,
+							task.getTaskStartTime()->parseDateToDisplay(),
+							task.getTaskEndTime()->parseDateToDisplay(),
+							task.getTaskDetails(), task.getTaskPriority(),
+							task.getTaskMarked());
+
+						array<ListViewItem^>^TimedTasks = { newEntry };
+						listView1->Items->AddRange(TimedTasks);
+					}
+				}
+				textBox1->Clear();
+			}
+
+			else{
 
 
-					defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
-					defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
-					defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
-					defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
-					
 
-					if (task.getTaskPriority() == Task::HIGH)
+				TaskManager *taskManager = TaskManager::getInstance();
+				int taskNumber = 0;
+				int taskUrgent = 0;
+				int taskDueToday = 0;
+				int taskOverdue = 0;
+
+
+				//adding all current timed tasks
+
+				vector<Task> *allTimedTasks;
+				allTimedTasks = taskManager->getAllTimedTasks();
+
+				for (int i = 0; i != allTimedTasks->size(); i++){
+
+					Task task = (*allTimedTasks)[i];
+
+					if (task.getTaskType() == Task::TIMED)
+
 					{
-						defaultEntry->ForeColor = Color::DarkRed;
-					}
-					
-				
+						if (task.getTaskPriority() == Task::HIGH){
+							taskUrgent += 1;
+						}
 
-					array<ListViewItem^>^temp1 = { defaultEntry };
-					listView1->Items->AddRange(temp1);
-					
-					
-					
-					//else{
-						//defaultEntry->ForeColor = Color::White;
-					//}
-				}
+						//setting new parameters to add next task
 
+						taskNumber += 1;
+						string startDate = task.getTaskStartTime()->toString();
+						string endDate = task.getTaskEndTime()->toString();
+						string taskDetails = task.getTaskDetails();
+						int taskPriority = task.getTaskPriority();
+						bool markedTask = {};
 
-				if (task.getTaskType() == Task::DEADLINE)
+						ListViewItem^ newEntry = addNewItem(taskNumber,
+							startDate, endDate, taskDetails, taskPriority, markedTask);
 
-				{
-					if (task.getTaskPriority() == Task::HIGH){
-						taskUrgent += 1;
-					}
-					
-					//setting new parameters to add next task
-
-					taskNumber += 1;
-					string startDate = task.getTaskDeadline()->toString();
-					string endDate = "----------";
-					
-					
-					if (task.getTaskDeadline()->sameDate(Date::Date())){
-					taskDueToday += 1;
+						array<ListViewItem^>^TimedTasks = { newEntry };
+						listView1->Items->AddRange(TimedTasks);
 					}
 
-					//if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())){
 
-						//taskOverdue += 1;
-					//}
-					
-					
-					//}
+					if (task.getTaskType() == Task::DEADLINE)
 
-					string taskDetails = task.getTaskDetails();
-					int taskPriority = task.getTaskPriority();
-					ListViewItem^ defaultEntry;
-
-					//adding first item of the row
-					defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
-
-					//adding second, third and forth item of the row
-
-
-					defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
-					defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
-					defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
-					defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
-
-					array<ListViewItem^>^temp1 = { defaultEntry };
-					listView1->Items->AddRange(temp1);
-					if (task.getTaskPriority() == Task::HIGH)
 					{
+						if (task.getTaskPriority() == Task::HIGH){
+							taskUrgent += 1;
+						}
 
-						defaultEntry->ForeColor = Color::DarkRed;
+						//setting new parameters to add next task
+
+						taskNumber += 1;
+						string startDate = task.getTaskDeadline()->toString();
+						string endDate = "----------";
+						string taskDetails = task.getTaskDetails();
+						int taskPriority = task.getTaskPriority();
+						bool markedTask = {};
+
+
+						if (task.getTaskDeadline()->sameDate(Date::Date())){
+
+							taskDueToday += 1;
+						}
+
+						if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())<0){
+							
+							taskOverdue += 1;
+						}
+
+						//}
+
+						ListViewItem^ newEntry = addNewItem(taskNumber,
+							startDate, endDate, taskDetails, taskPriority, markedTask);
+
+
+						array<ListViewItem^>^TimedTaskswithDeadline = { newEntry };
+						listView1->Items->AddRange(TimedTaskswithDeadline);
+
+						if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())<0){
+
+						newEntry->ForeColor = Color::DarkGoldenrod;
+						}
 					}
-					//if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())){
-						
-						//defaultEntry->ForeColor = Color::DarkGoldenrod;
-					//}
-				}
-				
 
-			}
-			
-			
-			
-			//adding all current floating tasks
-			vector<Task> *allFloatingTasks;
-			allFloatingTasks = taskManager->getAllFloatingTasks();
-			
-			for (int i = 0; i != allFloatingTasks->size(); i++){
-				Task task = (*allFloatingTasks)[i];
-				
-				if (task.getTaskPriority() == Task::HIGH){
-					taskUrgent += 1;
-				}
-
-
-				//setting new parameters to add next task
-				
-				taskNumber += 1;
-				string startDate = "----------";
-				string endDate = "----------";
-				string taskDetails = task.getTaskDetails();
-				int taskPriority = task.getTaskPriority();
-
-
-				ListViewItem^ defaultEntry;
-
-				//adding first item of the row
-				defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
-				
-				//adding second, third and forth item of the row
-				defaultEntry->SubItems->Add(gcnew String (startDate.c_str()));
-				defaultEntry->SubItems->Add(gcnew String (endDate.c_str()));
-				defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
-				defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
-
-				array<ListViewItem^>^temp1 = { defaultEntry };
-				listView1->Items->AddRange(temp1);
-				if (task.getTaskPriority() == Task::HIGH)
-				{
-
-					defaultEntry->ForeColor = Color::DarkRed;
-				}
-			
-			}
-			
-			//adding all marked timed task
-			vector<Task> *allMarkedTimedTask;
-			allMarkedTimedTask = taskManager->getAllMarkedTimedTasks();
-
-		
-			for (int i = 0; i != allMarkedTimedTask->size(); i++){
-				Task task = (*allMarkedTimedTask)[i];
-
-				//set type
-
-				if (task.getTaskType() == Task::TIMED){
-
-					//setting new parameters to add next task
-
-					taskNumber += 1;
-					string startDate = task.getTaskStartTime()->toString();
-					string endDate = task.getTaskEndTime()->toString();
-					string taskDetails = task.getTaskDetails();
-					string marked;
-					if (task.getTaskMarked()){
-						marked = "YES";
-					}
-					//string marked = task.getTaskMarked()->toString();
-
-
-					ListViewItem^ defaultEntry;
-
-					//adding first item of the row
-					defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
-
-					//adding second, third and forth item of the row
-					defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
-					defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
-					defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
-					defaultEntry->SubItems->Add(gcnew String(marked.c_str()));
-
-					array<ListViewItem^>^temp1 = { defaultEntry };
-					listView1->Items->AddRange(temp1);
-					defaultEntry->ForeColor = Color::DarkGray;
-				}
-
-
-				if (task.getTaskType() == Task::DEADLINE){
-
-					//setting new parameters to add next task
-					taskNumber += 1;
-					string startDate = task.getTaskDeadline()->toString();
-					string endDate = "";
-					string taskDetails = task.getTaskDetails();
-					string marked;
-					if (task.getTaskMarked()){
-						marked = "YES";
-					}
-					//string marked = task.getTaskMarked()->toString();
-
-
-					ListViewItem^ defaultEntry;
-
-					//adding first item of the row
-					defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
-
-					//adding second, third and forth item of the row
-					defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
-					defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
-					defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
-					defaultEntry->SubItems->Add(gcnew String(marked.c_str()));
-
-					array<ListViewItem^>^temp1 = { defaultEntry };
-					listView1->Items->AddRange(temp1);
-					defaultEntry->ForeColor = Color::DarkGray;
 
 				}
 
-			}
+				//adding all current floating tasks
 
-			//adding all marked floating task
-
-			vector<Task> *allMarkedFloatingTask;
-			allMarkedFloatingTask = taskManager->getAllMarkedFloatingTasks();
-		
-		
-			for (int i = 0; i != allMarkedFloatingTask->size(); i++){
-
-				//setting new parameters to add next task
-				Task task = (*allMarkedFloatingTask)[i];
-				taskNumber += 1;
-				string startDate = "";
-				string endDate = "";
-				string taskDetails = task.getTaskDetails();
-				string marked;
-				if (task.getTaskMarked()){
-					marked = "YES";
-				}
-				//string marked = task.getTaskMarked()->toString();
-
-
-				ListViewItem^ defaultEntry;
-
-				//adding first item of the row
-				defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
-
-				//adding second, third and forth item of the row
-				defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
-				defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
-				defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
-				defaultEntry->SubItems->Add(gcnew String(marked.c_str()));
-				defaultEntry->ForeColor = Color::DarkGray;
-
-				array<ListViewItem^>^temp1 = { defaultEntry };
-				listView1->Items->AddRange(temp1);
-			
-			}
-
-			label7->Text = Convert::ToString(taskUrgent);
-			label9->Text = Convert::ToString(taskDueToday);
-			label11->Text = Convert::ToString(taskOverdue);
-
-			
-	/*		string displayList;
-			Date *date;
-			string desc;
-			Task::Priority LOW;
-			Task task(desc, date, date, date, LOW);
-
-			for (int i = 0; i != vectorTask->size(); i++){
-				task = (*vectorTask)[i];
-				displayList = task.getTaskDetails();
-				displayList += '\n';
-				
-			}
-
-
-			vector<Task> index;
-			index = taskManager->getNumberOfTasks();
-			
-			TaskManager *taskManager = TaskManager::getInstance();
-			int taskNumber = 0;
-
-			//adding all current timed tasks
-			vector<Task> *allTimedTasks;
-			allTimedTasks = taskManager->getAllTimedTasks();
-
+				vector<Task> *allFloatingTasks;
+				allFloatingTasks = taskManager->getAllFloatingTasks();
 
 				for (int i = 0; i != allFloatingTasks->size(); i++){
-				Task task = (*allFloatingTasks)[i];
-				taskNumber += 1;
-				string startDate = "----------";
-				string endDate = "----------";
-				string taskDetails = task.getTaskDetails();
-				int taskPriority = task.getTaskPriority();
+					Task task = (*allFloatingTasks)[i];
+
+					if (task.getTaskPriority() == Task::HIGH){
+						taskUrgent += 1;
+					}
 
 
-				ListViewItem^ defaultEntry;
+					//setting new parameters to add next task
 
-				//adding first item of the row
-				defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
-				//check here */
+					taskNumber += 1;
+					string startDate = "----------";
+					string endDate = "----------";
+					string taskDetails = task.getTaskDetails();
+					int taskPriority = task.getTaskPriority();
+					bool markedTask = {};
 
-	
 
-			
-		
-			
+					ListViewItem^ newEntry = addNewItem(taskNumber,
+						startDate, endDate, taskDetails, taskPriority, markedTask);
 
-			
-			
-			
-			
+					array<ListViewItem^>^FloatingTasks = { newEntry };
+					listView1->Items->AddRange(FloatingTasks);
 
-			textBox1->Clear();
-			
+				}
+
+				//adding all marked timed task
+				vector<Task> *allMarkedTimedTask;
+				allMarkedTimedTask = taskManager->getAllMarkedTimedTasks();
+
+
+				for (int i = 0; i != allMarkedTimedTask->size(); i++){
+					Task task = (*allMarkedTimedTask)[i];
+
+					//set type
+
+					if (task.getTaskType() == Task::TIMED){
+
+						//setting new parameters to add next task
+
+						taskNumber += 1;
+						string startDate = task.getTaskStartTime()->toString();
+						string endDate = task.getTaskEndTime()->toString();
+						string taskDetails = task.getTaskDetails();
+						int TaskPriority;
+						bool markedTask = 1;
+
+
+						ListViewItem^ newEntry = addNewItem(taskNumber,
+							startDate, endDate, taskDetails, TaskPriority, markedTask);
+
+
+						array<ListViewItem^>^MarkedTimedTasks = { newEntry };
+						listView1->Items->AddRange(MarkedTimedTasks);
+					}
+
+
+					if (task.getTaskType() == Task::DEADLINE){
+
+						//setting new parameters to add next task
+						taskNumber += 1;
+						string startDate = task.getTaskDeadline()->toString();
+						string endDate = "";
+						string taskDetails = task.getTaskDetails();
+						int TaskPriority;
+						bool markedTask = 1;
+
+
+						ListViewItem^ newEntry = addNewItem(taskNumber,
+							startDate, endDate, taskDetails, TaskPriority, markedTask);
+
+
+						array<ListViewItem^>^MarkedTimedTasksWithDeadline = { newEntry };
+						listView1->Items->AddRange(MarkedTimedTasksWithDeadline);
+
+					}
+
+				}
+
+				//adding all marked floating task
+
+				vector<Task> *allMarkedFloatingTask;
+				allMarkedFloatingTask = taskManager->getAllMarkedFloatingTasks();
+
+
+				for (int i = 0; i != allMarkedFloatingTask->size(); i++){
+
+					//setting new parameters to add next task
+					Task task = (*allMarkedFloatingTask)[i];
+					taskNumber += 1;
+					string startDate = "";
+					string endDate = "";
+					string taskDetails = task.getTaskDetails();
+					int TaskPriority;
+					bool markedTask = 1;
+
+
+					ListViewItem^ newEntry = addNewItem(taskNumber,
+						startDate, endDate, taskDetails, TaskPriority, markedTask);
+
+
+					array<ListViewItem^>^MarkedFloatingTasks = { newEntry };
+					listView1->Items->AddRange(MarkedFloatingTasks);
+
+				}
+
+				label7->Text = Convert::ToString(taskUrgent);
+				label9->Text = Convert::ToString(taskDueToday);
+				label11->Text = Convert::ToString(taskOverdue);
+
+				textBox1->Clear();
+
+			}
+
 		}
 
-		label4->Text = "e.g: add, delete, update, search, mark, undo, redo";
+		label4->Text = "e.g: add, delete, update, search, mark, unmark, undo, checkfilelocation, changefilelocation, help";
 
 
+		label4->Text = gcnew String(SuggestionBuilder::suggestUserInput(command).c_str());
+
+		/*
 		if (e->KeyChar == (char)32){
 				if (command == "add"){
 					label4->Text = "e.g: add cs2103 from 2 may 18:00 to 5 may 20:00 #high";
@@ -743,9 +735,11 @@ namespace TaskkyUI {
 				if (command == "search"){
 					label4->Text = "e.g: search [keywords]";
 				}
-		}
+		}*/
 
 		
+		
+
 
 		//listView1->Groups->Add(gcnew ListViewGroup("test"));
 
@@ -845,6 +839,486 @@ private: System::Void label7_Click(System::Object^  sender, System::EventArgs^  
 	
 }
 private: System::Void label7_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+}
+private: System::Void TaskkyGUI_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
+	
+	
+		
+}
+private: System::Void label12_Click(System::Object^  sender, System::EventArgs^  e) {
+	listView1->Items->Clear();
+
+
+	TaskManager *taskManager = TaskManager::getInstance();
+	int taskNumber = 0;
+	int taskUrgent = 0;
+	int taskDueToday = 0;
+	int taskOverdue = 0;
+
+	//adding all current timed tasks
+	vector<Task> *allTimedTasks;
+	allTimedTasks = taskManager->getAllTimedTasks();
+
+	for (int i = 0; i != allTimedTasks->size(); i++){
+		Task task = (*allTimedTasks)[i];
+		//check here
+
+
+		if (task.getTaskType() == Task::TIMED)
+
+		{
+			if (task.getTaskPriority() == Task::HIGH){
+				taskUrgent += 1;
+			}
+
+			//setting new parameters to add next task
+
+			taskNumber += 1;
+			string startDate = task.getTaskStartTime()->toString();
+			string endDate = task.getTaskEndTime()->toString();
+
+			string taskDetails = task.getTaskDetails();
+
+			int taskPriority = task.getTaskPriority();
+
+
+			ListViewItem^ defaultEntry;
+
+			//adding first item of the row
+			defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
+
+			//adding second, third and forth item of the row
+
+
+			defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
+			defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
+
+
+			if (task.getTaskPriority() == Task::HIGH)
+			{
+				defaultEntry->ForeColor = Color::DarkRed;
+			}
+
+
+
+			array<ListViewItem^>^temp1 = { defaultEntry };
+			listView1->Items->AddRange(temp1);
+
+
+
+			//else{
+			//defaultEntry->ForeColor = Color::White;
+			//}
+		}
+
+
+		if (task.getTaskType() == Task::DEADLINE)
+
+		{
+			if (task.getTaskPriority() == Task::HIGH){
+				taskUrgent += 1;
+			}
+
+			//setting new parameters to add next task
+
+			taskNumber += 1;
+			string startDate = task.getTaskDeadline()->toString();
+			string endDate = "----------";
+
+
+			if (task.getTaskDeadline()->sameDate(Date::Date())){
+				taskDueToday += 1;
+			}
+
+			//if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())){
+
+			//	taskOverdue += 1;
+			//}
+
+
+			//}
+
+			string taskDetails = task.getTaskDetails();
+			int taskPriority = task.getTaskPriority();
+			ListViewItem^ defaultEntry;
+
+			//adding first item of the row
+			defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
+
+			//adding second, third and forth item of the row
+
+
+			defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
+			defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
+
+			array<ListViewItem^>^temp1 = { defaultEntry };
+			listView1->Items->AddRange(temp1);
+			if (task.getTaskPriority() == Task::HIGH)
+			{
+
+				defaultEntry->ForeColor = Color::DarkRed;
+			}
+			//if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())){
+
+			//defaultEntry->ForeColor = Color::DarkGoldenrod;
+			//}
+		}
+
+
+	}
+
+
+
+	//adding all current floating tasks
+	vector<Task> *allFloatingTasks;
+	allFloatingTasks = taskManager->getAllFloatingTasks();
+
+	for (int i = 0; i != allFloatingTasks->size(); i++){
+		Task task = (*allFloatingTasks)[i];
+
+		if (task.getTaskPriority() == Task::HIGH){
+			taskUrgent += 1;
+		}
+
+
+		//setting new parameters to add next task
+
+		taskNumber += 1;
+		string startDate = "----------";
+		string endDate = "----------";
+		string taskDetails = task.getTaskDetails();
+		int taskPriority = task.getTaskPriority();
+
+
+		ListViewItem^ defaultEntry;
+
+		//adding first item of the row
+		defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
+
+		//adding second, third and forth item of the row
+		defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
+		defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
+		defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
+		defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
+
+		array<ListViewItem^>^temp1 = { defaultEntry };
+		listView1->Items->AddRange(temp1);
+		if (task.getTaskPriority() == Task::HIGH)
+		{
+
+			defaultEntry->ForeColor = Color::DarkRed;
+		}
+
+	}
+}
+private: System::Void label13_Click(System::Object^  sender, System::EventArgs^  e) {
+		
+	System::Void textBox1_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e);
+
+}
+private: System::Void label12_DoubleClick(System::Object^  sender, System::EventArgs^  e) {
+
+	System::Void textBox1_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e);
+	/*listView1->Items->Clear();
+
+	TaskManager *taskManager = TaskManager::getInstance();
+	int taskNumber = 0;
+	int taskUrgent = 0;
+	int taskDueToday = 0;
+	int taskOverdue = 0;
+
+	//adding all current timed tasks
+	vector<Task> *allTimedTasks;
+	allTimedTasks = taskManager->getAllTimedTasks();
+
+	for (int i = 0; i != allTimedTasks->size(); i++){
+		Task task = (*allTimedTasks)[i];
+		//check here
+
+
+		if (task.getTaskType() == Task::TIMED)
+
+		{
+			if (task.getTaskPriority() == Task::HIGH){
+				taskUrgent += 1;
+			}
+
+			//setting new parameters to add next task
+
+			taskNumber += 1;
+			string startDate = task.getTaskStartTime()->toString();
+			string endDate = task.getTaskEndTime()->toString();
+
+			string taskDetails = task.getTaskDetails();
+
+			int taskPriority = task.getTaskPriority();
+
+
+			ListViewItem^ defaultEntry;
+
+			//adding first item of the row
+			defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
+
+			//adding second, third and forth item of the row
+
+
+			defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
+			defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
+
+
+			if (task.getTaskPriority() == Task::HIGH)
+			{
+				defaultEntry->ForeColor = Color::DarkRed;
+			}
+
+
+
+			array<ListViewItem^>^temp1 = { defaultEntry };
+			listView1->Items->AddRange(temp1);
+
+
+
+			//else{
+			//defaultEntry->ForeColor = Color::White;
+			//}
+		}
+
+
+		if (task.getTaskType() == Task::DEADLINE)
+
+		{
+			if (task.getTaskPriority() == Task::HIGH){
+				taskUrgent += 1;
+			}
+
+			//setting new parameters to add next task
+
+			taskNumber += 1;
+			string startDate = task.getTaskDeadline()->toString();
+			string endDate = "----------";
+
+
+			if (task.getTaskDeadline()->sameDate(Date::Date())){
+				taskDueToday += 1;
+			}
+
+			//if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())){
+
+			//	taskOverdue += 1;
+			//}
+
+
+			//}
+
+			string taskDetails = task.getTaskDetails();
+			int taskPriority = task.getTaskPriority();
+			ListViewItem^ defaultEntry;
+
+			//adding first item of the row
+			defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
+
+			//adding second, third and forth item of the row
+
+
+			defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
+			defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
+
+			array<ListViewItem^>^temp1 = { defaultEntry };
+			listView1->Items->AddRange(temp1);
+			if (task.getTaskPriority() == Task::HIGH)
+			{
+
+				defaultEntry->ForeColor = Color::DarkRed;
+			}
+			//if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())){
+
+			//defaultEntry->ForeColor = Color::DarkGoldenrod;
+			//}
+		}
+
+
+	}
+
+
+
+	//adding all current floating tasks
+	vector<Task> *allFloatingTasks;
+	allFloatingTasks = taskManager->getAllFloatingTasks();
+
+	for (int i = 0; i != allFloatingTasks->size(); i++){
+		Task task = (*allFloatingTasks)[i];
+
+		if (task.getTaskPriority() == Task::HIGH){
+			taskUrgent += 1;
+		}
+
+
+		//setting new parameters to add next task
+
+		taskNumber += 1;
+		string startDate = "----------";
+		string endDate = "----------";
+		string taskDetails = task.getTaskDetails();
+		int taskPriority = task.getTaskPriority();
+
+
+		ListViewItem^ defaultEntry;
+
+		//adding first item of the row
+		defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
+
+		//adding second, third and forth item of the row
+		defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
+		defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
+		defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
+		defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
+
+		array<ListViewItem^>^temp1 = { defaultEntry };
+		listView1->Items->AddRange(temp1);
+		if (task.getTaskPriority() == Task::HIGH)
+		{
+
+			defaultEntry->ForeColor = Color::DarkRed;
+		}
+
+	}
+
+	//adding all marked timed task
+	vector<Task> *allMarkedTimedTask;
+	allMarkedTimedTask = taskManager->getAllMarkedTimedTasks();
+
+
+	for (int i = 0; i != allMarkedTimedTask->size(); i++){
+		Task task = (*allMarkedTimedTask)[i];
+
+		//set type
+
+		if (task.getTaskType() == Task::TIMED){
+
+			//setting new parameters to add next task
+
+			taskNumber += 1;
+			string startDate = task.getTaskStartTime()->toString();
+			string endDate = task.getTaskEndTime()->toString();
+			string taskDetails = task.getTaskDetails();
+			string marked;
+			if (task.getTaskMarked()){
+				marked = "YES";
+			}
+			//string marked = task.getTaskMarked()->toString();
+
+
+			ListViewItem^ defaultEntry;
+
+			//adding first item of the row
+			defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
+
+			//adding second, third and forth item of the row
+			defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(marked.c_str()));
+
+			array<ListViewItem^>^temp1 = { defaultEntry };
+			listView1->Items->AddRange(temp1);
+			defaultEntry->ForeColor = Color::DarkGray;
+		}
+
+
+		if (task.getTaskType() == Task::DEADLINE){
+
+			//setting new parameters to add next task
+			taskNumber += 1;
+			string startDate = task.getTaskDeadline()->toString();
+			string endDate = "";
+			string taskDetails = task.getTaskDetails();
+			string marked;
+			if (task.getTaskMarked()){
+				marked = "YES";
+			}
+			//string marked = task.getTaskMarked()->toString();
+
+
+			ListViewItem^ defaultEntry;
+
+			//adding first item of the row
+			defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
+
+			//adding second, third and forth item of the row
+			defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
+			defaultEntry->SubItems->Add(gcnew String(marked.c_str()));
+
+			array<ListViewItem^>^temp1 = { defaultEntry };
+			listView1->Items->AddRange(temp1);
+			defaultEntry->ForeColor = Color::DarkGray;
+
+		}
+
+	}
+
+	//adding all marked floating task
+
+	vector<Task> *allMarkedFloatingTask;
+	allMarkedFloatingTask = taskManager->getAllMarkedFloatingTasks();
+
+
+	for (int i = 0; i != allMarkedFloatingTask->size(); i++){
+
+		//setting new parameters to add next task
+		Task task = (*allMarkedFloatingTask)[i];
+		taskNumber += 1;
+		string startDate = "";
+		string endDate = "";
+		string taskDetails = task.getTaskDetails();
+		string marked;
+		if (task.getTaskMarked()){
+			marked = "YES";
+		}
+		//string marked = task.getTaskMarked()->toString();
+
+
+		ListViewItem^ defaultEntry;
+
+		//adding first item of the row
+		defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
+
+		//adding second, third and forth item of the row
+		defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
+		defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
+		defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
+		defaultEntry->SubItems->Add(gcnew String(marked.c_str()));
+		defaultEntry->ForeColor = Color::DarkGray;
+
+		array<ListViewItem^>^temp1 = { defaultEntry };
+		listView1->Items->AddRange(temp1);
+
+	}*/
+}
+private: System::Void textBox1_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e) {
+	if (e->KeyCode == Keys::PageDown){
+		listView1->Focus();
+		SendKeys::SendWait("{PGDN}");
+		textBox1->Focus();
+	}
+	else if (e->KeyCode == Keys::PageUp){
+		listView1->Focus();
+		SendKeys::SendWait("{PGUP}");
+		textBox1->Focus();
+	}
+
+	if (e->KeyCode == Keys::F1){
+		ShellExecuteA(NULL, "open", "..\\help.pdf", NULL, NULL, 0);
+	}
 }
 };
 }
