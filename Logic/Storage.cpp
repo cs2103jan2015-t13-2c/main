@@ -1,3 +1,4 @@
+//@author A0094024M
 /*
 This class is to manipulate the save file for TASKKY.
 
@@ -9,8 +10,6 @@ by the CommandChangeFileLocation and CommandCheckFileLocation classes.
 
 Save.json should not be tampered by user manually, as editing it may cause error in parsing
 should the format of the document does not match the JSON Object standard.
-
-@author: A0094024M Adisurya Nataprawira
 */
 
 #include "Storage.h"

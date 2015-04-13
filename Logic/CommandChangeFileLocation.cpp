@@ -1,3 +1,5 @@
+//@author A0094024M
+
 /*
 This class is to manipulate the location of the save file for TASKKY.
 
@@ -9,8 +11,6 @@ to the original directory (same directory as the .exe file).
 
 Save.json should not be tampered by user manually, as editing it may cause error in parsing
 should the format of the document does not match the JSON Object standard.
-
-@author: A0094024M Adisurya Nataprawira
 */
 
 #include "CommandChangeFileLocation.h"

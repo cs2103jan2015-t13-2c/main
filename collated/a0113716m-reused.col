@@ -1,0 +1,105 @@
+//@author: a0113716m-reused
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Parser.cpp
+	 */
+
+/*
+* ====================================================================
+*  Additional functions
+* ====================================================================
+*/
+string Parser::removeFirstWord(string userCommand){
+	size_t firstSpace = userCommand.find_first_of(' ');
+	return userCommand.substr(firstSpace + 1, userCommand.npos);
+
+	//old function
+	//return trim(replace(userCommand, getFirstWord(userCommand), ""));
+}
+
+string Parser::getFirstWord(string userCommand){
+	string commandTypeString = splitParameters(userCommand)[0];
+	return commandTypeString;
+}
+
+void Parser::toLowerCase(string &text){
+	transform(text.begin(), text.end(), text.begin(), ::tolower);
+}
+
+// This method only split string based on delimiter space
+vector<string> Parser::splitParameters(string commandParametersString){
+	vector<string> tokens;
+	istringstream iss(commandParametersString);
+	copy(istream_iterator<string>(iss),
+		istream_iterator<string>(),
+		back_inserter<vector<string> >(tokens));
+
+	return tokens;
+}
+
+inline string Parser::trim_right(const string& s, const string& delimiters){
+	return s.substr(0, s.find_last_not_of(delimiters) + 1);
+}
+
+inline string Parser::trim_left(const string& s, const string& delimiters){
+	if (countWordsInString(s) == 0){
+		return "";
+	}
+	return s.substr(s.find_first_not_of(delimiters));
+}
+
+unsigned int Parser::countWordsInString(const string& str)
+{
+	std::stringstream stream(str);
+	return std::distance(std::istream_iterator<std::string>(stream), std::istream_iterator<std::string>());
+}
+
+inline string Parser::trim(const string& s, const string& delimiters){
+	if (!s.empty()){
+		return trim_left(trim_right(s, delimiters), delimiters);
+	} else{
+		return s;
+	}
+}
+
+bool Parser::equalsIgnoreCase(const string& str1, const string& str2){
+	if (str1.size() != str2.size()){
+		return false;
+	}
+	for (string::const_iterator c1 = str1.begin(), c2 = str2.begin(); c1 != str1.end(); ++c1, ++c2){
+		if (tolower(*c1) != tolower(*c2)){
+			return false;
+		}
+	}
+	return true;
+}
+
+int Parser::parseInt(string str){
+	char c;
+	int i = 0;
+	std::stringstream ss(str);
+	ss >> i;
+	if (ss.fail() || ss.get(c)){
+		return INVALID_NUMBER_FORMAT;
+	} else{
+		return i;
+	}
+}
+
+string Parser::replace(string a, string b, string c) {
+	int pos;
+	do {
+		pos = a.find(b);
+		if (pos != -1)  a.replace(pos, b.length(), c);
+	} while (pos != -1);
+	return a;
+}
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Parser.cpp
+
+
+
+
+

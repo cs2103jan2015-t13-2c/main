@@ -1,4 +1,11 @@
-//@author A0122357L -unused
+//@author: a0122357l-unused
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\main.cpp
+	 */
+
 //Changed to UI
 
 /*
@@ -55,3 +62,10 @@ void main() {
 		showToUser(feedback);
 	}
 }
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\main.cpp
+
+
+
+
+

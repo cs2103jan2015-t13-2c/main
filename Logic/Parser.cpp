@@ -1,3 +1,4 @@
+//@author A0113716M
 /*
 This class is to parse the command line for TASKKY.
 
@@ -8,9 +9,6 @@ to the Command Builder.
 For example, calling "add task by 10 may" will return _taskDetails = "task" 
 and _taskDeadline = "10 may" to the Command Builder, which will create a 
 task based on these parameters.
-
-
-@author: A0113716M Kelvin Koa
 */
 
 #include "Parser.h"
@@ -228,6 +226,7 @@ void Parser::parseCommandUnmark(string userCommand){
 	_taskNumber = atoi(task_number_str.c_str());
 }
 
+//@author A0122357L
 /*
 * ====================================================================
 *  Parser for Command Search
@@ -343,6 +342,7 @@ void Parser::parseCommandChangeFileLocation(string userCommand){
 	_taskDetails = text;
 }
 
+//@author A0113716M -reused
 /*
 * ====================================================================
 *  Additional functions
@@ -434,6 +434,7 @@ string Parser::replace(string a, string b, string c) {
 	return a;
 }
 
+//@author A0113716M
 bool Parser::isKeyword(string word){
 	return (equalsIgnoreCase(word, "by") || equalsIgnoreCase(word, "from") || 
 			equalsIgnoreCase(word, "#impt") || equalsIgnoreCase(word, "#high") ||
