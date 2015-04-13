@@ -43,25 +43,3 @@ CommandDisplay::~CommandDisplay(){
 
 
 
-	/**
-	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandExit.cpp
-	 */
-
-#include "CommandExit.h"
-
-
-CommandExit::CommandExit()
-{
-}
-
-
-CommandExit::~CommandExit()
-{
-}
-
-	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandExit.cpp
-
-
-
-
-

@@ -391,9 +391,10 @@ private:
 	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandSearch.cpp
 	 */
 
+
 /*
 This class is to handle the search command. As an object of this class is constructed, it will
-take in the specific attributes as the search objects and search accordingly (e.g. setting 
+take in the specific attributes as the search objects and search accordingly (e.g. setting
 taskDetails will result in searching the TaskVector for a similar task details, etc).
 
 Available searches:
@@ -435,7 +436,7 @@ CommandSearch::CommandSearch(string taskDetails,
 	_taskMarked = taskMarked;
 	_foundMarked = foundMarked;
 	_foundPriority = foundPriority;
-	foundTasksIndices = new vector < int > ;
+	foundTasksIndices = new vector < int >;
 }
 
 //Default destructor
@@ -483,7 +484,7 @@ string CommandSearch::execute() {
 			return searchBeforeDate(*_taskEndTime);
 		}
 	}
-	
+
 	if (_foundPriority == true) {
 		return searchPriority(_taskPriority);
 	}
@@ -529,7 +530,8 @@ string CommandSearch::searchByName(string taskname) {
 		if (containExactMatch(taskname, iter->getTaskDetails())){
 			++count;
 			foundTasksIndices->push_back(position);
-		} else if (containNearMatch(taskname, iter->getTaskDetails())){
+		}
+		else if (containNearMatch(taskname, iter->getTaskDetails())){
 			++count;
 			foundTasksIndices->push_back(position);
 		}
@@ -555,7 +557,7 @@ string CommandSearch::searchDateRange(Date dateFrom, Date dateTo) {
 	int count = 0;
 	int position = 1;
 
-	for (iter = TaskVector.begin(); 
+	for (iter = TaskVector.begin();
 		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING;
 		++iter){
 		if (iter->getTaskType() == Task::DEADLINE) {
@@ -599,8 +601,8 @@ string CommandSearch::searchAfterDate(Date dateAfter) {
 	int count = 0;
 	int position = 1;
 
-	for (iter = TaskVector.begin(); 
-		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING; 
+	for (iter = TaskVector.begin();
+		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING;
 		++iter){
 		if (iter->getTaskType() == Task::DEADLINE) {
 			if (dateAfter.isEarlierThan(*(iter->getTaskDeadline())) >= 0) {
@@ -731,7 +733,7 @@ string CommandSearch::searchMarked(bool marked) {
 //
 //@return: feedback on number of match found
 string CommandSearch::searchNextEmptySlot(string duration){
-	
+
 	int durationInMinutes = parseDurationToMinutes(duration);
 
 	vector<Task> TaskVector = *TaskManager::getAllCurrentTasks();
@@ -739,10 +741,10 @@ string CommandSearch::searchNextEmptySlot(string duration){
 	bool found = false;
 	Date toCompare = Date::Date();
 
-	for (iter = TaskVector.begin(); 
-		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING && found == false; 
+	for (iter = TaskVector.begin();
+		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING && found == false;
 		++iter){
-		
+
 		if (iter->getTaskType() == Task::TIMED) {
 			if (toCompare.isEarlierThan(*(iter->getTaskStartTime())) == 1){
 				int freeTime = toCompare.diffInMinutes(*(iter->getTaskStartTime()));
@@ -757,7 +759,7 @@ string CommandSearch::searchNextEmptySlot(string duration){
 
 	}
 
-	
+
 	if (toCompare.isEarlierThan(Date::Date()) == 0) {
 		sprintf_s(buffer, MESSAGE_NEXT_AVAILABLE_SLOT.c_str(), duration.c_str(), "now!");
 	}
@@ -765,7 +767,7 @@ string CommandSearch::searchNextEmptySlot(string duration){
 		sprintf_s(buffer, MESSAGE_NEXT_AVAILABLE_SLOT.c_str(), duration.c_str(), toCompare.toString().c_str());
 	}
 	return buffer;
-	
+
 }
 
 /*
@@ -828,7 +830,7 @@ int CommandSearch::parseDurationToMinutes(string duration){
 		if (getFirstWord(duration) == "day" || getFirstWord(duration) == "days"){
 			int days = firstNumber;
 			duration = removeFirstWord(duration);
-			
+
 			int hours = stoi(getFirstWord(duration));
 			duration = removeFirstWord(duration);
 			if (getFirstWord(duration) != "hour" && getFirstWord(duration) != "hours"){
@@ -872,7 +874,8 @@ int CommandSearch::parseDurationToMinutes(string duration){
 		}
 		else if (getFirstWord(duration) == "minutes" || getFirstWord(duration) == "minute"){
 			return firstNumber;
-		} else {
+		}
+		else {
 			throw CommandException(INVALID_DURATION);
 		}
 
@@ -889,7 +892,8 @@ int CommandSearch::parseDurationToMinutes(string duration){
 bool CommandSearch::containExactMatch(string searchName, string taskName){
 	if (taskName.find(searchName) != string::npos){
 		return true;
-	} else {
+	}
+	else {
 		return false;
 	}
 }
@@ -906,7 +910,7 @@ bool CommandSearch::containNearMatch(string searchName, string taskName){
 		CommandSearch::ACCEPTABLE_DISTANCE){
 		nearMatch = true;
 	}
-	
+
 	if (!nearMatch){
 		vector<string> textVec = splitParameters(taskName);
 		vector<string>::iterator iter;
@@ -937,7 +941,7 @@ bool CommandSearch::containNearMatch(string searchName, string taskName){
 
 string CommandSearch::removeFirstWord(string userCommand){
 
-	
+
 	size_t firstSpace = userCommand.find_first_of(' ');
 	return userCommand.substr(firstSpace + 1, userCommand.npos);
 
@@ -1070,7 +1074,7 @@ Date *Date::toDate(string date_str){
 	int year = parseInt(date_str);
 
 
-	Date *date =  new Date (year, month, day, hours, minutes);
+	Date *date = new Date(year, month, day, hours, minutes);
 
 	return date;
 
@@ -1089,7 +1093,7 @@ Date *Date::toDate(string date_str){
 /*
 This class is to manipulate the save file for TASKKY.
 
-Functionalities include writing the vector of Tasks into the save file and parsing the saved 
+Functionalities include writing the vector of Tasks into the save file and parsing the saved
 file into a vector of Tasks.
 
 The save file has to be named "Save.json", but location of the file can be anywhere, handled
@@ -1137,6 +1141,7 @@ void Storage::writeToFile(){
 		clearSaveFile(filename);
 	}
 	else {
+		checkSaveFile(filename);
 		writeJSONtoFile(filename, parseVectorToJSON(*(TaskManager::getAllCurrentTasks())));
 	}
 	return;
@@ -1243,7 +1248,8 @@ string Storage::determineFileName(){
 	std::string fileDirectory = CommandCheckFileLocation::getFileLocation();
 	if (fileDirectory == "default"){
 		filename = findProgramDirectory() + "/Save.json";
-	} else {
+	}
+	else {
 		filename = fileDirectory + "/Save.json";
 	}
 
@@ -1260,7 +1266,7 @@ void Storage::checkSaveFile(string filename){
 		fclose(file);
 	}
 	else {
-		std::cout << FILENAME_NOT_FOUND << endl;
+		//std::cout << FILENAME_NOT_FOUND << endl;
 		FILE* createFile = fopen(filename.c_str(), "wb"); // non-Windows use "w"
 		fclose(createFile);
 	}
@@ -1411,7 +1417,7 @@ rapidjson::Value Storage::convertTaskToJSON(Task task, rapidjson::Document::Allo
 	rapidjson::Value marked;
 	char buffer[1024];
 	int len;
-	
+
 	//Check Task Details
 	len = sprintf(buffer, task.getTaskDetails().c_str());
 	taskname.SetString(buffer, len, allocator);
@@ -1463,12 +1469,14 @@ rapidjson::Value Storage::convertTaskToJSON(Task task, rapidjson::Document::Allo
 		int leng = sprintf(prior, "HIGH");
 
 		priority.SetString(prior, leng, allocator);
-	} else if (task.getTaskPriority() == Task::Priority::NORMAL) {
+	}
+	else if (task.getTaskPriority() == Task::Priority::NORMAL) {
 		char prior[1024];
 		int leng = sprintf(prior, "NORMAL");
 
 		priority.SetString(prior, leng, allocator);
-	} else {
+	}
+	else {
 		char prior[1024];
 		int leng = sprintf(prior, "NORMAL");
 
@@ -1478,7 +1486,8 @@ rapidjson::Value Storage::convertTaskToJSON(Task task, rapidjson::Document::Allo
 	//Check if task is marked
 	if (task.getTaskMarked()){
 		marked.SetBool(true);
-	} else {
+	}
+	else {
 		marked.SetBool(false);
 	}
 
@@ -1621,7 +1630,7 @@ namespace LogicTests
 	TEST_CLASS(CommandSearchUnitTest)
 	{
 	public:
-		
+
 		TEST_METHOD(searchExactName1)
 		{
 			clearTasks();
@@ -1633,6 +1642,8 @@ namespace LogicTests
 			Assert::AreEqual<bool>(true, test1.getTasksIndices()->empty());
 		}
 		TEST_METHOD(searchExactName2){
+			clearTasks();
+			addStandardTasks();
 			CommandSearch test2("Task", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
 				false, false);
 
@@ -1647,6 +1658,8 @@ namespace LogicTests
 			}
 		}
 		TEST_METHOD(searchExactName3){
+			clearTasks();
+			addStandardTasks();
 			CommandSearch test3("deadline", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
 				false, false);
 			Assert::AreEqual<string>("There are 1 tasks found.", test3.execute());
@@ -1654,6 +1667,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(1, test3.getTasksIndices()->front());
 		}
 		TEST_METHOD(searchNearMatch1){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			Assert::AreEqual<string>("Deadline Task - will be indexed as 1", TaskManager::getAllCurrentTasks()->front().getTaskDetails());
 			CommandSearch test4("task", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
@@ -1671,6 +1686,8 @@ namespace LogicTests
 			}
 		}
 		TEST_METHOD(searchNearMatch2){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			Assert::AreEqual<string>("Deadline Task - will be indexed as 1", TaskManager::getAllCurrentTasks()->front().getTaskDetails());
 			CommandSearch test5("Normak", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
@@ -1682,13 +1699,15 @@ namespace LogicTests
 			Assert::AreEqual<int>(3, test5.getTasksIndices()->front());
 		}
 		TEST_METHOD(searchDateRange1){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
-			CommandSearch test6("", new Date(), new Date(2016,1,2,0,0), NULL, 
-				Task::Priority::NORMAL, "", false,false, false);
+			CommandSearch test6("", new Date(), new Date(2016, 1, 2, 0, 0), NULL,
+				Task::Priority::NORMAL, "", false, false, false);
 
 			Assert::AreEqual<string>("There are 2 tasks found.", test6.execute());
-			
-			
+
+
 			Assert::AreEqual<int>(2, test6.getTasksIndices()->size());
 			vector<int> myVec = *(test6.getTasksIndices());
 			vector<int>::iterator iter = myVec.begin();
@@ -1697,10 +1716,12 @@ namespace LogicTests
 			Assert::AreEqual<int>(2, *iter);
 		}
 		TEST_METHOD(searchDateRange2){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test7("", new Date(), new Date(2015, 11, 1, 0, 0), NULL,
 				Task::Priority::NORMAL, "", false, false, false);
-			
+
 			Assert::AreEqual<string>("There are 1 tasks found.", test7.execute());
 
 
@@ -1710,8 +1731,10 @@ namespace LogicTests
 			Assert::AreEqual<int>(1, *iter);
 		}
 		TEST_METHOD(searchDateRange3){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
-			CommandSearch test8("", new Date(2015,11,1,0,0), new Date(2016, 0, 1, 0, 0), NULL,
+			CommandSearch test8("", new Date(2015, 11, 1, 0, 0), new Date(2016, 0, 1, 0, 0), NULL,
 				Task::Priority::NORMAL, "", false, false, false);
 
 			Assert::AreEqual<string>("There are 1 tasks found.", test8.execute());
@@ -1723,6 +1746,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(2, *iter);
 		}
 		TEST_METHOD(searchAfter){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test9("", new Date(2015, 11, 1, 0, 0), NULL, NULL,
 				Task::Priority::NORMAL, "", false, false, false);
@@ -1736,6 +1761,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(2, *iter);
 		}
 		TEST_METHOD(searchBefore){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test10("", NULL, new Date(2015, 11, 1, 0, 0), NULL,
 				Task::Priority::NORMAL, "", false, false, false);
@@ -1749,6 +1776,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(1, *iter);
 		}
 		TEST_METHOD(searchPriority){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test11("", NULL, NULL, NULL,
 				Task::Priority::HIGH, "", false, false, true);
@@ -1763,6 +1792,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(4, *iter);
 		}
 		TEST_METHOD(searchMarked){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test12("", NULL, NULL, NULL,
 				Task::Priority::HIGH, "", true, true, false);
@@ -1775,6 +1806,8 @@ namespace LogicTests
 			Assert::AreEqual<int>(4, *iter);
 		}
 		TEST_METHOD(searchEmptySlot1){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test13("", NULL, NULL, NULL,
 				Task::Priority::NORMAL, "1 day 5 hours", false, false, false);
@@ -1782,12 +1815,15 @@ namespace LogicTests
 			Assert::AreEqual<string>("Next available 1 day 5 hoursis from now!.", test13.execute());
 		}
 		TEST_METHOD(searchEmptySlot2){
+			clearTasks();
+			addStandardTasks();
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test14("", NULL, NULL, NULL,
 				Task::Priority::NORMAL, "365 days", false, false, false);
 
 			Assert::AreEqual<string>("Next available 365 daysis from 01 Jan 2016 (Fri), 10:00AM.", test14.execute());
 		}
+
 	private:
 		void addStandardTasks(){
 			TaskManager::addTask(Task("Marked Task - will be indexed as 4", NULL, NULL, NULL,
@@ -1826,254 +1862,253 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 namespace LogicTest
 {
 	TEST_CLASS(SystemTest){
-	public:
-		TEST_METHOD(SystemTest1AddFloatingTask){
-			//Test Case: code can "add a FLOATING TASK"
-			clearTasks();
-			
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_add_floating_task_1"));
+public:
+	TEST_METHOD(SystemTest01AddFloatingTask){
+		//Test Case: code can "add a FLOATING TASK"
+		clearTasks();
 
-			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
-			vector<Task>::iterator iter = myVec.begin();
-			Assert::AreEqual<string>("test_add_floating_task_1 ", iter->getTaskDetails());
-			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+		TaskManager::addTask(Task("test_add_floating_task_1",NULL, NULL, NULL, Task::Priority::NORMAL));
+
+		vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+		vector<Task>::iterator iter = myVec.begin();
+		Assert::AreEqual<string>("test_add_floating_task_1", iter->getTaskDetails());
+		Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+	}
+	TEST_METHOD(SystemTest02AddDeadline){
+		//Test Case: code can "add a Deadline"
+		TaskManager::addTask(Task("test_add_deadline_1", NULL, NULL, new Date(2015, 5, 7, 10, 0), Task::Priority::NORMAL));
+
+		vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+		vector<Task>::iterator iter = myVec.begin();
+		Assert::AreEqual<string>("test_add_deadline_1", iter->getTaskDetails());
+		Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+		Assert::IsTrue(Date(2015, 5, 7, 10, 0).sameDate(*(iter->getTaskDeadline())));
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+	}
+	TEST_METHOD(SystemTest03AddTimedTask){
+		//Test Case: code can "add a Timed Task"
+		TaskManager::addTask(Task("test_add_timed_task_1", new Date(Date().getYear(), Date().getMonth(), Date().getDay(), 12, 0), new Date(Date().getYear(), Date().getMonth(), Date().getDay() + 1, 12, 0), NULL, Task::Priority::NORMAL));
+
+		vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+		vector<Task>::iterator iter = myVec.begin();
+		Assert::AreEqual<string>("test_add_timed_task_1", iter->getTaskDetails());
+		Assert::IsTrue(Date(Date().getYear(), Date().getMonth(), Date().getDay(), 12, 0).sameDate(*(iter->getTaskStartTime())));
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+	}
+	TEST_METHOD(SystemTest04MarkTaskAsDone){
+		//Test Case: code can mark tasks as done
+		TaskManager::addTask(Task("test_add_floating_task_1", NULL, NULL, NULL, Task::Priority::NORMAL));
+		TaskManager::addTask(Task("test_add_deadline_1", NULL, NULL, new Date(2015, 5, 7, 10, 0), Task::Priority::NORMAL));
+		TaskManager::addTask(Task("test_add_timed_task_1", new Date(Date().getYear(), Date().getMonth(), Date().getDay(), 12, 0), new Date(Date().getYear(), Date().getMonth(), Date().getDay() + 1, 12, 0), NULL, Task::Priority::NORMAL));
+
+		TaskManager::markTask(2);
+		TaskManager::markTask(3);
+		TaskManager::markTask(4);
+
+		vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+		vector<Task>::iterator iter;
+		for (iter = myVec.begin() + 3; iter != myVec.end(); ++iter){
+			Assert::IsTrue(iter->getTaskMarked());
 		}
-		TEST_METHOD(SystemTest2AddDeadline){
-			//Test Case: code can "add a Deadline"
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_add_deadline_1 by 7 june 10am"));
+	}
+	TEST_METHOD(SystemTest05AutoSort){
+		//Test Case: code automatically sort tasks in order of due date / start date, 
+		//then alphabetical order based on task details
+		//*NOTE*: dated tasks - floating tasks - dated tasks marked - floating tasks marked
+		clearTasks();
+		addStandardTasks();
 
-			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
-			vector<Task>::iterator iter = myVec.begin();
-			Assert::AreEqual<string>("test_add_deadline_1 ", iter->getTaskDetails());
-			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
-			Assert::IsTrue(Date(2015,5,7,10,0).sameDate(*(iter->getTaskDeadline())));
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+		vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+		vector<Task>::iterator iter = myVec.begin();
+		Assert::AreEqual<string>("Deadline Task - will be indexed as 1", iter->getTaskDetails());
+		++iter;
+		Assert::AreEqual<string>("Timed Task - will be indexed as 2", iter->getTaskDetails());
+		++iter;
+		Assert::AreEqual<string>("Normal Floating Task - will be indexed as 3", iter->getTaskDetails());
+		++iter;
+		Assert::AreEqual<string>("Marked Task - will be indexed as 4", iter->getTaskDetails());
+	}
+	TEST_METHOD(SystemTest06UpdateDetails){
+		//Test Case: code can update task details
+		clearTasks();
+
+		TaskManager::addTask(Task("old name", NULL, NULL, NULL, Task::Priority::NORMAL));
+
+		vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+		vector<Task>::iterator iter = myVec.begin();
+		Assert::AreEqual<string>("old name", iter->getTaskDetails());
+		Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+
+		
+		myVec = *(TaskManager::getAllCurrentTasks());
+		iter = myVec.begin();
+		iter->setTaskDetails("new name");
+		Assert::AreEqual<string>("new name", iter->getTaskDetails());
+		Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+	}
+	TEST_METHOD(SystemTest07UpdateDeadline){
+		//Test Case: code can update task deadline
+		clearTasks();
+
+		TaskManager::addTask(Task("deadline", NULL, NULL, today(), Task::Priority::NORMAL));
+
+		vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+		vector<Task>::iterator iter = myVec.begin();
+		Assert::AreEqual<string>("deadline", iter->getTaskDetails());
+		Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+		Assert::IsTrue(iter->getTaskDeadline()->sameDate(*(today())));
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+
+		
+		myVec = *(TaskManager::getAllCurrentTasks());
+		iter = myVec.begin();
+		iter->setTaskDeadline(tomorrow());
+		Assert::AreEqual<string>("deadline", iter->getTaskDetails());
+		Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+		Assert::IsTrue(iter->getTaskDeadline()->sameDate(*(tomorrow())));
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+	}
+	TEST_METHOD(SystemTest09UpdateEndTime){
+		//Test Case: code can update task end time
+		clearTasks();
+
+		TaskManager::addTask(Task("timed", today(), new Date(Date().getYear(), 11, 25, 12, 0), NULL, Task::Priority::NORMAL));
+
+		vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+		vector<Task>::iterator iter = myVec.begin();
+		Assert::AreEqual<string>("timed", iter->getTaskDetails());
+		Assert::IsTrue((iter->getTaskStartTime()->sameDate(*(today()))));
+		Assert::IsTrue(iter->getTaskEndTime()->sameDate(Date(Date().getYear(), 11, 25, 12, 0)));
+		Assert::IsTrue(iter->getTaskDeadline() == nullptr);
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+
+		
+		myVec = *(TaskManager::getAllCurrentTasks());
+		iter = myVec.begin();
+		iter->setTaskEndTime(tomorrow());
+		Assert::AreEqual<string>("timed", iter->getTaskDetails());
+		Assert::IsTrue((iter->getTaskStartTime()->sameDate(*(today()))));
+		Assert::IsTrue(iter->getTaskEndTime()->sameDate(*(tomorrow())));
+		Assert::IsTrue(iter->getTaskDeadline() == nullptr);
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+	}
+	TEST_METHOD(SystemTest08UpdateStartTime){
+		//Test Case: code can update task start time
+		clearTasks();
+
+		TaskManager::addTask(Task("timed", today(), new Date(Date().getYear(), 11, 25, 12, 0), NULL, Task::Priority::NORMAL));
+
+		vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+		vector<Task>::iterator iter = myVec.begin();
+		Assert::AreEqual<string>("timed", iter->getTaskDetails());
+		Assert::IsTrue((iter->getTaskStartTime()->sameDate(*(today()))));
+		Assert::IsTrue(iter->getTaskEndTime()->sameDate(Date(Date().getYear(), 11, 25, 12, 0)));
+		Assert::IsTrue(iter->getTaskDeadline() == nullptr);
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+
+		
+		myVec = *(TaskManager::getAllCurrentTasks());
+		iter = myVec.begin();
+		iter->setTaskStartTime(tomorrow());
+		Assert::AreEqual<string>("timed", iter->getTaskDetails());
+		Assert::IsTrue((iter->getTaskStartTime()->sameDate(*(tomorrow()))));
+		Assert::IsTrue(iter->getTaskEndTime()->sameDate(Date(Date().getYear(), 11, 25, 12, 0)));
+		Assert::IsTrue(iter->getTaskDeadline() == nullptr);
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+	}
+	TEST_METHOD(SystemTest10UpdatePriority){
+		//Test Case: code can update task priority
+		clearTasks();
+
+		TaskManager::addTask(Task("task", NULL, NULL, NULL, Task::Priority::NORMAL));
+
+		vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+		vector<Task>::iterator iter = myVec.begin();
+		Assert::AreEqual<string>("task", iter->getTaskDetails());
+		Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+
+		
+		myVec = *(TaskManager::getAllCurrentTasks());
+		iter = myVec.begin();
+		iter->setTaskPriority(Task::Priority::HIGH);
+		Assert::AreEqual<string>("task", iter->getTaskDetails());
+		Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+		Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
+		Assert::IsTrue(iter->getTaskPriority() == Task::Priority::HIGH);
+	}
+	TEST_METHOD(SystemTest11Delete){
+		//Test Case: code can delete added task
+		clearTasks();
+		addStandardTasks();
+		Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+		TaskManager::removeTask(1);
+		Assert::AreEqual<int>(3, TaskManager::getAllCurrentTasks()->size());
+		TaskManager::removeTask(1);
+		Assert::AreEqual<int>(2, TaskManager::getAllCurrentTasks()->size());
+		TaskManager::removeTask(1);
+		Assert::AreEqual<int>(1, TaskManager::getAllCurrentTasks()->size());
+		TaskManager::removeTask(1);
+		Assert::AreEqual<int>(0, TaskManager::getAllCurrentTasks()->size());
+	}
+	TEST_METHOD(SystemTest12SimpleSearch){
+		//Test Case: code can do a simple keyword search
+		clearTasks();
+		addStandardTasks();
+		CommandSearch a = CommandSearch("task", NULL, NULL, NULL, Task::Priority::NORMAL, "", false, false, false);
+		a.execute();
+		vector<int> myVec = *(a.getTasksIndices());
+		Assert::AreEqual<int>(4, myVec.size());
+	}
+	TEST_METHOD(SystemTest13SpecifySaveLocation){
+		//Test Case: code can specify a specific folder as the data storage location
+		//NOTE: THIS TEST WILL FAIL WHEN THIS CODE IS RUN ON A DIFFERENT COMPUTER.
+		//      ADJUST LOCATION ACCORDINGLY
+		clearTasks();
+		addStandardTasks();
+		Assert::AreEqual<string>("File location changed successfully", Controller::processUserInput("changefileloc default"));
+	}
+private:
+	void clearTasks(){
+		while (!TaskManager::getAllCurrentTasks()->empty()){
+			TaskManager::removeTask(1);
 		}
-		TEST_METHOD(SystemTest3AddTimedTask){
-			//Test Case: code can "add a Timed Task"
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_add_timed_task_1 from today to tomorrow"));
+	}
 
-			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
-			vector<Task>::iterator iter = myVec.begin();
-			Assert::AreEqual<string>("test_add_timed_task_1 ", iter->getTaskDetails());
-			Assert::IsTrue(Date(Date().getYear(), Date().getMonth(), Date().getDay(), 12, 0).sameDate(*(iter->getTaskStartTime())));
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
-		}
-		TEST_METHOD(SystemTest4MarkTaskAsDone){
-			//Test Case: code can mark tasks as done
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_add_floating_task_2"));
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_add_deadline_2 by 7 june 10am"));
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_add_timed_task_2 from today to tomorrow"));
+	Date* today(){
+		return new Date(Date().getYear(), Date().getMonth(), Date().getDay(), 12, 0);
+	}
 
-			Assert::AreEqual<string>("Marked Task #2", Controller::processUserInput("mark 2"));
-			Assert::AreEqual<string>("Marked Task #3", Controller::processUserInput("mark 3"));
-			Assert::AreEqual<string>("Marked Task #4", Controller::processUserInput("mark 4"));
-
-			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
-			vector<Task>::iterator iter;
-			for (iter = myVec.begin() + 3; iter != myVec.end(); ++iter){
-				Assert::IsTrue(iter->getTaskMarked());
-			}
-		}
-		TEST_METHOD(SystemTest5AutoSort){
-			//Test Case: code automatically sort tasks in order of due date / start date, 
-			//then alphabetical order based on task details
-			//*NOTE*: dated tasks - floating tasks - dated tasks marked - floating tasks marked
-			clearTasks();
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_1_floating"));
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_2_floating"));
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_1_deadline by 25 dec"));
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_2_deadline by this saturday"));
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_1_timed from today to tomorrow"));
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_2_timed from 27 nov to 29 dec"));
-
-			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
-			vector<Task>::iterator iter = myVec.begin();
-			Assert::AreEqual<string>("test_1_timed ", iter->getTaskDetails());
-			++iter;
-			Assert::AreEqual<string>("test_2_deadline ", iter->getTaskDetails());
-			++iter;
-			Assert::AreEqual<string>("test_2_timed ", iter->getTaskDetails());
-			++iter;
-			Assert::AreEqual<string>("test_1_deadline ", iter->getTaskDetails());
-			++iter;
-			Assert::AreEqual<string>("test_1_floating ", iter->getTaskDetails());
-			++iter;
-			Assert::AreEqual<string>("test_2_floating ", iter->getTaskDetails());
-			++iter;
-		}
-		TEST_METHOD(SystemTest6UpdateDetails){
-			//Test Case: code can update task details
-			clearTasks();
-
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add old name"));
-
-			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
-			vector<Task>::iterator iter = myVec.begin();
-			Assert::AreEqual<string>("old name ", iter->getTaskDetails());
-			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
-
-			Assert::AreEqual<string>("Updated Task #1!", Controller::processUserInput("update 1 details new name"));
-			myVec = *(TaskManager::getAllCurrentTasks());
-			iter = myVec.begin();
-			Assert::AreEqual<string>("new name ", iter->getTaskDetails());
-			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
-		}
-		TEST_METHOD(SystemTest7UpdateDeadline){
-			//Test Case: code can update task deadline
-			clearTasks();
-
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add deadline by today"));
-
-			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
-			vector<Task>::iterator iter = myVec.begin();
-			Assert::AreEqual<string>("deadline ", iter->getTaskDetails());
-			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
-			Assert::IsTrue(iter->getTaskDeadline()->sameDate(*(today())));
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
-
-			Assert::AreEqual<string>("Updated Task #1!", Controller::processUserInput("update 1 deadline tomorrow"));
-			myVec = *(TaskManager::getAllCurrentTasks());
-			iter = myVec.begin();
-			Assert::AreEqual<string>("deadline ", iter->getTaskDetails());
-			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
-			Assert::IsTrue(iter->getTaskDeadline()->sameDate(*(tomorrow())));
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
-		}
-		TEST_METHOD(SystemTest9UpdateEndTime){
-			//Test Case: code can update task end time
-			clearTasks();
-
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add timed from today to 25 dec"));
-
-			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
-			vector<Task>::iterator iter = myVec.begin();
-			Assert::AreEqual<string>("timed ", iter->getTaskDetails());
-			Assert::IsTrue((iter->getTaskStartTime()->sameDate(*(today()))));
-			Assert::IsTrue(iter->getTaskEndTime()->sameDate(Date(Date().getYear(),11,25,12,0)));
-			Assert::IsTrue(iter->getTaskDeadline() == nullptr);
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
-
-			Assert::AreEqual<string>("Updated Task #1!", Controller::processUserInput("update 1 endtime tomorrow"));
-			myVec = *(TaskManager::getAllCurrentTasks());
-			iter = myVec.begin();
-			Assert::AreEqual<string>("timed ", iter->getTaskDetails());
-			Assert::IsTrue((iter->getTaskStartTime()->sameDate(*(today()))));
-			Assert::IsTrue(iter->getTaskEndTime()->sameDate(*(tomorrow())));
-			Assert::IsTrue(iter->getTaskDeadline() == nullptr);
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
-		}
-		TEST_METHOD(SystemTest8UpdateStartTime){
-			//Test Case: code can update task start time
-			clearTasks();
-
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add timed from today to 25 dec"));
-
-			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
-			vector<Task>::iterator iter = myVec.begin();
-			Assert::AreEqual<string>("timed ", iter->getTaskDetails());
-			Assert::IsTrue((iter->getTaskStartTime()->sameDate(*(today()))));
-			Assert::IsTrue(iter->getTaskEndTime()->sameDate(Date(Date().getYear(), 11, 25, 12, 0)));
-			Assert::IsTrue(iter->getTaskDeadline() == nullptr);
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
-
-			Assert::AreEqual<string>("Updated Task #1!", Controller::processUserInput("update 1 starttime tomorrow"));
-			myVec = *(TaskManager::getAllCurrentTasks());
-			iter = myVec.begin();
-			Assert::AreEqual<string>("timed ", iter->getTaskDetails());
-			Assert::IsTrue((iter->getTaskStartTime()->sameDate(*(tomorrow()))));
-			Assert::IsTrue(iter->getTaskEndTime()->sameDate(Date(Date().getYear(), 11, 25, 12, 0)));
-			Assert::IsTrue(iter->getTaskDeadline() == nullptr);
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
-		}
-		TEST_METHOD(SystemTest10UpdatePriority){
-			//Test Case: code can update task priority
-			clearTasks();
-
-			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add task"));
-
-			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
-			vector<Task>::iterator iter = myVec.begin();
-			Assert::AreEqual<string>("task ", iter->getTaskDetails());
-			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
-
-			Assert::AreEqual<string>("Updated Task #1!", Controller::processUserInput("update 1 priority high"));
-			myVec = *(TaskManager::getAllCurrentTasks());
-			iter = myVec.begin();
-			Assert::AreEqual<string>("task ", iter->getTaskDetails());
-			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
-			Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
-			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::HIGH);
-		}
-		TEST_METHOD(SystemTest11Delete){
-			//Test Case: code can delete added task
-			clearTasks();
-			addStandardTasks();
-			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
-			Assert::AreEqual<string>("Deleted Task #1", Controller::processUserInput("delete 1"));
-			Assert::AreEqual<int>(3, TaskManager::getAllCurrentTasks()->size());
-			Assert::AreEqual<string>("Deleted Task #1", Controller::processUserInput("delete 1"));
-			Assert::AreEqual<int>(2, TaskManager::getAllCurrentTasks()->size());
-			Assert::AreEqual<string>("Deleted Task #1", Controller::processUserInput("delete 1"));
-			Assert::AreEqual<int>(1, TaskManager::getAllCurrentTasks()->size());
-			Assert::AreEqual<string>("Deleted Task #1", Controller::processUserInput("delete 1"));
-			Assert::AreEqual<int>(0, TaskManager::getAllCurrentTasks()->size());
-		}
-		TEST_METHOD(SystemTest12SimpleSearch){
-			//Test Case: code can do a simple keyword search
-			clearTasks();
-			addStandardTasks();
-			Assert::AreEqual<string>("There are 4 tasks found.", Controller::processUserInput("search Task"));
-		}
-		TEST_METHOD(SystemTest13SpecifySaveLocation){
-			//Test Case: code can specify a specific folder as the data storage location
-			//NOTE: THIS TEST WILL FAIL WHEN THIS CODE IS RUN ON A DIFFERENT COMPUTER.
-			//      ADJUST LOCATION ACCORDINGLY
-			clearTasks();
-			addStandardTasks();
-			Assert::AreEqual<string>("File location changed successfully", Controller::processUserInput("changefileloc C:\\Users\\Adi!\\Desktop"));
-		}
-	private:
-		void clearTasks(){
-			while (!TaskManager::getAllCurrentTasks()->empty()){
-				TaskManager::removeTask(1);
-			}
-		}
-
-		Date* today(){
-			return new Date(Date().getYear(), Date().getMonth(), Date().getDay(), 12, 0);
-		}
-
-		Date* tomorrow(){
-			return new Date(Date().getYear(), Date().getMonth(), Date().getDay() + 1, 12, 0);
-		}
-		void addStandardTasks(){
-			TaskManager::addTask(Task("Marked Task - will be indexed as 4", NULL, NULL, NULL,
-				Task::Priority::HIGH));
-			TaskManager::markTask(1);
-			TaskManager::addTask(Task("Normal Floating Task - will be indexed as 3", NULL, NULL, NULL,
-				Task::Priority::NORMAL));
-			TaskManager::addTask(Task("Timed Task - will be indexed as 2", new Date(2015, 11, 25, 12, 0),
-				new Date(2016, 0, 1, 10, 0), NULL, Task::Priority::HIGH));
-			TaskManager::addTask(Task("Deadline Task - will be indexed as 1", NULL, NULL,
-				new Date(2015, 9, 19, 10, 0), Task::Priority::NORMAL));
-		}
+	Date* tomorrow(){
+		return new Date(Date().getYear(), Date().getMonth(), Date().getDay() + 1, 12, 0);
+	}
+	void addStandardTasks(){
+		TaskManager::addTask(Task("Marked Task - will be indexed as 4", NULL, NULL, NULL,
+			Task::Priority::HIGH));
+		TaskManager::markTask(1);
+		TaskManager::addTask(Task("Normal Floating Task - will be indexed as 3", NULL, NULL, NULL,
+			Task::Priority::NORMAL));
+		TaskManager::addTask(Task("Timed Task - will be indexed as 2", new Date(2015, 11, 25, 12, 0),
+			new Date(2016, 0, 1, 10, 0), NULL, Task::Priority::HIGH));
+		TaskManager::addTask(Task("Deadline Task - will be indexed as 1", NULL, NULL,
+			new Date(2015, 9, 19, 10, 0), Task::Priority::NORMAL));
+	}
+	
 	};
 }
 	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\SystemTest.cpp
