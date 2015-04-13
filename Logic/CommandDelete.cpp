@@ -1,4 +1,8 @@
 //@author A0122357L
+<<<<<<< HEAD:Logic/CommandDelete.cpp
+=======
+#include "CommandDelete.h"
+>>>>>>> origin/master:Logic/CommandDelete.cpp
 
 /*
 This class contains code that can execute the command "Delete",
@@ -28,9 +32,13 @@ string CommandDelete::execute(){
 	TaskManager instance = *TaskManager::getInstance();
 
 	if (_taskNumber <= 0 || _taskNumber > instance.getNumberOfTasks()){
+<<<<<<< HEAD:Logic/CommandDelete.cpp
 
 		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
 
+=======
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+>>>>>>> origin/master:Logic/CommandDelete.cpp
 	}
 
 	//get the task to edit, remove it from vector.
@@ -51,12 +59,18 @@ Command* CommandDelete::getInverseCommand(){
 
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
 
+<<<<<<< HEAD:Logic/CommandDelete.cpp
 	if (_taskNumber <= 0 || _taskNumber > 
 		taskManagerInstance->getNumberOfTasks()){
 		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
 	}
 
 	//getting the task to add back 
+=======
+	if (_taskNumber <= 0 || _taskNumber > taskManagerInstance->getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+>>>>>>> origin/master:Logic/CommandDelete.cpp
 	Task currentTask = TaskManager::getTask(_taskNumber);
 	string taskDetails = currentTask.getTaskDetails();
 	Date* taskStartTime = currentTask.getTaskStartTime();
@@ -65,6 +79,7 @@ Command* CommandDelete::getInverseCommand(){
 	Task::Priority taskPriority = currentTask.getTaskPriority();
 	
 	return new CommandAdd(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority);
+<<<<<<< HEAD:Logic/CommandDelete.cpp
 }
 
 
@@ -92,6 +107,11 @@ const string CommandDelete::ERROR_MESSAGE_COMMAND_TASKNUM
 	= "Invalid task number!";
 const string CommandDelete::MESSAGE_DELETED = "Deleted Task #%d";
 char CommandDelete::buffer[255];
+=======
+}
+
+const string CommandDelete::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
+>>>>>>> origin/master:Logic/CommandDelete.cpp
 
 
 //@author A0094024M -unused

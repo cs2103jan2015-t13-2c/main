@@ -24,6 +24,8 @@ public:
 	static const string CommandMark::ERROR_MESSAGE_COMMAND_TASKNUM;
 	static char CommandMark::buffer[255];
 
+	static const string CommandMark::ERROR_MESSAGE_COMMAND_TASKNUM;
+
 private:
 
 	int _taskNumber;

@@ -443,7 +443,10 @@ namespace TaskkyUI {
 		//When Enter is pressed
 		
 		if (e->KeyChar == (char)13){
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 			//get data from the textbox
 
 			Controller* controllerInstance = Controller::getInstance();
@@ -487,6 +490,10 @@ namespace TaskkyUI {
 					}
 
 					else if (task.getTaskType() == Task::DEADLINE){
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 						ListViewItem^ newEntry = addNewItem(index,
 							task.getTaskDeadline()->parseDateToDisplay(),
 							"--------", task.getTaskDetails(),
@@ -514,12 +521,21 @@ namespace TaskkyUI {
 
 			else{
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> origin/master
 				TaskManager *taskManager = TaskManager::getInstance();
 				int taskNumber = 0;
 				int taskUrgent = 0;
 				int taskDueToday = 0;
 				int taskOverdue = 0;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 				//adding all current timed tasks
 
 				vector<Task> *allTimedTasks;
@@ -569,6 +585,10 @@ namespace TaskkyUI {
 						int taskPriority = task.getTaskPriority();
 						bool markedTask = {};
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 						if (task.getTaskDeadline()->sameDate(Date::Date())){
 
 							taskDueToday += 1;
@@ -658,6 +678,10 @@ namespace TaskkyUI {
 						listView1->Items->AddRange(MarkedTimedTasks);
 					}
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 					if (task.getTaskType() == Task::DEADLINE){
 
 						//setting new parameters to add next task
@@ -716,8 +740,19 @@ namespace TaskkyUI {
 			}
 
 		}
+<<<<<<< HEAD
 	}
 
+=======
+
+		SuggestionBuilder->Text = "e.g: add, delete, update, search, mark, unmark, undo, checkfilelocation, changefilelocation, help";
+
+
+		SuggestionBuilder->Text = gcnew String(SuggestionBuilder::suggestUserInput(command).c_str());
+
+
+	}
+>>>>>>> origin/master
 	private: System::Void richTextBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 	}
 	private: System::Void UserInputTextBox_TextChanged_1(System::Object^  sender, System::EventArgs^  e) {

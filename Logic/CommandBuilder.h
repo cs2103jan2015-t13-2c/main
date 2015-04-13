@@ -17,6 +17,10 @@
 #include "CommandMark.h"
 #include "CommandUnmark.h"
 #include "CommandSearch.h"
+<<<<<<< HEAD
+=======
+#include "CommandRedo.h"
+>>>>>>> origin/master
 #include "CommandChangeFileLocation.h"
 #include "CommandCheckFileLocation.h"
 
@@ -27,7 +31,11 @@ class CommandBuilder
 public:
 
 	enum CommandType {
+<<<<<<< HEAD
 		Add, Display, Update, Delete, Exit, Invalid, Undo, Mark, Unmark, 
+=======
+		Add, Display, Update, Delete, Exit, Invalid, Undo, Mark, Unmark, Redo,
+>>>>>>> origin/master
 		Search, Sort, CheckFileLocation, ChangeFileLocation
 	};
 

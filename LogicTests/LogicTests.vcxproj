@@ -53,7 +53,11 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+<<<<<<< HEAD
       <AdditionalIncludeDirectories>C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\rapidjson-master\include\rapidjson;C:\Users\acer\Desktop\School\CS2103\Taskky\Taskky\Logic;rapidjson-master\include\rapidjson;..\Logic;$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+=======
+      <AdditionalIncludeDirectories>C:\Users\Adi!\Desktop\CS2103\Taskky\Logic;C:\Users\acer\Desktop\School\CS2103\Taskky\Taskky\Logic;rapidjson-master\include\rapidjson;..\Logic;$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+>>>>>>> origin/master
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <AdditionalUsingDirectories>
@@ -62,7 +66,11 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+<<<<<<< HEAD
       <AdditionalLibraryDirectories>C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\rapidjson-master\include\rapidjson;C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\Logic;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+=======
+      <AdditionalLibraryDirectories>C:\Users\Adi!\Desktop\CS2103\Taskky\Logic;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+>>>>>>> origin/master
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -90,7 +98,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandBuilderTests.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="CommandMarkTest.cpp" />
+=======
+>>>>>>> origin/master
     <ClCompile Include="CommandSearchUnitTest.cpp" />
     <ClCompile Include="ControllerTests.cpp" />
     <ClCompile Include="ParserTest.cpp" />
@@ -98,6 +109,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+<<<<<<< HEAD
+=======
+    <ClCompile Include="StringDistanceTest.cpp" />
+>>>>>>> origin/master
     <ClCompile Include="SuggestionBuilderTest.cpp" />
     <ClCompile Include="SystemTest.cpp" />
     <ClCompile Include="TaskManagerTest.cpp" />

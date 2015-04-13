@@ -1,5 +1,8 @@
 //@author A0113716M
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 /*
 This class is to parse the command line for TASKKY.
 
@@ -103,7 +106,11 @@ void Parser::parseCommandAdd(string userCommand){
 	//Adding task priority
 	if (equalsIgnoreCase(*iter, "#impt") || equalsIgnoreCase(*iter, "#high")){
 		_taskPriority = Task::Priority::HIGH;
+<<<<<<< HEAD
 	}
+=======
+	} 
+>>>>>>> origin/master
 }
 
 /*
@@ -338,11 +345,19 @@ void Parser::parseCommandSearch(string userCommand){
 */
 void Parser::parseCommandChangeFileLocation(string userCommand){
 	Parser::clearPreviousParse();
+<<<<<<< HEAD
 
 	string text = removeFirstWord(userCommand);
 	_taskDetails = text;
 }
 
+=======
+
+	string text = removeFirstWord(userCommand);
+	_taskDetails = text;
+}
+
+>>>>>>> origin/master
 //@author A0113716M -reused
 /*
 * ====================================================================

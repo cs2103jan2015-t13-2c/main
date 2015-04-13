@@ -9,7 +9,10 @@
 #include "SuggestionBuilder.h"
 #include "ParseException.h"
 #include "CommandException.h"
+<<<<<<< HEAD
 #include "ErrorLogger.h"
+=======
+>>>>>>> origin/master
 
 using namespace std;
 
@@ -21,6 +24,11 @@ public:
 
 	static vector<Command*>* getUndoStack();
 
+<<<<<<< HEAD
+=======
+	static vector<Command*>* getRedoStack();
+
+>>>>>>> origin/master
 	static string processUserInput(string userInput);
 
 	static void setTaskIndices(vector<int>* taskIndices);
@@ -38,6 +46,11 @@ private:
 
 	static vector<Command*>* _undoStack;
 
+<<<<<<< HEAD
+=======
+	static vector<Command*>* _redoStack;
+
+>>>>>>> origin/master
 	static vector<int>* _taskIndices;
 
 	static bool _isSearchCommand;

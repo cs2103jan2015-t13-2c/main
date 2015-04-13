@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+<<<<<<< HEAD
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Parser.cpp" />
@@ -149,5 +150,64 @@
     <Filter Include="Commands">
       <UniqueIdentifier>{10cf5754-28cf-467b-833d-e2b35df0efd7}</UniqueIdentifier>
     </Filter>
+=======
+    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandAdd.cpp" />
+    <ClCompile Include="CommandBuilder.cpp" />
+    <ClCompile Include="CommandChangeFileLocation.cpp" />
+    <ClCompile Include="CommandCheckFileLocation.cpp" />
+    <ClCompile Include="CommandDelete.cpp" />
+    <ClCompile Include="CommandDisplay.cpp" />
+    <ClCompile Include="CommandException.cpp" />
+    <ClCompile Include="CommandExit.cpp" />
+    <ClCompile Include="CommandInvalid.cpp" />
+    <ClCompile Include="CommandMark.cpp" />
+    <ClCompile Include="CommandRedo.cpp" />
+    <ClCompile Include="CommandSearch.cpp" />
+    <ClCompile Include="CommandUndo.cpp" />
+    <ClCompile Include="CommandUnmark.cpp" />
+    <ClCompile Include="CommandUpdate.cpp" />
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="CustomException.cpp" />
+    <ClCompile Include="Date.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ParseException.cpp" />
+    <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="Storage.cpp" />
+    <ClCompile Include="StringDistance.cpp" />
+    <ClCompile Include="SuggestionBuilder.cpp" />
+    <ClCompile Include="Task.cpp" />
+    <ClCompile Include="TaskDisplayer.cpp" />
+    <ClCompile Include="TaskManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandAdd.h" />
+    <ClInclude Include="CommandBuilder.h" />
+    <ClInclude Include="CommandChangeFileLocation.h" />
+    <ClInclude Include="CommandCheckFileLocation.h" />
+    <ClInclude Include="CommandDelete.h" />
+    <ClInclude Include="CommandDisplay.h" />
+    <ClInclude Include="CommandException.h" />
+    <ClInclude Include="CommandExit.h" />
+    <ClInclude Include="CommandInvalid.h" />
+    <ClInclude Include="CommandMark.h" />
+    <ClInclude Include="CommandRedo.h" />
+    <ClInclude Include="CommandSearch.h" />
+    <ClInclude Include="CommandUndo.h" />
+    <ClInclude Include="CommandUnmark.h" />
+    <ClInclude Include="CommandUpdate.h" />
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="CustomException.h" />
+    <ClInclude Include="Date.h" />
+    <ClInclude Include="ParseException.h" />
+    <ClInclude Include="Parser.h" />
+    <ClInclude Include="Storage.h" />
+    <ClInclude Include="StringDistance.h" />
+    <ClInclude Include="SuggestionBuilder.h" />
+    <ClInclude Include="Task.h" />
+    <ClInclude Include="TaskDisplayer.h" />
+    <ClInclude Include="TaskManager.h" />
+>>>>>>> origin/master
   </ItemGroup>
 </Project>

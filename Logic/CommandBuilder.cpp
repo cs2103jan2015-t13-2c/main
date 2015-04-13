@@ -1,5 +1,6 @@
 //@author A0122357L
 
+<<<<<<< HEAD
 /*
 This class contains code that creates the new Command object
 
@@ -8,6 +9,8 @@ to parse the attributes to the Command object, then creating the
 Command object based on these attributes
 */
 
+=======
+>>>>>>> origin/master
 #include "CommandBuilder.h"
 
 
@@ -33,10 +36,26 @@ Command* CommandBuilder::parseCommand(string userInput){
 	
 	Parser parser = Parser::Parser();
 
+<<<<<<< HEAD
 	switch (commandType){
+=======
+void CommandBuilder::clearPreviousCommand(){
+	_taskDetails = "";
+	_taskStartTime = NULL;
+	_taskEndTime = NULL;
+	_taskDeadline = NULL;
+	_taskPriority = Task::NORMAL;
+	_duration = "";
+	_taskMarked = false;
+	_taskNumber = -1;
+	_foundMarked = false;
+	_foundPriority = false;
+}
+>>>>>>> origin/master
 
 	case CommandType::Add:{
 
+<<<<<<< HEAD
 		parser.parseCommandAdd(userInput);
 
 		CommandBuilder::setAttributesFromParser(parser);
@@ -48,15 +67,117 @@ Command* CommandBuilder::parseCommand(string userInput){
 	case CommandType::Display:{
 		return new CommandDisplay();
 	}
+=======
+Date* CommandBuilder::getTaskStartTime(){
+	return _taskStartTime;
+}
+
+Date* CommandBuilder::getTaskEndTime(){
+	return _taskEndTime;
+}
+
+Date* CommandBuilder::getTaskDeadline(){
+	return _taskDeadline;
+}
+>>>>>>> origin/master
 
 	case CommandType::Update:{
 
+<<<<<<< HEAD
 		parser.parseCommandUpdate(userInput);
+=======
+string CommandBuilder::getDuration(){
+	return _duration;
+}
+
+bool CommandBuilder::getTaskMarked(){
+	return _taskMarked;
+}
+>>>>>>> origin/master
 
 		CommandBuilder::setAttributesFromParser(parser);
 
+<<<<<<< HEAD
 		return new CommandUpdate(_taskDetails, 
 			_taskStartTime, _taskEndTime, _taskDeadline,
+			_taskPriority, _taskNumber);
+	}
+=======
+void CommandBuilder::setAttributesFromParser(Parser parser){
+	_taskDetails = parser.getTaskDetails();
+	_taskStartTime = parser.getTaskStartTime();
+	_taskEndTime = parser.getTaskEndTime();
+	_taskDeadline = parser.getTaskDeadline();
+	_taskPriority = parser.getTaskPriority();
+	_duration = parser.getDuration();
+	_taskMarked = parser.getTaskMarked();
+	_taskNumber = parser.getTaskNumber();
+	_foundMarked = parser.getFoundMarked();
+	_foundPriority = parser.getFoundPriority();
+}
+>>>>>>> origin/master
+
+	case CommandType::Delete:{
+
+		parser.parseCommandDelete(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandDelete(_taskNumber);
+	}
+
+	case CommandType::Undo:
+
+		return new CommandUndo();
+
+	case CommandType::Mark:
+
+<<<<<<< HEAD
+		parser.parseCommandMark(userInput);
+=======
+	case CommandType::Add:{
+>>>>>>> origin/master
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandMark(_taskNumber);
+
+	case CommandType::Unmark:
+
+		parser.parseCommandUnmark(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+<<<<<<< HEAD
+		return new CommandUnmark(_taskNumber);
+
+	case CommandType::Exit:
+
+		return new CommandExit();
+=======
+		return new CommandAdd(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
+			_taskPriority);
+	}
+
+	case CommandType::Display:{
+		return new CommandDisplay();
+	}
+
+	case CommandType::Update:{
+>>>>>>> origin/master
+
+	case CommandType::Search:
+
+		parser.parseCommandSearch(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+<<<<<<< HEAD
+		return new CommandSearch(_taskDetails, _taskStartTime, 
+			_taskEndTime, _taskDeadline, _taskPriority, 
+			_duration, _taskMarked, _foundMarked, _foundPriority);
+=======
+		return new CommandUpdate(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
 			_taskPriority, _taskNumber);
 	}
 
@@ -99,9 +220,13 @@ Command* CommandBuilder::parseCommand(string userInput){
 
 		CommandBuilder::setAttributesFromParser(parser);
 
-		return new CommandSearch(_taskDetails, _taskStartTime, 
-			_taskEndTime, _taskDeadline, _taskPriority, 
-			_duration, _taskMarked, _foundMarked, _foundPriority);
+		return new CommandSearch(_taskDetails, _taskStartTime, _taskEndTime,
+			_taskDeadline, _taskPriority, _duration, _taskMarked, _foundMarked, _foundPriority);
+	
+	case CommandType::Redo:
+
+		return new CommandRedo();
+>>>>>>> origin/master
 
 	case CommandType::ChangeFileLocation:
 
@@ -118,9 +243,14 @@ Command* CommandBuilder::parseCommand(string userInput){
 	default:
 		return new CommandInvalid(userInput);
 	}
+<<<<<<< HEAD
 
 }
 
+=======
+
+}
+>>>>>>> origin/master
 
 /*
 * ====================================================================
@@ -162,6 +292,12 @@ CommandBuilder::CommandType CommandBuilder::determineCommandType(
 	else if (equalsIgnoreCase(commandTypeString, "search")) {
 		return CommandType::Search;
 	}
+<<<<<<< HEAD
+=======
+	else if (equalsIgnoreCase(commandTypeString, "redo")) {
+		return CommandType::Redo;
+	}
+>>>>>>> origin/master
 	else if (equalsIgnoreCase(commandTypeString, "checkfileloc")) {
 		return CommandType::CheckFileLocation;
 	}

@@ -25,9 +25,15 @@
 #include "TaskDisplayer.cpp"
 #include "CommandSearch.cpp"
 #include "CommandException.cpp"
+<<<<<<< HEAD
 #include "CommandChangeFileLocation.cpp"
 #include "CommandCheckFileLocation.cpp"
 #include "ErrorLogger.cpp"
+=======
+#include "CommandRedo.cpp"
+#include "CommandChangeFileLocation.cpp"
+#include "CommandCheckFileLocation.cpp"
+>>>>>>> origin/master
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -150,6 +156,7 @@ namespace LogicTests
 			//Checking constructing of an update command properly
 			//Command* updateCommand = commandBuilder.parseCommand("update 1");
 			//Assert::AreEqual<std::string>("Deleted Task #%d", updateCommand->execute());
+<<<<<<< HEAD
 		}
 
 		TEST_METHOD(SuggestionBuilderTest)
@@ -235,6 +242,93 @@ namespace LogicTests
 
 		}
 
+=======
+		}
+
+		TEST_METHOD(SuggestionBuilderTest)
+		{
+			//Testing extreme cases of suggested command types
+			//Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("") == "");
+			
+			//Testing parsing of suggested command types for add, different extreme cases
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType(" a") == "add");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("a") == "add");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("a ") == "add");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("ad") == "add");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("add") == "add");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("add hello ") == "add");
+
+			//Testing parsing of suggested command types for all other command types
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("del") == "delete");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("disp") == "display");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("exit") == "exit");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("mar") == "mark");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("und") == "undo");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("upd") == "update");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("unm") == "unmark");
+
+			//Testing parsing of suggested command arguments
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("delete","nil") == "");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("display", "nil") == "");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("exit", "nil") == "");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("mark", "nil") == "");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("undo", "nil") == "");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("unmark", "nil") == "");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("update", "nil") == "");
+
+			//Testing parsing of suggested command arguments
+			Assert::AreEqual<bool>(true, SuggestionBuilder::predictedString("fr") == "from");
+
+			//Testing prediction of command arguments for add, "from"
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add","add hello") == " hello");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add","add hello f") == " hello from ");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello fr ") == " hello from ");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello fr mon") == " hello from monday to ");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello fr mon t") == " hello from monday to ");
+			//was thinking to fix this, if there are more words than suggestions, dun return anything!
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello fr mon t tue") == " hello from monday to ");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add tue hello fr") == " tue hello from ");
+			
+			//Testing prediction of command arguments for add, "by"
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello b sat") == " hello by saturday");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello mummy b sun") == " hello mummy by sunday");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello mummy bye b sun") == " hello mummy bye by sunday");
+
+			//Testing suggestion of entire user input
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestUserInput("add hello b sat") == "add hello by saturday");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestUserInput("add hello fr sat t") == "add hello from saturday to ");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestUserInput("del ") == "delete");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestUserInput("del 1") == "delete");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestUserInput("dis") == "display");
+
+		}
+
+		TEST_METHOD(StringDistanceTest)
+		{
+			Assert::AreEqual<int>(0,StringDistance::LD("hello","hello"));
+			Assert::AreEqual<int>(1, StringDistance::LD("hello", "hell"));
+			Assert::AreEqual<int>(2, StringDistance::LD("hello", "helol"));
+			Assert::AreEqual<int>(2, StringDistance::LD("hello", "hlo"));
+
+
+		}
+
+>>>>>>> origin/master
 		
 		TEST_METHOD(ParserAddTest)
 		{   /*-----------------------------------------------
@@ -260,6 +354,7 @@ namespace LogicTests
 			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "23 Dec 2015 (Wed), 05:30AM");
 
 			Parser::parseCommandAdd("add task by 23 dec 2016");
+<<<<<<< HEAD
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
 			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "23 Dec 2016 (Fri), 11:59PM");
 
@@ -276,6 +371,24 @@ namespace LogicTests
 			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "23 Dec 2016 (Fri), 06:30PM");
 
 
+=======
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "23 Dec 2016 (Fri), 11:59PM");
+
+			Parser::parseCommandAdd("add task by 23 dec 2016 5.30am");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "23 Dec 2016 (Fri), 05:30AM");
+
+			Parser::parseCommandAdd("add task by 23 dec 2016 6pm");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "23 Dec 2016 (Fri), 06:00PM");
+
+			Parser::parseCommandAdd("add task by 23 dec 2016 1830hrs");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "23 Dec 2016 (Fri), 06:30PM");
+
+
+>>>>>>> origin/master
 
 			//This input will change each week
 			Parser::parseCommandAdd("add task by this monday");
@@ -476,11 +589,19 @@ namespace LogicTests
 			Assert::AreEqual<bool>(true, Parser::getTaskPriority() == Task::HIGH);
 
 
+<<<<<<< HEAD
 			Parser::parseCommandAdd("add task from 23 dec to 27 dec");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
 			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "23 Dec 2015 (Wed), 11:59PM");
 			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "27 Dec 2015 (Sun), 11:59PM");
 			Assert::AreEqual<bool>(true, Parser::getTaskPriority() == Task::NORMAL);
+=======
+			Parser::parseCommandAdd("add task from 23 dec to 27 dec #low");
+			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
+			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "23 Dec 2015 (Wed), 11:59PM");
+			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "27 Dec 2015 (Sun), 11:59PM");
+			Assert::AreEqual<bool>(true, Parser::getTaskPriority() == Task::LOW);
+>>>>>>> origin/master
 		}
 
 		TEST_METHOD(ParserUpdateTest) {

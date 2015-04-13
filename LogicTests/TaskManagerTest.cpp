@@ -9,13 +9,18 @@ namespace LogicTest
 {
 	TEST_CLASS(TaskManagerTest){
 	public:
+<<<<<<< HEAD
 		TEST_METHOD(TaskManagerConstructorTest)
+=======
+		TEST_METHOD(TaskManagerTest1)
+>>>>>>> origin/master
 		{
 			//checking both instances are the same, singleton class
 			TaskManager* instance1 = TaskManager::getInstance();
 			TaskManager* instance2 = TaskManager::getInstance();
 			Assert::AreEqual<bool>(true, typeid(*instance1) == typeid(*instance2));
 		}
+<<<<<<< HEAD
 		TEST_METHOD(TaskManagerAddTest)
 		{
 			TaskManager* instance = TaskManager::getInstance();
@@ -186,5 +191,7 @@ namespace LogicTest
 			vector<Task>* allMarkedTimedTasks = instance->getAllMarkedTimedTasks();
 
 		}
+=======
+>>>>>>> origin/master
 	};
 }

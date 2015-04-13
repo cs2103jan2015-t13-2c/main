@@ -9,12 +9,21 @@ namespace LogicTest
 {
 	TEST_CLASS(UtilityTest){
 	public:
+<<<<<<< HEAD
 
 		TEST_METHOD(DateTest)
 		{
 			Date nowDate = Date(2015, 9, 13, 17, 00);
 			Assert::AreEqual<std::string>("13 Oct 2015 (Tue), 05:00PM", nowDate.toString());
 		
+=======
+		TEST_METHOD(DateConstructorAndToString){
+			Date nowDate = Date(2015, 9, 13, 17, 00);
+			Assert::AreEqual<std::string>("13 Oct 2015 (Tue), 05:00PM", nowDate.toString());
+		}
+		TEST_METHOD(DateComparator){
+			Date nowDate = Date(2015, 9, 13, 17, 00);
+>>>>>>> origin/master
 			Date earlierDate = Date(2015, 9, 13, 17, 00);
 			Date middleDate = Date(2015, 9, 13, 18, 00);
 			Date middleDate2 = Date(2015, 9, 13, 18, 00);
@@ -23,14 +32,22 @@ namespace LogicTest
 			Assert::AreEqual<int>(0, middleDate.isEarlierThan(middleDate2));
 			Assert::AreEqual<int>(1, middleDate.isEarlierThan(laterDate));
 			Assert::AreEqual<int>(-1, middleDate.isEarlierThan(earlierDate));
+<<<<<<< HEAD
 		
 			//getting year, month, date test
+=======
+		}
+		TEST_METHOD(DateGetters){
+			//getting year, month, date test
+			Date nowDate = Date(2015, 9, 13, 17, 00);
+>>>>>>> origin/master
 			Assert::AreEqual<int>(2015, nowDate.getYear());
 			Assert::AreEqual<int>(9, nowDate.getMonth());
 			Assert::AreEqual<int>(13, nowDate.getDay());
 			Assert::AreEqual<int>(17, nowDate.getHour());
 			Assert::AreEqual<int>(00, nowDate.getMinute());
 			//Assert::AreEqual<string>("Tue", nowDate.getDayName());
+<<<<<<< HEAD
 		
 			//same Date test
 			Date tmrDate = Date(2015, 9, 14, 17, 00);
@@ -38,6 +55,17 @@ namespace LogicTest
 			Assert::AreEqual<bool>(false, earlierDate.sameDate(tmrDate));
 		}
 
+=======
+		}
+		TEST_METHOD(DateSameDate){
+			//same Date test
+			Date tmrDate = Date(2015, 9, 14, 17, 00);
+			Date earlierDate = Date(2015, 9, 13, 17, 00);
+			Date laterDate = Date(2015, 9, 13, 19, 00);
+			Assert::AreEqual<bool>(true, earlierDate.sameDate(laterDate));
+			Assert::AreEqual<bool>(false, earlierDate.sameDate(tmrDate));
+		}
+>>>>>>> origin/master
 		TEST_METHOD(TaskTest)
 		{
 			//testing floating task
@@ -59,6 +87,7 @@ namespace LogicTest
 			Assert::AreEqual<int>(1, newTimedTask.getTaskStartTime()->isEarlierThan(*newTimedTask.getTaskEndTime()));
 			Assert::AreEqual<int>(-1, newTimedTask.getTaskEndTime()->isEarlierThan(*newTimedTask.getTaskStartTime()));
 		}
+<<<<<<< HEAD
 
 		TEST_METHOD(StringDistanceTest)
 		{
@@ -67,5 +96,7 @@ namespace LogicTest
 			Assert::AreEqual<int>(2, StringDistance::LD("hello", "helol"));
 			Assert::AreEqual<int>(2, StringDistance::LD("hello", "hlo"));
 		}
+=======
+>>>>>>> origin/master
 	};
 }

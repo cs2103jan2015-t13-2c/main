@@ -1,5 +1,8 @@
 //@author A0122357L
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 #include "SuggestionBuilder.h"
 
 
@@ -18,6 +21,11 @@ string SuggestionBuilder::suggestUserInput(string userInput){
 	std::transform(userInput.begin(), userInput.end(), userInput.begin(), ::tolower);
 
 	string commandType = suggestCommandType(userInput);
+<<<<<<< HEAD
+=======
+	
+	//string suggestedCommandArguments = suggestCommandArguments(commandType, userInput);
+>>>>>>> origin/master
 
 	string suggestedUserInput = commandType;// +suggestedCommandArguments;
 

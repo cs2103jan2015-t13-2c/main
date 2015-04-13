@@ -1,80 +1,38 @@
 //@author A0122357L
-
-/*
-This class contains code that can execute the command "Undo",
-which undoes the previous Command that can be undone
-
-This class is part of the Command Pattern through abstraction of
-the implementation of the Command from the person that uses it,
-in the Controller class
-*/
-
 #include "CommandUndo.h"
 
+const string CommandUndo::MESSAGE_NOTHING_TO_UNDO = "There is nothing to undo!";
+const string CommandUndo::MESSAGE_ACTION_UNDONE = "Action has been undone!";
 
-/*
-* ====================================================================
-*  Main Program
-* ====================================================================
-*/
-
-//This method will undo the previous undoable command
-//
-//@return feedback to user
-string CommandUndo::execute(){
-
-	Controller* instance = Controller::getInstance();
-
-	vector<Command*>* undoStack = instance->getUndoStack();
-
-	if (undoStack->size() == 0){
-
-		return MESSAGE_NOTHING_TO_UNDO;
-
-	}
-
-	else{
-
-		Command* undoCommand = (*undoStack)[undoStack->size() - 1];
-
-		undoStack->pop_back();
-
-		undoCommand->execute();
-
-		return MESSAGE_ACTION_UNDONE;
-
-	}
-}
-
-//There is no Command to undo the undo command!
-Command* CommandUndo::getInverseCommand(){
-
-	return nullptr;
-
-}
-
-
-/*
-* ====================================================================
-*  Constructors
-* ====================================================================
-*/
-
-//Default constructor for undo
 CommandUndo::CommandUndo()
 {
 }
 
 
-/*
-* ====================================================================
-*  Variables and Messages Declaration
-* ====================================================================
-*/
+CommandUndo::~CommandUndo()
+{
+}
 
-const string CommandUndo::MESSAGE_NOTHING_TO_UNDO = "There is nothing to undo!";
-const string CommandUndo::MESSAGE_ACTION_UNDONE = "Action has been undone!";
+string CommandUndo::execute(){
+	
+	Controller* instance = Controller::getInstance();
+	vector<Command*>* undoStack = instance->getUndoStack();
+	vector<Command*>* redoStack = instance->getRedoStack();
 
+	if (undoStack->size() == 0){
+		return MESSAGE_NOTHING_TO_UNDO;
+	}
 
+	else{
+		Command* undoCommand = (*undoStack)[undoStack->size()-1];
+		undoStack->pop_back();
+		redoStack->push_back(undoCommand->getInverseCommand());
+		undoCommand->execute();
+		return MESSAGE_ACTION_UNDONE;
+	}
 
+}
 
+Command* CommandUndo::getInverseCommand(){
+	return nullptr;
+}

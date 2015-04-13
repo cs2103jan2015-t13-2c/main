@@ -64,7 +64,14 @@ string CommandDisplay::printTaskToUser(Task toPrint, int taskNumber) {
 	//Prints Task Priority
 	Task::Priority checkPri = (toPrint).getTaskPriority();
 	switch (checkPri) {
+<<<<<<< HEAD
 		case Task::HIGH: {
+=======
+		case Task::LOW: {
+			oss << "PRIORITY: LOW" << endl;
+			break;
+		} case Task::HIGH: {
+>>>>>>> origin/master
 			oss << "PRIORITY: HIGH" << endl;
 			break;
 		} default: {

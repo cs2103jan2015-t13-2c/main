@@ -35,6 +35,12 @@
     <ClCompile Include="ParserTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
+=======
+    <ClCompile Include="StringDistanceTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+>>>>>>> origin/master
     <ClCompile Include="SuggestionBuilderTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,9 +54,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CommandSearchUnitTest.cpp">
+<<<<<<< HEAD
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CommandMarkTest.cpp">
+=======
+>>>>>>> origin/master
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

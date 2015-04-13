@@ -1,5 +1,8 @@
 //@author A0122357L
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 #include "ParseException.h"
 
 ParseException::ParseException(std::string input){

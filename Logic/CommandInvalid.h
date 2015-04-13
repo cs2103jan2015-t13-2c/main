@@ -13,7 +13,10 @@ public:
 	CommandInvalid(string userInput);
 
 	virtual string execute();
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 	virtual Command* getInverseCommand();
 
 	static char CommandInvalid::buffer[255];

@@ -1,5 +1,8 @@
 //@author A0122357L
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 #include "CommandException.h"
 
 CommandException::CommandException(std::string command){

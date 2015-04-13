@@ -229,7 +229,11 @@ namespace LogicTest
 			//      ADJUST LOCATION ACCORDINGLY
 			clearTasks();
 			addStandardTasks();
+<<<<<<< HEAD
 			//Assert::AreEqual<string>("File location changed successfully", Controller::processUserInput("changefileloc C:\\Users\\Adi!\\Desktop"));
+=======
+			Assert::AreEqual<string>("File location changed successfully", Controller::processUserInput("changefileloc C:\\Users\\Adi!\\Desktop"));
+>>>>>>> origin/master
 		}
 	private:
 		void clearTasks(){

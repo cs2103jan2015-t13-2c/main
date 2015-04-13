@@ -1,5 +1,8 @@
 //@author A0122357L
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 #include "Date.h"
 
 //Default is construct current date

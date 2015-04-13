@@ -35,6 +35,7 @@ namespace LogicTest
 			//Checking constructing of an update command properly
 			//Command* updateCommand = commandBuilder.parseCommand("update 1");
 			//Assert::AreEqual<std::string>("Deleted Task #%d", updateCommand->execute());
+<<<<<<< HEAD
 		
 		
 
@@ -62,6 +63,8 @@ namespace LogicTest
 				CommandBuilder::determineCommandType("changefileloc"));
 
 		
+=======
+>>>>>>> origin/master
 		}
 
 	};

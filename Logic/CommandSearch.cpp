@@ -1,5 +1,8 @@
 //@author A0094024M
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 /*
 This class is to handle the search command. As an object of this class is constructed, it will
 take in the specific attributes as the search objects and search accordingly (e.g. setting 

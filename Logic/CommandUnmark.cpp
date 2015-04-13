@@ -1,4 +1,5 @@
 //@author A0122357L
+<<<<<<< HEAD
 
 /*
 This class contains code that can execute the command "Unmark",
@@ -30,6 +31,26 @@ in the Controller class
 //@return feedback to user
 string CommandUnmark::execute(){
 
+=======
+#include "CommandUnmark.h"
+
+const string CommandUnmark::MESSAGE_UNMARKED = "Unmarked Task #%d";
+const string CommandUnmark::MESSAGE_NOT_UNMARKED = "Task #%d is already unmarked!";
+char CommandUnmark::buffer[255];
+
+CommandUnmark::CommandUnmark(int taskNumber)
+{
+	_taskNumber = taskNumber;
+}
+
+CommandUnmark::~CommandUnmark()
+{
+}
+
+string CommandUnmark::execute(){
+
+	// get the instance of the Task from task manager
+>>>>>>> origin/master
 	TaskManager instance = *TaskManager::getInstance();
 
 	//get the task to edit
@@ -37,6 +58,7 @@ string CommandUnmark::execute(){
 
 	//only mark the task if not already marked
 	if (currentTask.getTaskMarked() == false){
+<<<<<<< HEAD
 
 		sprintf_s(buffer, MESSAGE_NOT_UNMARKED.c_str(), _taskNumber);
 
@@ -58,11 +80,25 @@ string CommandUnmark::execute(){
 //This method will create the Command to undo this unmark command
 //
 //@return Command* that undoes the current command
+=======
+		sprintf_s(buffer, MESSAGE_NOT_UNMARKED.c_str(), _taskNumber);
+		return buffer;
+	}
+	else{
+		TaskManager::unmarkTask(_taskNumber);
+		sprintf_s(buffer, MESSAGE_UNMARKED.c_str(), _taskNumber);
+		return buffer;
+	}
+
+}
+
+>>>>>>> origin/master
 Command* CommandUnmark::getInverseCommand(){
 
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
 
 	if (_taskNumber <= 0 || _taskNumber > taskManagerInstance->getNumberOfTasks()){
+<<<<<<< HEAD
 
 		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
 
@@ -73,6 +109,14 @@ Command* CommandUnmark::getInverseCommand(){
 	//only has an inverse command if task not already unmarked
 	if (currentTask.getTaskMarked()){
 
+=======
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+	Task currentTask = TaskManager::getTask(_taskNumber);
+
+	if (currentTask.getTaskMarked()){
+		
+>>>>>>> origin/master
 		//preparing unmarked task to add
 		Task currentTask = TaskManager::getTask(_taskNumber);
 		string taskDetails = currentTask.getTaskDetails();
@@ -85,8 +129,14 @@ Command* CommandUnmark::getInverseCommand(){
 		//deleting marked task
 		TaskManager::removeTask(_taskNumber);
 
+<<<<<<< HEAD
 		//getting index to add new updated task to
 		int indexToMark = TaskManager::getIndexToInsert(taskToAdd);
+=======
+		//adding and deleting unmarked task to get index
+		int indexToMark = TaskManager::addTask(taskToAdd);
+		TaskManager::removeTask(indexToMark + 1);
+>>>>>>> origin/master
 
 		//adding back marked task
 		taskToAdd.setTaskMarked(true);
@@ -94,6 +144,7 @@ Command* CommandUnmark::getInverseCommand(){
 
 		return new CommandMark(indexToMark + 1);
 	}
+<<<<<<< HEAD
 
 	else{
 
@@ -126,3 +177,11 @@ const string CommandUnmark::MESSAGE_UNMARKED = "Unmarked Task #%d";
 const string CommandUnmark::MESSAGE_NOT_UNMARKED = "Task #%d is already unmarked!";
 const string CommandUnmark::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
 char CommandUnmark::buffer[255];
+=======
+	else{
+		return nullptr;
+	}
+}
+
+const string CommandUnmark::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
+>>>>>>> origin/master

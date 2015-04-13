@@ -23,6 +23,8 @@ public:
 	static const string CommandUnmark::ERROR_MESSAGE_COMMAND_TASKNUM;
 	static char CommandUnmark::buffer[255];
 
+	static const string CommandUnmark::ERROR_MESSAGE_COMMAND_TASKNUM;
+
 private:
 	int _taskNumber;
 };
