@@ -1,0 +1,81 @@
+//@author: a0094024m-unused
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandDelete.cpp
+	 */
+
+//Unused due to code restructuring. Logic of the new Command Delete was intially derived from the code below
+/*
+command for delete will be "delete /task_name"
+keep as comment in case we wanna change to this kind of delete ^^
+-adi-
+*/
+
+/*
+string text = removeFirstWord(userCommand);
+ostringstream oss;
+
+vector<Task>::iterator toDelete = determineTaskPosition(text, tempSave);
+if (toDelete != tempSave.end()) {
+tempSave.erase(toDelete);
+oss << "Deleted task " << (*toDelete).getTaskDetails << "from Taskky.\n";
+}
+else {
+oss << "Task not Found.\n";
+}
+
+
+return oss.str();
+*/
+
+/*
+for delete command "delete /task_number"
+*/
+
+/*
+ostringstream oss;
+
+string task_number_str = removeFirstWord(userCommand);
+int task_number_int = atoi(task_number_str.c_str());
+
+vector<Task>::iterator iter = tempSave.begin();
+iter = iter + task_number_int - 1;
+string deleted_task_name = (*iter).getTaskDetails();
+tempSave.erase(iter);
+
+oss << "Deleted task " << task_number_int << " (" << deleted_task_name << ") from Taskky.\n";
+
+return oss.str();
+*/
+
+/*
+
+//This function only useful for the other kind of delete command line,so only implement this with the other delete function
+vector<Task>::iterator Taskky::determineTaskPosition(string taskname, vector<Task> &tempSave) {
+
+vector<Task>::iterator iter;
+bool isPresent = false;
+
+for (iter = tempSave.begin(); iter != tempSave.end(); ++iter) {
+string item = (*iter).getTaskDetails;
+size_t found = item.find(taskname);
+if (found != string::npos) {
+isPresent = true;
+return iter;
+}
+}
+
+if (isPresent == false) {
+return tempSave.end();
+}
+
+}
+*/
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandDelete.cpp
+
+
+
+
+

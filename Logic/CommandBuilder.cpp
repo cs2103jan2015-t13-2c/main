@@ -1,11 +1,11 @@
+//@author A0122357L
+
 /*
 This class contains code that creates the new Command object
 
 This class creates the Command object by calling upon the Parser
 to parse the attributes to the Command object, then creating the
 Command object based on these attributes
-
-@author: A0122357L Lee Kai Yi
 */
 
 #include "CommandBuilder.h"

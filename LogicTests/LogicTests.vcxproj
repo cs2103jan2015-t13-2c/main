@@ -53,7 +53,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Users\acer\Desktop\School\CS2103\Taskky\Taskky\Logic;rapidjson-master\include\rapidjson;..\Logic;$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\rapidjson-master\include\rapidjson;C:\Users\acer\Desktop\School\CS2103\Taskky\Taskky\Logic;rapidjson-master\include\rapidjson;..\Logic;$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <AdditionalUsingDirectories>
@@ -62,7 +62,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\Logic;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\rapidjson-master\include\rapidjson;C:\Users\Lee Han Young\Desktop\CS2103\Taskky Copies\Taskky\Logic;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

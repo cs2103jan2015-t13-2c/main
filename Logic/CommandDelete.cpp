@@ -1,3 +1,5 @@
+//@author A0122357L
+
 /*
 This class contains code that can execute the command "Delete",
 which deletes a task by its displayed task number
@@ -5,8 +7,6 @@ which deletes a task by its displayed task number
 This class is part of the Command Pattern through abstraction of
 the implementation of the Command from the person that uses it,
 in the Controller class
-
-@author: A0122357L Lee Kai Yi
 */
 
 #include "CommandDelete.h"
@@ -63,9 +63,8 @@ Command* CommandDelete::getInverseCommand(){
 	Date* taskEndTime = currentTask.getTaskEndTime();
 	Date* taskDeadline = currentTask.getTaskDeadline();
 	Task::Priority taskPriority = currentTask.getTaskPriority();
-
-	return new CommandAdd(taskDetails, taskStartTime, 
-		taskEndTime, taskDeadline, taskPriority);
+	
+	return new CommandAdd(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority);
 }
 
 
@@ -93,3 +92,73 @@ const string CommandDelete::ERROR_MESSAGE_COMMAND_TASKNUM
 	= "Invalid task number!";
 const string CommandDelete::MESSAGE_DELETED = "Deleted Task #%d";
 char CommandDelete::buffer[255];
+
+
+//@author A0094024M -unused
+//Unused due to code restructuring. Logic of the new Command Delete was intially derived from the code below
+/*
+command for delete will be "delete /task_name"
+keep as comment in case we wanna change to this kind of delete ^^
+-adi-
+*/
+
+/*
+string text = removeFirstWord(userCommand);
+ostringstream oss;
+
+vector<Task>::iterator toDelete = determineTaskPosition(text, tempSave);
+if (toDelete != tempSave.end()) {
+tempSave.erase(toDelete);
+oss << "Deleted task " << (*toDelete).getTaskDetails << "from Taskky.\n";
+}
+else {
+oss << "Task not Found.\n";
+}
+
+
+return oss.str();
+*/
+
+/*
+for delete command "delete /task_number"
+*/
+
+/*
+ostringstream oss;
+
+string task_number_str = removeFirstWord(userCommand);
+int task_number_int = atoi(task_number_str.c_str());
+
+vector<Task>::iterator iter = tempSave.begin();
+iter = iter + task_number_int - 1;
+string deleted_task_name = (*iter).getTaskDetails();
+tempSave.erase(iter);
+
+oss << "Deleted task " << task_number_int << " (" << deleted_task_name << ") from Taskky.\n";
+
+return oss.str();
+*/
+
+/*
+
+//This function only useful for the other kind of delete command line,so only implement this with the other delete function
+vector<Task>::iterator Taskky::determineTaskPosition(string taskname, vector<Task> &tempSave) {
+
+vector<Task>::iterator iter;
+bool isPresent = false;
+
+for (iter = tempSave.begin(); iter != tempSave.end(); ++iter) {
+string item = (*iter).getTaskDetails;
+size_t found = item.find(taskname);
+if (found != string::npos) {
+isPresent = true;
+return iter;
+}
+}
+
+if (isPresent == false) {
+return tempSave.end();
+}
+
+}
+*/

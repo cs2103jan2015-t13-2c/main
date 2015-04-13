@@ -1,3 +1,5 @@
+//@author A0122357L
+
 #include "CustomException.h"
 
 CustomException::CustomException(){

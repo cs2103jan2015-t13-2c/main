@@ -1,3 +1,5 @@
+//@author A0122357L
+
 #include "ErrorLogger.h"
 
 ErrorLogger* ErrorLogger::_instance = NULL;

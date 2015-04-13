@@ -1,3 +1,4 @@
+//@author A0094024M
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
@@ -8,7 +9,7 @@ namespace LogicTests
 	TEST_CLASS(CommandSearchUnitTest)
 	{
 	public:
-		/*
+		
 		TEST_METHOD(searchExactName1)
 		{
 			clearTasks();
@@ -175,7 +176,7 @@ namespace LogicTests
 
 			Assert::AreEqual<string>("Next available 365 daysis from 01 Jan 2016 (Fri), 10:00AM.", test14.execute());
 		}
-		*/
+		
 	private:
 		void addStandardTasks(){
 			TaskManager::addTask(Task("Marked Task - will be indexed as 4", NULL, NULL, NULL,

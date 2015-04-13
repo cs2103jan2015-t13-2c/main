@@ -1,3 +1,5 @@
+//@author A0122357L
+
 /*
 This class is used to manage Taskky's representation of all current Tasks
 It is a singleton class, so that there will only be 1 instance of the tasks
@@ -10,12 +12,9 @@ When a task is added, it is auto sorted following this method:
 
 This class also has functions to supports mark, unmark, deletion and finding 
 the insertion point of tasks into Taskky's internal representation of Tasks
-
-@author: A0122357L Lee Kai Yi
 */
 
 #include "TaskManager.h"
-
 
 
 /*

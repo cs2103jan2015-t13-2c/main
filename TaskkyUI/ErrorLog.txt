@@ -1,2 +1,4 @@
-Error Log Resetted on: 13 Apr 2015 (Mon), 05:28PM
+Error Log Resetted on: 13 Apr 2015 (Mon), 06:12PM
+
+13 Apr 2015 (Mon), 06:13PM | Input parsing error: Please enter a valid Priority (LOW, NORMAL, HIGH) | 
 

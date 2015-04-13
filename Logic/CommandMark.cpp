@@ -1,3 +1,5 @@
+//@author A0122357L
+
 /*
 This class contains code that can execute the command "Mark",
 which marks a task as done
@@ -9,8 +11,6 @@ is to support easy display to the UI
 This class is part of the Command Pattern through abstraction of
 the implementation of the Command from the person that uses it,
 in the Controller class
-
-@author: A0122357L Lee Kai Yi
 */
 
 #include "CommandMark.h"

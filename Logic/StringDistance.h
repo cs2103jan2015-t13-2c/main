@@ -1,3 +1,5 @@
+//@author A0122357L
+
 #pragma once
 #include <string.h>
 #include <malloc.h>
