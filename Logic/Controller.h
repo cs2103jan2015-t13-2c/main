@@ -23,6 +23,8 @@ public:
 
 	static string processUserInput(string userInput);
 
+	static void initializeComponent();
+
 	static void setTaskIndices(vector<int>* taskIndices);
 
 	static vector<int>* getTaskIndices();

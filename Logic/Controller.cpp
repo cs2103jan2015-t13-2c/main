@@ -3,6 +3,7 @@
 /*
 This class is used to manage Taskky's logic flow to process the user input,
 and execute the command parsed
+It is also used to initialize the program.
 It is a singleton class, so that there will only be 1 instance of the tasks
 
 It also supports the passing of a vector<int> of found tasks when a user
@@ -17,6 +18,15 @@ searches for tasks, that indicated the indexes the tasks are found
 *  Main Program
 * ====================================================================
 */
+
+//This operation is used to initialize the program by loading tasks
+//from storage
+void Controller::initializeComponent(){
+
+	TaskManager::loadAllCurrentTasks(Storage::readFromFile());
+
+}
+
 
 //This operation processes the user input and executes the user input
 //

@@ -29,21 +29,57 @@ namespace TaskkyUI {
 	string command, result, taskdisplay, result2, result3;
 	string usernamedisplay;
 
-
-	/// <summary>
-	/// Summary for TaskkyGUI
-	/// </summary>
-
 	public ref class TaskkyGUI : public System::Windows::Forms::Form
 	{
 	public:
 		TaskkyGUI()
 		{
 			InitializeComponent();
-			//
-			//TODO: Add the constructor code here
-			//
-			TaskManager::loadAllCurrentTasks(Storage::readFromFile());
+
+			Controller::initializeComponent();
+
+			vector<Task>* allCurrentTasks = TaskManager::getAllCurrentTasks();
+
+			for (int i = 0; i != allCurrentTasks->size(); i++){
+
+				Task task = (*allCurrentTasks)[i];
+
+				ListViewItem^ newEntry;
+
+				if (task.getTaskType() == Task::FLOATING){
+
+					ListViewItem^ newEntry = addNewItem(i + 1, "--------",
+						"--------", task.getTaskDetails(),
+						task.getTaskPriority(), task.getTaskMarked());
+
+					array<ListViewItem^>^FloatingTasks = { newEntry };
+					listView1->Items->AddRange(FloatingTasks);
+
+				}
+
+				else if (task.getTaskType() == Task::DEADLINE){
+					ListViewItem^ newEntry = addNewItem(i + 1,
+						task.getTaskDeadline()->toString(),
+						"--------", task.getTaskDetails(),
+						task.getTaskPriority(), task.getTaskMarked());
+
+					array<ListViewItem^>^DeadlineTasks = { newEntry };
+					listView1->Items->AddRange(DeadlineTasks);
+
+				}
+
+				else{
+
+					ListViewItem^ newEntry = addNewItem(i + 1,
+						task.getTaskStartTime()->toString(),
+						task.getTaskEndTime()->toString(),
+						task.getTaskDetails(), task.getTaskPriority(),
+						task.getTaskMarked());
+
+					array<ListViewItem^>^TimedTasks = { newEntry };
+					listView1->Items->AddRange(TimedTasks);
+				}
+			}
 
 		}
 	private: System::Windows::Forms::Label^  label12;
@@ -488,7 +524,7 @@ namespace TaskkyUI {
 
 					else if (task.getTaskType() == Task::DEADLINE){
 						ListViewItem^ newEntry = addNewItem(index,
-							task.getTaskDeadline()->parseDateToDisplay(),
+							task.getTaskDeadline()->toString(),
 							"--------", task.getTaskDetails(),
 							task.getTaskPriority(), task.getTaskMarked());
 
@@ -500,8 +536,8 @@ namespace TaskkyUI {
 					else{
 
 						ListViewItem^ newEntry = addNewItem(index,
-							task.getTaskStartTime()->parseDateToDisplay(),
-							task.getTaskEndTime()->parseDateToDisplay(),
+							task.getTaskStartTime()->toString(),
+							task.getTaskEndTime()->toString(),
 							task.getTaskDetails(), task.getTaskPriority(),
 							task.getTaskMarked());
 

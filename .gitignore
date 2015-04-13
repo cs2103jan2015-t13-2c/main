@@ -1,0 +1,4 @@
+*.tlog
+Debug/ErrorLog.txt
+*.idb
+TaskkyUI/ErrorLog.txt
