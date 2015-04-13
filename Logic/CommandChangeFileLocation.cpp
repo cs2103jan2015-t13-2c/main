@@ -1,3 +1,5 @@
+//@author A0094024M
+
 /*
 This class is to manipulate the location of the save file for TASKKY.
 
@@ -9,8 +11,6 @@ to the original directory (same directory as the .exe file).
 
 Save.json should not be tampered by user manually, as editing it may cause error in parsing
 should the format of the document does not match the JSON Object standard.
-
-@author: A0094024M Adisurya Nataprawira
 */
 
 #include "CommandChangeFileLocation.h"
@@ -158,7 +158,7 @@ void CommandChangeFileLocation::moveSaveFile(){
 * ====================================================================
 */
 
-const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_CHANGED = "File location changed succesfully";
+const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_CHANGED = "File location changed successfully";
 const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_INVALID = "Invalid file location, directory doesn't exist!";
 const string CommandChangeFileLocation::MESSAGE_NO_FILE_NAME = "Please specify file location after the command 'changefileloc'";
 const string CommandChangeFileLocation::UNKOWN_ERROR = "The program has encountered unknown error, please contact program developers. In the meantime you can try the following:\n1. Change command parameters";

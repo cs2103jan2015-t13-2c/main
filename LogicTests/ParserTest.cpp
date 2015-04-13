@@ -1,3 +1,4 @@
+//@author A0113716M
 #pragma once
 #include "stdafx.h"
 #include "CppUnitTest.h"
@@ -253,23 +254,23 @@ namespace LogicTest
 			-----------------------------------------------*/
 			Parser::parseCommandAdd("add task #impt");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
-			Assert::AreEqual<bool>(true, Parser::getTaskPriority() == Task::HIGH);
+			Assert::IsTrue(Parser::getTaskPriority() == Task::Priority::HIGH);
 
 		} TEST_METHOD(PriorityAdd2){
 			Parser::parseCommandAdd("add task by 23 dec #high");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
 			Assert::AreEqual<string>((Parser::getTaskDeadline())->toString(), "23 Dec 2015 (Wed), 12:00PM");
-			Assert::AreEqual<bool>(true, Parser::getTaskPriority() == Task::HIGH);
+			Assert::IsTrue(Parser::getTaskPriority() == Task::Priority::HIGH);
 
 		} TEST_METHOD(PriorityAdd3){
-			Parser::parseCommandAdd("add task from 23 dec to 27 dec #low");
+			Parser::parseCommandAdd("add task from 23 dec to 27 dec #impt");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "task ");
 			Assert::AreEqual<string>((Parser::getTaskStartTime())->toString(), "23 Dec 2015 (Wed), 12:00PM");
 			Assert::AreEqual<string>((Parser::getTaskEndTime())->toString(), "27 Dec 2015 (Sun), 12:00PM");
-			Assert::AreEqual<bool>(true, Parser::getTaskPriority() == Task::LOW);
+			Assert::AreEqual<bool>(true, Parser::getTaskPriority() == Task::Priority::HIGH);
 		}
 		TEST_METHOD(ParserUpdateTest) {
-			Parser::parseCommandAdd("add task from 23 dec to 27 dec #low");
+			Parser::parseCommandAdd("add task from 23 dec to 27 dec");
 
 			Parser::parseCommandUpdate("update 1 details new task");
 			Assert::AreEqual<string>(Parser::getTaskDetails(), "new task ");

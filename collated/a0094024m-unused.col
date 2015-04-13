@@ -1,59 +1,11 @@
-//@author A0122357L
-#include "CommandDelete.h"
+//@author: a0094024m-unused
 
 
-const string CommandDelete::MESSAGE_DELETED = "Deleted Task #%d";
-char CommandDelete::buffer[255];
 
-CommandDelete::CommandDelete(int taskNumber)
-{
-	_taskNumber = taskNumber;
-}
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandDelete.cpp
+	 */
 
-
-CommandDelete::~CommandDelete()
-{
-}
-
-string CommandDelete::execute(){
-
-	// get the instance of the Task from task manager
-	TaskManager instance = *TaskManager::getInstance();
-
-	if (_taskNumber <= 0 || _taskNumber > instance.getNumberOfTasks()){
-		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
-	}
-
-	//get the task to edit, remove it from vector.
-	Task currentTask = TaskManager::getTask(_taskNumber);
-	TaskManager::removeTask(_taskNumber);
-
-	sprintf_s(buffer, MESSAGE_DELETED.c_str(), _taskNumber);
-
-	return buffer;
-}
-
-Command* CommandDelete::getInverseCommand(){
-	TaskManager* taskManagerInstance = TaskManager::getInstance();
-
-	if (_taskNumber <= 0 || _taskNumber > taskManagerInstance->getNumberOfTasks()){
-		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
-	}
-	Task currentTask = TaskManager::getTask(_taskNumber);
-	
-	string taskDetails = currentTask.getTaskDetails();
-	Date* taskStartTime = currentTask.getTaskStartTime();
-	Date* taskEndTime = currentTask.getTaskEndTime();
-	Date* taskDeadline = currentTask.getTaskDeadline();
-	Task::Priority taskPriority = currentTask.getTaskPriority();
-	
-	return new CommandAdd(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority);
-}
-
-const string CommandDelete::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
-
-
-//@author A0094024M -unused
 //Unused due to code restructuring. Logic of the new Command Delete was intially derived from the code below
 /*
 command for delete will be "delete /task_name"
@@ -121,3 +73,9 @@ return tempSave.end();
 
 }
 */
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandDelete.cpp
+
+
+
+
+

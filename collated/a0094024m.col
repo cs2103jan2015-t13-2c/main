@@ -1,0 +1,2084 @@
+//@author: a0094024m
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandChangeFileLocation.cpp
+	 */
+
+
+/*
+This class is to manipulate the location of the save file for TASKKY.
+
+Functionalities include changing the directory in which the save file will be written. Doing
+so will result in the save file being physically moved to a new location as well.
+
+The file location can also be change to "default", in which it will move the save file location
+to the original directory (same directory as the .exe file).
+
+Save.json should not be tampered by user manually, as editing it may cause error in parsing
+should the format of the document does not match the JSON Object standard.
+*/
+
+#include "CommandChangeFileLocation.h"
+
+/*
+* ====================================================================
+*  Constructors, Modifiers, Accessors and Destructors
+* ====================================================================
+*/
+
+//Constructor
+CommandChangeFileLocation::CommandChangeFileLocation(string filename)
+{
+	_prevName = CommandCheckFileLocation::CommandCheckFileLocation().getFileLocation();
+	_filename = filename;
+}
+
+//Default Destructor
+CommandChangeFileLocation::~CommandChangeFileLocation()
+{
+}
+
+
+/*
+* ====================================================================
+*  Inherited Functions
+* ====================================================================
+*/
+
+//This function executes the Change File Location function. Change the save directory
+//and physically move the save file into the new directory
+//
+//@param: none
+//@return: feedback string
+string CommandChangeFileLocation::execute(){
+	
+	// get the instance of the Task from task manager
+	TaskManager instance = *TaskManager::getInstance();
+	
+	if (_filename == ""){
+		throw CommandException(MESSAGE_NO_FILE_NAME);
+	} else if (dirExists(_filename) || _filename == "default"){		//check if file exists or directory is at default location
+		checkFileDirectory();
+		extractDirectoryInformation();
+		moveSaveFile();
+		return MESSAGE_FILE_LOCATION_CHANGED;
+	} else if (!dirExists(_filename)){
+		throw CommandException(MESSAGE_FILE_LOCATION_INVALID);
+	} else {
+		throw CommandException(UNKOWN_ERROR);
+	}
+}
+
+//Create a new CommandChangeFileLocation object for undo with the previous directory
+//
+//@param: previous file directory
+//@return: pointer for the new CommandChangeFileLocation object
+Command* CommandChangeFileLocation::getInverseCommand(){
+	// get the instance of the Task from task manager
+	TaskManager instance = *TaskManager::getInstance();
+
+	return new CommandChangeFileLocation(_prevName);
+}
+
+/*
+* ====================================================================
+*  Second Abstractions
+* ====================================================================
+*/
+
+//This function checks if the directory exists.
+//
+//@param = directory to be checked
+//@return = boolean value (true/false)
+bool CommandChangeFileLocation::dirExists(const std::string& dirName_in)
+{
+	DWORD ftyp = GetFileAttributesA(dirName_in.c_str());
+	if (ftyp == INVALID_FILE_ATTRIBUTES)
+		return false;  //something is wrong with your path!
+
+	if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
+		return true;   // this is a directory!
+
+	return false;    // this is not a directory!
+}
+
+//This function checks if the file that contains the directory exists. If it doesn't exist,
+//create a new file that will contain the save directory.
+//
+//@param = none
+//@return = none
+void CommandChangeFileLocation::checkFileDirectory(){
+	if (FILE *file = fopen("saveFileLocation.txt", "r")) {
+		fclose(file);
+	}
+	else {
+		FILE* createFile = fopen("saveFileLocation.txt", "wb"); // non-Windows use "w"
+		fclose(createFile);
+	}
+	return;
+}
+
+//This function saves the information from the previous directory (for undo function).
+//
+//@param = none
+//@return = none
+void CommandChangeFileLocation::extractDirectoryInformation(){
+	string currentName;
+	ifstream readFile("saveFileLocation.txt");
+	if (readFile.is_open()){
+		getline(readFile, currentName);
+		if (currentName.empty()) {
+			_prevName = "default";
+		}
+		else {
+			_prevName = currentName;
+		}
+	}
+	return;
+}
+
+//This function changes that directory information contained in the file. After which it
+//will delete the old save file and create a new save file in the new location.
+//
+//@param = none
+//@return = none
+void CommandChangeFileLocation::moveSaveFile(){
+	string toRemove = _prevName + "/Save.json";
+	remove(toRemove.c_str());
+
+	ofstream writeFile("saveFileLocation.txt");
+	if (writeFile.is_open()){
+		writeFile << _filename;
+		writeFile.close();
+	}
+
+	TaskManager::saveTasks();
+
+	return;
+}
+
+/*
+* ====================================================================
+*  Variables and Messages Declaration
+* ====================================================================
+*/
+
+const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_CHANGED = "File location changed successfully";
+const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_INVALID = "Invalid file location, directory doesn't exist!";
+const string CommandChangeFileLocation::MESSAGE_NO_FILE_NAME = "Please specify file location after the command 'changefileloc'";
+const string CommandChangeFileLocation::UNKOWN_ERROR = "The program has encountered unknown error, please contact program developers. In the meantime you can try the following:\n1. Change command parameters";
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandChangeFileLocation.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandChangeFileLocation.h
+	 */
+
+
+#pragma once
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <Windows.h>
+#include "Command.h"
+#include "TaskManager.h"
+#include "Storage.h"
+#include "CommandCheckFileLocation.h"
+#include "CommandException.h"
+
+using namespace std;
+
+class CommandChangeFileLocation : public Command
+{
+public:
+	CommandChangeFileLocation(string filename);
+	~CommandChangeFileLocation();
+
+	virtual string execute();
+	virtual Command* getInverseCommand();
+
+private:
+	string _filename;
+	string _prevName;
+
+	static bool dirExists(const std::string& dirName_in);
+	void checkFileDirectory();
+	void extractDirectoryInformation();
+	void moveSaveFile();
+
+	static const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_CHANGED;
+	static const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_INVALID;
+	static const string CommandChangeFileLocation::MESSAGE_NO_FILE_NAME;
+	static const string CommandChangeFileLocation::UNKOWN_ERROR;
+	
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandChangeFileLocation.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandCheckFileLocation.cpp
+	 */
+
+
+/*
+This class is to check the directory location of the save file for TASKKY.
+Functionalities include showing the directory in which the save file will be written.
+*/
+
+#include "CommandCheckFileLocation.h"
+
+/*
+* ====================================================================
+*  Constructors, Modifiers, Accessors and Destructors
+* ====================================================================
+*/
+
+//Constructor
+CommandCheckFileLocation::CommandCheckFileLocation()
+{
+}
+
+//Destructor
+CommandCheckFileLocation::~CommandCheckFileLocation()
+{
+}
+
+
+/*
+* ====================================================================
+*  Inherited Functions
+* ====================================================================
+*/
+
+//This function executes the checkfileloc command. It will access the file containing
+//the directory and return the save file directory.
+//
+//@param: none
+//@return: save file directory
+string CommandCheckFileLocation::execute(){
+
+	ostringstream oss;
+	string currentName;
+
+	// get the instance of the Task from task manager
+	TaskManager instance = *TaskManager::getInstance();
+
+	currentName = getFileLocation();
+	if (currentName == DEFAULT_STRING){
+		return SAVE_FILE_AT_DEFAULT;
+	} else {
+		sprintf(buffer, SAVE_FILE_AT.c_str(), currentName.c_str());
+		return buffer;
+	}
+
+}
+
+//There is no undo function for check file location, hence this function returns a null pointer
+//
+//@param: none
+//@return: null pointer
+Command* CommandCheckFileLocation::getInverseCommand(){
+	return nullptr;
+}
+
+
+/*
+* ====================================================================
+*  Second Abstractions
+* ====================================================================
+*/
+
+//Opens the file location and returns the directory.
+//
+//@param: none
+//@return: save file directory
+string CommandCheckFileLocation::getFileLocation(){
+
+	string currentName;
+	checkDirectoryTXT();
+	
+	ifstream readFile(DIRECTORY_TXT.c_str());
+	if (readFile.is_open()){
+		getline(readFile, currentName);
+		if (currentName.empty()) {
+			return DEFAULT_STRING;
+		}
+		else {
+			return currentName;
+		}
+	}
+}
+
+void CommandCheckFileLocation::checkDirectoryTXT(){
+	if (FILE *file = fopen(DIRECTORY_TXT.c_str(), "r")) {
+		fclose(file);
+	}
+	else {
+		FILE* createFile = fopen(DIRECTORY_TXT.c_str(), "wb"); // non-Windows use "w"
+		fclose(createFile);
+	}
+	return;
+}
+
+/*
+* ====================================================================
+*  Variables and Messages Declaration
+* ====================================================================
+*/
+
+char CommandCheckFileLocation::buffer[255];
+const string CommandCheckFileLocation::DEFAULT_STRING = "default";
+const string CommandCheckFileLocation::SAVE_FILE_AT_DEFAULT = "Save File is at default location.";
+const string CommandCheckFileLocation::SAVE_FILE_AT = "Save File is at %s.";
+const string CommandCheckFileLocation::DIRECTORY_TXT = "saveFileLocation.txt";
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandCheckFileLocation.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandCheckFileLocation.h
+	 */
+
+#pragma once
+#include <string>
+#include <iostream>
+#include <fstream>
+#include "Command.h"
+#include "TaskManager.h"
+
+class CommandCheckFileLocation: public Command
+{
+public:
+	CommandCheckFileLocation();
+	~CommandCheckFileLocation();
+
+	virtual string execute();
+	virtual Command* getInverseCommand();
+
+	static string getFileLocation();
+
+private:
+	static void checkDirectoryTXT();
+
+	static char buffer[255];
+	static const string DEFAULT_STRING;
+	static const string SAVE_FILE_AT_DEFAULT;
+	static const string SAVE_FILE_AT;
+	static const string DIRECTORY_TXT;
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandCheckFileLocation.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandSearch.cpp
+	 */
+
+/*
+This class is to handle the search command. As an object of this class is constructed, it will
+take in the specific attributes as the search objects and search accordingly (e.g. setting 
+taskDetails will result in searching the TaskVector for a similar task details, etc).
+
+Available searches:
+1. Exact task details search
+2. Near match search (including per word near match)
+3. Search tasks within specified date range
+4. Search tasks before specified date
+5. Search tasks after specified date
+6. Search tasks of specified priority
+7. Search tasks that are done / undone (either)
+8. Search next empty slot
+*/
+
+#include "CommandSearch.h"
+
+/*
+* ====================================================================
+*  Constructors, Modifiers, Accessors and Destructors
+* ====================================================================
+*/
+
+//Constructor
+CommandSearch::CommandSearch(string taskDetails,
+	Date *taskStartTime,
+	Date *taskEndTime,
+	Date *taskDeadline,
+	Task::Priority taskPriority,
+	string duration,
+	bool taskMarked,
+	bool foundMarked,
+	bool foundPriority){
+
+	_taskDetails = taskDetails;
+	_taskStartTime = taskStartTime;
+	_taskEndTime = taskEndTime;
+	_taskDeadline = taskDeadline;
+	_taskPriority = taskPriority;
+	_duration = duration;
+	_taskMarked = taskMarked;
+	_foundMarked = foundMarked;
+	_foundPriority = foundPriority;
+	foundTasksIndices = new vector < int > ;
+}
+
+//Default destructor
+CommandSearch::~CommandSearch()
+{
+}
+
+//Returns the integer vector of the tasks found
+vector<int>* CommandSearch::getTasksIndices(){
+	return foundTasksIndices;
+}
+
+/*
+* ====================================================================
+*  Inherited Functions
+* ====================================================================
+*/
+
+//This function executes the search function. It will check the object attributes and search
+//the corresponding attributes that are not null. Returns the feedback for the search function
+//as how many tasks are found, or for search next available slot, the earliest time point available.
+//
+//@param: none
+//@return: feedback string
+string CommandSearch::execute() {
+
+	TaskManager instance = *TaskManager::getInstance();
+
+	if (_taskDetails != "") {
+		if (_taskStartTime != NULL || _taskEndTime != NULL || _foundPriority != false){
+			throw CommandException(ERROR_TOOMANY_SEARCH_ARGUMENTS);
+		}
+		return searchByName(_taskDetails);
+	}
+	else if (_taskStartTime != NULL) {
+		if (_taskEndTime != NULL) {
+			return searchDateRange(*_taskStartTime, *_taskEndTime);
+		}
+		else if (_taskEndTime == NULL) {
+			return searchAfterDate(*_taskStartTime);
+		}
+	}
+	else if (_taskStartTime == NULL) {
+		if (_taskEndTime != NULL) {
+			return searchBeforeDate(*_taskEndTime);
+		}
+	}
+	
+	if (_foundPriority == true) {
+		return searchPriority(_taskPriority);
+	}
+	if (_foundMarked == true) {
+		return searchMarked(_taskMarked);
+	}
+	if (_duration != ""){
+		return searchNextEmptySlot(_duration);
+	}
+
+	return INVALID_SEARCH_FUNCTION;
+
+}
+
+//There is no undo function for search, hence this function returns a null pointer
+//
+//@param: none
+//@return: null pointer
+Command* CommandSearch::getInverseCommand() {
+	return nullptr;
+}
+
+/*
+* ====================================================================
+*  Second Abstractions
+* ====================================================================
+*/
+
+//This function iterates through the vector of Tasks an find match based on the Task details.
+//Return the number of near match, updates the vector of found indices.
+//
+//@param: string to be searched
+//@return: feedback on number of match found
+string CommandSearch::searchByName(string taskname) {
+
+	vector<Task> TaskVector = *(TaskManager::getAllCurrentTasks());
+	vector<Task>::iterator iter;
+	int count = 0;
+	int position = 1;
+	ostringstream oss;
+
+	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter){
+		if (containExactMatch(taskname, iter->getTaskDetails())){
+			++count;
+			foundTasksIndices->push_back(position);
+		} else if (containNearMatch(taskname, iter->getTaskDetails())){
+			++count;
+			foundTasksIndices->push_back(position);
+		}
+		++position;
+	}
+
+	sprintf_s(buffer, MESSAGE_FOUND_TASKS.c_str(), count);
+	return buffer;
+
+}
+
+//This function iterates through the vector of Tasks and find all Tasks that have deadline
+//or start time within the range of dates specified.
+//
+//Only iterate through Timed Tasks and Deadline Tasks. Will not consider Floating Tasks
+//
+//@param: range of date (date from, date to)
+//@return: feedback on number of match found
+string CommandSearch::searchDateRange(Date dateFrom, Date dateTo) {
+
+	vector<Task> TaskVector = *(TaskManager::getAllCurrentTasks());
+	vector<Task>::iterator iter;
+	int count = 0;
+	int position = 1;
+
+	for (iter = TaskVector.begin(); 
+		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING;
+		++iter){
+		if (iter->getTaskType() == Task::DEADLINE) {
+			if (dateFrom.isEarlierThan(*(iter->getTaskDeadline())) >= 0){
+				if (dateTo.isEarlierThan(*(iter->getTaskDeadline())) <= 0){
+					++count;
+					foundTasksIndices->push_back(position);
+				}
+			}
+		}
+		else if (iter->getTaskType() == Task::TIMED) {
+			if (dateFrom.isEarlierThan(*(iter->getTaskStartTime())) >= 0) {
+				if (dateTo.isEarlierThan(*(iter->getTaskStartTime())) <= 0) {
+					foundTasksIndices->push_back(position);
+					++count;
+				}
+			}
+		}
+		++position;
+	}
+
+
+	sprintf_s(buffer, MESSAGE_FOUND_TASKS.c_str(), count);
+	return buffer;
+
+}
+
+//This function iterates through the vector of Tasks and find all Tasks that have deadline
+//or start time after the date specified.
+//
+//Only iterate through Timed Tasks and Deadline Tasks. Will not consider Floating Tasks
+//
+//@param: minimum date
+//@return: feedback on number of match found
+string CommandSearch::searchAfterDate(Date dateAfter) {
+
+	ostringstream oss;
+
+	vector<Task> TaskVector = *(TaskManager::getAllCurrentTasks());
+	vector<Task>::iterator iter;
+	int count = 0;
+	int position = 1;
+
+	for (iter = TaskVector.begin(); 
+		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING; 
+		++iter){
+		if (iter->getTaskType() == Task::DEADLINE) {
+			if (dateAfter.isEarlierThan(*(iter->getTaskDeadline())) >= 0) {
+				foundTasksIndices->push_back(position);
+				++count;
+			}
+		}
+		else if (iter->getTaskType() == Task::TIMED) {
+			if (dateAfter.isEarlierThan(*(iter->getTaskStartTime())) >= 0) {
+				foundTasksIndices->push_back(position);
+				++count;
+			}
+		}
+		++position;
+	}
+
+	sprintf_s(buffer, MESSAGE_FOUND_TASKS.c_str(), count);
+	return buffer;
+
+}
+
+//This function iterates through the vector of Tasks and find all Tasks that have deadline
+//or start time before the date specified.
+//
+//Only iterate through Timed Tasks and Deadline Tasks. Will not consider Floating Tasks
+//
+//@param: maximum date
+//@return: feedback on number of match found
+string CommandSearch::searchBeforeDate(Date dateBefore) {
+
+	ostringstream oss;
+
+	vector<Task> TaskVector = *(TaskManager::getAllCurrentTasks());
+	vector<Task>::iterator iter;
+	int count = 0;
+	int position = 1;
+
+	for (iter = TaskVector.begin();
+		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING;
+		++iter){
+		if (iter->getTaskType() == Task::DEADLINE) {
+			if (dateBefore.isEarlierThan(*(iter->getTaskDeadline())) <= 0) {
+				foundTasksIndices->push_back(position);
+				++count;
+			}
+		}
+		else if (iter->getTaskType() == Task::TIMED) {
+			if (dateBefore.isEarlierThan(*(iter->getTaskStartTime())) <= 0) {
+				foundTasksIndices->push_back(position);
+				++count;
+			}
+		}
+		++position;
+	}
+
+	sprintf_s(buffer, MESSAGE_FOUND_TASKS.c_str(), count);
+	return buffer;
+
+}
+
+//This function iterates through the vector of Tasks and find all Tasks that matching priority
+//
+//@param: priority (high, normal, low)
+//@return: feedback on number of match found
+string CommandSearch::searchPriority(Task::Priority priority) {
+
+	ostringstream oss;
+
+	vector<Task> TaskVector = *(TaskManager::getAllCurrentTasks());
+	vector<Task>::iterator iter;
+	int count = 0;
+	int position = 1;
+
+	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
+		if (priority == iter->getTaskPriority()) {
+			foundTasksIndices->push_back(position);
+			++count;
+		}
+		++position;
+	}
+
+	sprintf_s(buffer, MESSAGE_FOUND_TASKS.c_str(), count);
+	return buffer;
+
+}
+
+//This function iterates through the vector of Tasks and find all Tasks that are done/undone.
+//
+//@param: marked / not marked
+//@return: feedback on number of match found
+string CommandSearch::searchMarked(bool marked) {
+
+	ostringstream oss;
+
+	vector<Task> TaskVector = *(TaskManager::getAllCurrentTasks());
+	vector<Task>::iterator iter;
+	int count = 0;
+	int position = 1;
+
+	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
+		if (marked == iter->getTaskMarked()) {
+			foundTasksIndices->push_back(position);
+			++count;
+		}
+		++position;
+	}
+
+	sprintf_s(buffer, MESSAGE_FOUND_TASKS.c_str(), count);
+	return buffer;
+
+}
+
+//This function iterates through the vector of Tasks and determine the earliest time point 
+//where a specified duration will not clash with any Timed Tasks.
+//
+//This function only considers the Timed Tasks. Deadline Tasks are assumed to only take up
+//one point in time hence will not affect availability of free slot.
+//
+//@param: duration required
+//Valid string inputs:
+//1. xx day(s) yy hour(s) zz minute(s)	xx, yy, zz integers
+//2. xx day(s) yy hour(s)				xx, yy integers
+//3. xx day(s)							xx integer or float
+//4. xx hour(s) yy minute(s)			xx, yy, zz integers
+//5. xx hour(s)							xx integer or float
+//6. xx minute(s)						xx integer
+//Otherwise invalid
+//
+//@return: feedback on number of match found
+string CommandSearch::searchNextEmptySlot(string duration){
+	
+	int durationInMinutes = parseDurationToMinutes(duration);
+
+	vector<Task> TaskVector = *TaskManager::getAllCurrentTasks();
+	vector<Task>::iterator iter = TaskVector.begin();
+	bool found = false;
+	Date toCompare = Date::Date();
+
+	for (iter = TaskVector.begin(); 
+		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING && found == false; 
+		++iter){
+		
+		if (iter->getTaskType() == Task::TIMED) {
+			if (toCompare.isEarlierThan(*(iter->getTaskStartTime())) == 1){
+				int freeTime = toCompare.diffInMinutes(*(iter->getTaskStartTime()));
+				if (freeTime >= durationInMinutes){
+					found = true;
+				}
+				else {
+					toCompare = *(iter->getTaskEndTime());
+				}
+			}
+		}
+
+	}
+
+	
+	if (toCompare.isEarlierThan(Date::Date()) == 0) {
+		sprintf_s(buffer, MESSAGE_NEXT_AVAILABLE_SLOT.c_str(), duration.c_str(), "now!");
+	}
+	else {
+		sprintf_s(buffer, MESSAGE_NEXT_AVAILABLE_SLOT.c_str(), duration.c_str(), toCompare.toString().c_str());
+	}
+	return buffer;
+	
+}
+
+/*
+* ====================================================================
+*  Third Abstractions
+* ====================================================================
+*/
+
+//This function parse the duration (in string) into the equivalent number of minutes.
+//
+//@param: duration string
+//@return: number of minutes
+int CommandSearch::parseDurationToMinutes(string duration){
+	int numberOfWords = countWordsInString(duration);
+
+	if (numberOfWords == 6){						//assumed format = __ days __ hours __ minutes
+		int days = stoi(getFirstWord(duration));
+		duration = removeFirstWord(duration);
+
+		//check if parameter is correct
+		if (getFirstWord(duration) != "day" && getFirstWord(duration) != "days"){
+			throw CommandException(INVALID_DURATION);
+		}
+		else {
+			duration = removeFirstWord(duration);
+		}
+
+		int hours = stoi(getFirstWord(duration));
+		duration = removeFirstWord(duration);
+
+		//check if parameter is correct
+		if (getFirstWord(duration) != "hour" && getFirstWord(duration) != "hours"){
+			throw CommandException(INVALID_DURATION);
+		}
+		else {
+			duration = removeFirstWord(duration);
+		}
+
+		int minutes = stoi(getFirstWord(duration));
+		duration = removeFirstWord(duration);
+
+		//check if parameter is correct
+		if (getFirstWord(duration) != "minute" && getFirstWord(duration) != "minutes"){
+			throw CommandException(INVALID_DURATION);
+		}
+
+		return (days * DAYS_TO_MINUTES + hours * HOURS_TO_MINUTES + minutes);
+
+	}
+
+	if (numberOfWords == 4){
+		/*
+		Possible formats:
+		1. xx days yy hours
+		2. xx hours yy minutes
+		*/
+
+		int firstNumber = stoi(getFirstWord(duration));
+		duration = removeFirstWord(duration);
+		if (getFirstWord(duration) == "day" || getFirstWord(duration) == "days"){
+			int days = firstNumber;
+			duration = removeFirstWord(duration);
+			
+			int hours = stoi(getFirstWord(duration));
+			duration = removeFirstWord(duration);
+			if (getFirstWord(duration) != "hour" && getFirstWord(duration) != "hours"){
+				throw CommandException(INVALID_DURATION);
+			}
+
+			return (days * DAYS_TO_MINUTES + hours * HOURS_TO_MINUTES);
+		}
+		else if (getFirstWord(duration) == "hour" || getFirstWord(duration) == "hours"){
+			int hours = firstNumber;
+			duration = removeFirstWord(duration);
+			int minutes = stoi(getFirstWord(duration));
+			duration = removeFirstWord(duration);
+			if (getFirstWord(duration) != "minutes" && getFirstWord(duration) != "minute"){
+				throw CommandException(INVALID_DURATION);
+			}
+
+			return (hours * DAYS_TO_MINUTES + minutes * HOURS_TO_MINUTES);
+		}
+		else {
+			throw CommandException(INVALID_DURATION);
+		}
+
+	}
+
+	if (numberOfWords == 2){
+		/*
+		Possible formats:
+		1. __ days
+		2. __ hours
+		3. __ minutes
+		*/
+
+		float firstNumber = stof(getFirstWord(duration));
+		duration = removeFirstWord(duration);
+		if (getFirstWord(duration) == "day" || getFirstWord(duration) == "days"){
+			return firstNumber * DAYS_TO_MINUTES;
+		}
+		else if (getFirstWord(duration) == "hours" || getFirstWord(duration) == "hour"){
+			return firstNumber * HOURS_TO_MINUTES;
+		}
+		else if (getFirstWord(duration) == "minutes" || getFirstWord(duration) == "minute"){
+			return firstNumber;
+		} else {
+			throw CommandException(INVALID_DURATION);
+		}
+
+	}
+
+	throw CommandException(INVALID_DURATION);
+	return 0;
+}
+
+//This function checks if the string contains an exact line of another string
+//
+//@param: two strings, one to search and one as reference
+//@return: boolean (true/false)
+bool CommandSearch::containExactMatch(string searchName, string taskName){
+	if (taskName.find(searchName) != string::npos){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+//This function checks if the string contains a near match of another string
+//
+//@param: two strings, one to search and one as reference
+//@return: boolean (true/false)
+bool CommandSearch::containNearMatch(string searchName, string taskName){
+	int numWords = countWordsInString(searchName);
+	bool nearMatch = false;
+
+	if (StringDistance::LD(searchName.c_str(), taskName.c_str()) <=
+		CommandSearch::ACCEPTABLE_DISTANCE){
+		nearMatch = true;
+	}
+	
+	if (!nearMatch){
+		vector<string> textVec = splitParameters(taskName);
+		vector<string>::iterator iter;
+		vector<string>::iterator iterToCompare;
+
+		for (iter = textVec.begin(); iter != textVec.end() && nearMatch == false; ++iter){
+			iterToCompare = iter;
+			ostringstream temp;
+			for (int i = 0; i < numWords && iterToCompare != textVec.end(); ++i){
+				temp << *iterToCompare << " ";
+				++iterToCompare;
+			}
+			if (StringDistance::LD(searchName.c_str(), temp.str().c_str()) <=
+				CommandSearch::ACCEPTABLE_DISTANCE - 1){
+				nearMatch = true;
+			}
+		}
+	}
+	return nearMatch;
+}
+
+
+/*
+* ====================================================================
+*  Additional functions
+* ====================================================================
+*/
+
+string CommandSearch::removeFirstWord(string userCommand){
+
+	
+	size_t firstSpace = userCommand.find_first_of(' ');
+	return userCommand.substr(firstSpace + 1, userCommand.npos);
+
+	//old function
+	//return trim(replace(userCommand, getFirstWord(userCommand), ""));
+}
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandSearch.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandSearch.h
+	 */
+
+#pragma once
+#include <string>
+#include "Command.h"
+#include "Date.h"
+#include "Task.h"
+#include "TaskManager.h"
+#include "StringDistance.h"
+#include "CommandException.h"
+
+using namespace std;
+
+class CommandSearch : public Command
+{
+public:
+	CommandSearch(string taskDetails,
+		Date *taskStartTime,
+		Date *taskEndTime,
+		Date *taskDeadline,
+		Task::Priority taskPriority,
+		string duration,
+		bool marked,
+		bool foundMarked,
+		bool foundPriority);
+	~CommandSearch();
+
+	virtual string execute();
+	virtual Command* getInverseCommand();
+
+	vector<int>* getTasksIndices();
+
+private:
+	string _taskDetails;
+	Date *_taskStartTime;
+	Date *_taskEndTime;
+	Date *_taskDeadline;
+	Task::Priority _taskPriority;
+	string _duration;
+	bool _taskMarked;
+	bool _foundMarked;
+	bool _foundPriority;
+
+	vector<int>* foundTasksIndices;
+
+	static const int ACCEPTABLE_DISTANCE = 3;
+
+	string searchByName(string taskname);
+	string searchDateRange(Date dateFrom, Date dateTo);
+	string searchBeforeDate(Date dateBefore);
+	string searchAfterDate(Date dateAfter);
+	string searchPriority(Task::Priority priority);
+	string searchMarked(bool marked);
+	string searchNextEmptySlot(string duration);
+
+	int parseDurationToMinutes(string duration);
+	bool containExactMatch(string searchName, string taskName);
+	bool containNearMatch(string searchName, string taskName);
+
+	static const int INVALID_NUMBER_FORMAT = -1;
+	static const int DAYS_TO_MINUTES = 1440;
+	static const int HOURS_TO_MINUTES = 60;
+	static const string CommandSearch::INVALID_SEARCH_FUNCTION;
+	static const string CommandSearch::ERROR_TOOMANY_SEARCH_ARGUMENTS;
+	static const string CommandSearch::INVALID_DURATION;
+	static const string CommandSearch::MESSAGE_NEXT_AVAILABLE_SLOT;
+	static const string CommandSearch::MESSAGE_FOUND_TASKS;
+	static char CommandSearch::buffer[255];
+
+	static string removeFirstWord(string userCommand);
+	static string getFirstWord(string userCommand);
+	static vector<string> splitParameters(string commandParametersString);
+	static string trim_right(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static string trim_left(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static unsigned int countWordsInString(const string& str);
+	static string trim(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static bool equalsIgnoreCase(const string& str1, const string& str2);
+	static int parseInt(string str);
+	static string replace(string a, string b, string c);
+};
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandSearch.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Date.cpp
+	 */
+
+Date *Date::toDate(string date_str){
+
+	//NEED TO CHANGE IF FUNCTION toString CHANGE, created specific to toString function only.
+
+	//e.g Thu Nov 05 00:00:00 2015
+	date_str = removeFirstWord(date_str);
+
+	//determine month
+	int month = parseMonthName(getFirstWord(date_str));
+	date_str = removeFirstWord(date_str);
+
+	//determine day
+	int day = parseInt(getFirstWord(date_str));
+	date_str = removeFirstWord(date_str);
+
+	//determine time
+	string time_str = getFirstWord(date_str);
+	string hours_str = date_str.substr(0, 2);
+	string minutes_str = date_str.substr(3, 2);
+	int hours = parseInt(hours_str);
+	int minutes = parseInt(minutes_str);
+	date_str = removeFirstWord(date_str);
+
+	//determine year
+	int year = parseInt(date_str);
+
+
+	Date *date =  new Date (year, month, day, hours, minutes);
+
+	return date;
+
+}
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Date.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Storage.cpp
+	 */
+
+/*
+This class is to manipulate the save file for TASKKY.
+
+Functionalities include writing the vector of Tasks into the save file and parsing the saved 
+file into a vector of Tasks.
+
+The save file has to be named "Save.json", but location of the file can be anywhere, handled
+by the CommandChangeFileLocation and CommandCheckFileLocation classes.
+
+Save.json should not be tampered by user manually, as editing it may cause error in parsing
+should the format of the document does not match the JSON Object standard.
+*/
+
+#include "Storage.h"
+
+/*
+* ====================================================================
+*  Constructors
+* ====================================================================
+*/
+
+//Default Constructor
+Storage::Storage()
+{
+}
+
+//Returns an instance of Storage class
+Storage* Storage::getInstance(){
+	if (!_instance)
+		_instance = new Storage;
+	return _instance;
+}
+
+/*
+* ====================================================================
+*  Main Program
+* ====================================================================
+*/
+
+//This function access the current TaskVector from TaskManager class and writes it to
+//JSON file. If TaskVector is empty, it will replace the save file with an empty JSON
+//file.
+//
+//@param = none
+//@return = none
+void Storage::writeToFile(){
+	std::string filename = determineFileName();
+	if ((TaskManager::getAllCurrentTasks())->empty()){
+		clearSaveFile(filename);
+	}
+	else {
+		writeJSONtoFile(filename, parseVectorToJSON(*(TaskManager::getAllCurrentTasks())));
+	}
+	return;
+}
+
+//This function checks if the save file is valid, access the save file, parse it into a 
+//JSON object and build into a TaskVector. Return the TaskVector to TaskManager for it to 
+//build into the vector that the code will access. If save file location is invalid, it will
+//point back to the default save file location and access the save file there.
+//
+//@param = none
+//@return = vector of Tasks.
+vector<Task> Storage::readFromFile(){
+	if (!dirExists(CommandCheckFileLocation::getFileLocation())){
+		if (CommandCheckFileLocation::getFileLocation() != "default"){
+			setLocationAsDefault();
+			std::cout << FILE_LOCATION_INVALID << endl;
+		}
+	}
+	std::string filename = determineFileName();
+	checkSaveFile(filename);
+	return parseSaveFileToVector(filename);
+}
+
+
+/*
+* ====================================================================
+*  Second Abstraction
+* ====================================================================
+*/
+
+//This function replaces the save file with an empty JSON file
+//
+//@param = save file name
+//@return = none
+void Storage::clearSaveFile(string filename){
+	remove(filename.c_str());
+
+	//write empty json
+	FILE* fp = fopen(filename.c_str(), "wb"); // non-Windows use "w"
+
+	fclose(fp);
+}
+
+//This function converts the vector of tasks into a JSON object, preparing it to be written
+//into a file. It takes in the vector of tasks to be converted and return the equivalent 
+//JSON object.
+//
+//@param = vector of Tasks
+//@return = equivalent JSON object
+rapidjson::Document Storage::parseVectorToJSON(vector<Task> TaskVector){
+	vector<Task>::iterator iter;
+	rapidjson::Document document;
+	rapidjson::Document::AllocatorType& allocator = document.GetAllocator();
+	document.SetArray();
+
+	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
+		rapidjson::Value object = convertTaskToJSON(*iter, allocator); //Process each Task into a JSON object
+		document.PushBack(object, allocator); //Add JSON object into JSON array
+	}
+
+	return document;
+}
+
+//This function actually writes the JSON object into a JSON file. This function takes in
+//the save file name and the JSON object to be written.
+//
+//@param = save file name, JSON object to be written
+//@return = none
+void Storage::writeJSONtoFile(string filename, rapidjson::Document document){
+	FILE* fp = fopen(filename.c_str(), "wb"); // non-Windows use "w"
+	char writeBuffer[65536];
+
+	rapidjson::FileWriteStream os(fp, writeBuffer, sizeof(writeBuffer));
+	rapidjson::Writer<rapidjson::FileWriteStream> writer(os);
+	document.Accept(writer);
+
+	fclose(fp);
+
+	return;
+}
+
+//This function changes the save file location to the default location.
+//
+//@param = none
+//@return = none
+void Storage::setLocationAsDefault(){
+	remove("saveFileLocation.txt");
+	ofstream writeFile("saveFileLocation.txt");
+	if (writeFile.is_open()){
+		writeFile << "default";
+		writeFile.close();
+	}
+	return;
+}
+
+//This function concatenates the file directory and save file name. The full path will be the
+//one used by the code to save, load, etc.
+//
+//@param = none
+//@return = save file full path name
+string Storage::determineFileName(){
+	std::string filename;
+	std::string fileDirectory = CommandCheckFileLocation::getFileLocation();
+	if (fileDirectory == "default"){
+		filename = findProgramDirectory() + "/Save.json";
+	} else {
+		filename = fileDirectory + "/Save.json";
+	}
+
+	return filename;
+}
+
+//This function checks if the full path of the save file exists. If it does not exist, we
+//assume a new user and create the new save file.
+//
+//@param = save file full path name
+//@return = none
+void Storage::checkSaveFile(string filename){
+	if (FILE *file = fopen(filename.c_str(), "r")) {
+		fclose(file);
+	}
+	else {
+		std::cout << FILENAME_NOT_FOUND << endl;
+		FILE* createFile = fopen(filename.c_str(), "wb"); // non-Windows use "w"
+		fclose(createFile);
+	}
+	return;
+}
+
+//This function iterate through the save file, convert the text into a JSON object and construct
+//a vector of Tasks from the JSON object.
+//
+//@param = save file full path name
+//@return = vector of Tasks
+vector<Task> Storage::parseSaveFileToVector(string filename){
+	//open file
+	FILE* fp = fopen(filename.c_str(), "rb"); // non-Windows use "r"
+	char readBuffer[65536];
+
+	rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+	rapidjson::Document d;
+	d.ParseStream(is);
+
+	fclose(fp);
+
+	//variables declarations
+	vector<Task> TaskVector;
+
+	std::string taskname;
+
+	std::string startTime_str;
+	Date* startTime = NULL;
+
+	std::string endTime_str;
+	Date* endTime = NULL;
+
+	std::string deadline_str;
+	Date* deadline = NULL;
+
+	Task::Priority priority;
+	std::string p_low = "LOW";
+	std::string p_normal = "NORMAL";
+	std::string p_high = "HIGH";
+
+	bool marked = false;
+
+	//check if empty
+	if (d.IsNull()) {
+		return TaskVector;
+	}
+	else {
+		//Parse and construct Task Vector
+		int i = 0;
+		for (rapidjson::Value::ConstValueIterator itr = d.Begin(); itr != d.End(); ++itr){
+
+
+			//Task Details
+			if (d[i].HasMember("taskname")){
+				taskname = d[i]["taskname"].GetString();
+			}
+
+			//Task Time
+			if (d[i]["startTime"].IsNull()) {
+				if (d[i]["deadline"].IsNull())
+				{
+					startTime = NULL;
+					endTime = NULL;
+					deadline = NULL;
+				}
+				else if (d[i]["deadline"].IsObject()){
+					startTime = NULL;
+					endTime = NULL;
+
+					int day = d[i]["deadline"]["day"].GetInt();
+					int month = d[i]["deadline"]["month"].GetInt();
+					int year = d[i]["deadline"]["year"].GetInt();
+					int hour = d[i]["deadline"]["hour"].GetInt();
+					int minutes = d[i]["deadline"]["minutes"].GetInt();
+
+					deadline = new Date(year, month, day, hour, minutes);
+				}
+			}
+			else if (d[i]["startTime"].IsObject()) {
+				deadline = NULL;
+
+				int day = d[i]["startTime"]["day"].GetInt();
+				int month = d[i]["startTime"]["month"].GetInt();
+				int year = d[i]["startTime"]["year"].GetInt();
+				int hour = d[i]["startTime"]["hour"].GetInt();
+				int minutes = d[i]["startTime"]["minutes"].GetInt();
+
+				startTime = new Date(year, month, day, hour, minutes);
+
+				day = d[i]["endTime"]["day"].GetInt();
+				month = d[i]["endTime"]["month"].GetInt();
+				year = d[i]["endTime"]["year"].GetInt();
+				hour = d[i]["endTime"]["hour"].GetInt();
+				minutes = d[i]["endTime"]["minutes"].GetInt();
+
+				endTime = new Date(year, month, day, hour, minutes);
+			}
+
+			//Task Priority
+			if (d[i]["priority"].GetString() == p_normal) {
+				priority = Task::Priority::NORMAL;
+			}
+			else if (d[i]["priority"].GetString() == p_high) {
+				priority = Task::Priority::HIGH;
+			}
+
+			//Task Marked
+			if (d[i]["marked"].GetBool() == true){
+				marked = true;
+			}
+			else if (d[i]["marked"].GetBool() == false){
+				marked = false;
+			}
+
+			//construct task object
+			Task task(taskname, startTime, endTime, deadline, priority);
+			task.setTaskMarked(marked);
+
+			//Push into taskVector
+			TaskVector.push_back(task);
+
+			++i;
+		}
+		return TaskVector;
+	}
+}
+
+
+
+/*
+* ====================================================================
+*  Third Abstraction
+* ====================================================================
+*/
+
+//This function converts one Task object into a JSON object.
+//
+//@param = Task object, JSON object allocator
+//@return = JSON object
+rapidjson::Value Storage::convertTaskToJSON(Task task, rapidjson::Document::AllocatorType& allocator){
+	rapidjson::Value taskname;
+	rapidjson::Value startTime;
+	rapidjson::Value endTime;
+	rapidjson::Value deadline;
+	rapidjson::Value priority;
+	rapidjson::Value marked;
+	char buffer[1024];
+	int len;
+	
+	//Check Task Details
+	len = sprintf(buffer, task.getTaskDetails().c_str());
+	taskname.SetString(buffer, len, allocator);
+
+	//Check Task Type and Time
+	if (task.getTaskType() == Task::FLOATING) {
+		startTime.SetNull();
+		endTime.SetNull();
+		deadline.SetNull();
+	}
+	else if (task.getTaskType() == Task::TIMED) {
+		Date time = *(task.getTaskStartTime());
+
+		startTime.SetObject();
+		startTime.AddMember("day", time.getDay(), allocator);
+		startTime.AddMember("month", time.getMonth(), allocator);
+		startTime.AddMember("year", time.getYear(), allocator);
+		startTime.AddMember("hour", time.getHour(), allocator);
+		startTime.AddMember("minutes", time.getMinute(), allocator);
+
+		time = *(task.getTaskEndTime());
+
+		endTime.SetObject();
+		endTime.AddMember("day", time.getDay(), allocator);
+		endTime.AddMember("month", time.getMonth(), allocator);
+		endTime.AddMember("year", time.getYear(), allocator);
+		endTime.AddMember("hour", time.getHour(), allocator);
+		endTime.AddMember("minutes", time.getMinute(), allocator);
+
+		deadline.SetNull();
+	}
+	else if (task.getTaskType() == Task::DEADLINE) {
+		startTime.SetNull();
+		endTime.SetNull();
+
+		Date time = *(task.getTaskDeadline());
+
+		deadline.SetObject();
+		deadline.AddMember("day", time.getDay(), allocator);
+		deadline.AddMember("month", time.getMonth(), allocator);
+		deadline.AddMember("year", time.getYear(), allocator);
+		deadline.AddMember("hour", time.getHour(), allocator);
+		deadline.AddMember("minutes", time.getMinute(), allocator);
+	}
+
+	//Check Task Priority
+	if (task.getTaskPriority() == Task::Priority::HIGH) {
+		char prior[1024];
+		int leng = sprintf(prior, "HIGH");
+
+		priority.SetString(prior, leng, allocator);
+	} else if (task.getTaskPriority() == Task::Priority::NORMAL) {
+		char prior[1024];
+		int leng = sprintf(prior, "NORMAL");
+
+		priority.SetString(prior, leng, allocator);
+	} else {
+		char prior[1024];
+		int leng = sprintf(prior, "NORMAL");
+
+		priority.SetString(prior, leng, allocator);
+	}
+
+	//Check if task is marked
+	if (task.getTaskMarked()){
+		marked.SetBool(true);
+	} else {
+		marked.SetBool(false);
+	}
+
+	//Convert to json values
+	rapidjson::Value object(rapidjson::kObjectType);
+	object.AddMember("taskname", taskname, allocator);
+	object.AddMember("startTime", startTime, allocator);
+	object.AddMember("endTime", endTime, allocator);
+	object.AddMember("deadline", deadline, allocator);
+	object.AddMember("priority", priority, allocator);
+	object.AddMember("marked", marked, allocator);
+
+	return object;
+}
+
+//This function checks the location/directory of the .exe file
+//
+//@param = none
+//@return = directory of the .exe file
+string Storage::findProgramDirectory(){
+	char cCurrentPath[FILENAME_MAX];
+
+	if (!GetCurrentDir(cCurrentPath, sizeof(cCurrentPath)))
+	{
+		std::cout << DIRECTORY_ERROR << endl;
+	}
+
+	return cCurrentPath;
+}
+
+//This function checks if the directory exists.
+//
+//@param = directory to be checked
+//@return = boolean value (true/false)
+bool Storage::dirExists(const std::string& dirName_in)
+{
+	DWORD ftyp = GetFileAttributesA(dirName_in.c_str());
+	if (ftyp == INVALID_FILE_ATTRIBUTES)
+		return false;  //something is wrong with your path!
+
+	if (ftyp & FILE_ATTRIBUTE_DIRECTORY)
+		return true;   // this is a directory!
+
+	return false;    // this is not a directory!
+}
+
+/*
+* ====================================================================
+*  Variables and Messages Declaration
+* ====================================================================
+*/
+
+Storage* Storage::_instance = NULL;
+const string Storage::DIRECTORY_ERROR = "Directory not found";
+const string Storage::FILENAME_NOT_FOUND = "New User detected. To help you get started, type help";
+const string Storage::FILE_LOCATION_INVALID = "File location invalid, save file location restored to default.";
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Storage.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Storage.h
+	 */
+
+#pragma once
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <fstream>
+#include <iomanip>
+#include <cstdio>
+#include <Windows.h>
+#include <direct.h>
+#define GetCurrentDir _getcwd
+#include <stdio.h>
+#include "Task.h"
+#include "TaskManager.h"
+#include "CommandCheckFileLocation.h"
+#include "CommandException.h"
+#include "document.h"
+#include "filereadstream.h"
+#include "filewritestream.h"
+#include "writer.h"
+
+class Storage
+{
+public:
+
+	static Storage* getInstance();
+
+	void writeToFile();
+	static vector<Task> readFromFile();
+
+	static string _filename;
+	static string determineFileName();
+	static string findProgramDirectory();
+	static bool dirExists(const std::string& dirName_in);
+	static void setLocationAsDefault();
+	static void checkSaveFile(string filename);
+	static vector<Task> parseSaveFileToVector(string filename);
+	static void clearSaveFile(string filename);
+	static rapidjson::Document parseVectorToJSON(vector<Task> TaskVector);
+	static void writeJSONtoFile(string filename, rapidjson::Document document);
+	static rapidjson::Value convertTaskToJSON(Task task, rapidjson::Document::AllocatorType& allocator);
+
+private:
+	Storage();
+
+	static const string DIRECTORY_ERROR;
+	static const string FILENAME_NOT_FOUND;
+	static const string FILE_LOCATION_INVALID;
+
+	Storage& operator=(Storage const&){};
+
+	static Storage *_instance;
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Storage.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\CommandSearchUnitTest.cpp
+	 */
+
+#include "stdafx.h"
+#include "CppUnitTest.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace LogicTests
+{
+	TEST_CLASS(CommandSearchUnitTest)
+	{
+	public:
+		
+		TEST_METHOD(searchExactName1)
+		{
+			clearTasks();
+			addStandardTasks();
+			CommandSearch test1("name", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
+				false, false);
+
+			Assert::AreEqual<string>("There are 0 tasks found.", test1.execute());
+			Assert::AreEqual<bool>(true, test1.getTasksIndices()->empty());
+		}
+		TEST_METHOD(searchExactName2){
+			CommandSearch test2("Task", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
+				false, false);
+
+			Assert::AreEqual<string>("There are 4 tasks found.", test2.execute());
+			Assert::AreEqual<bool>(false, test2.getTasksIndices()->empty());
+			vector<int> myVec = *(test2.getTasksIndices());
+			vector<int>::iterator iter;
+			int i = 1;
+			for (iter = myVec.begin(); iter != myVec.end(); ++iter){
+				Assert::AreEqual<int>(i, *iter);
+				++i;
+			}
+		}
+		TEST_METHOD(searchExactName3){
+			CommandSearch test3("deadline", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
+				false, false);
+			Assert::AreEqual<string>("There are 1 tasks found.", test3.execute());
+			Assert::AreEqual<bool>(false, test3.getTasksIndices()->empty());
+			Assert::AreEqual<int>(1, test3.getTasksIndices()->front());
+		}
+		TEST_METHOD(searchNearMatch1){
+			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+			Assert::AreEqual<string>("Deadline Task - will be indexed as 1", TaskManager::getAllCurrentTasks()->front().getTaskDetails());
+			CommandSearch test4("task", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
+				false, false);
+
+			Assert::AreEqual<string>("There are 4 tasks found.", test4.execute());
+			Assert::AreEqual<bool>(false, test4.getTasksIndices()->empty());
+			Assert::AreEqual<int>(4, test4.getTasksIndices()->size());
+			vector<int> myVec = *(test4.getTasksIndices());
+			vector<int>::iterator iter;
+			int i = 1;
+			for (iter = myVec.begin(); iter != myVec.end(); ++iter){
+				Assert::AreEqual<int>(i, *iter);
+				++i;
+			}
+		}
+		TEST_METHOD(searchNearMatch2){
+			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+			Assert::AreEqual<string>("Deadline Task - will be indexed as 1", TaskManager::getAllCurrentTasks()->front().getTaskDetails());
+			CommandSearch test5("Normak", NULL, NULL, NULL, Task::Priority::NORMAL, "", false,
+				false, false);
+
+			Assert::AreEqual<string>("There are 1 tasks found.", test5.execute());
+			Assert::AreEqual<bool>(false, test5.getTasksIndices()->empty());
+			Assert::AreEqual<int>(1, test5.getTasksIndices()->size());
+			Assert::AreEqual<int>(3, test5.getTasksIndices()->front());
+		}
+		TEST_METHOD(searchDateRange1){
+			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+			CommandSearch test6("", new Date(), new Date(2016,1,2,0,0), NULL, 
+				Task::Priority::NORMAL, "", false,false, false);
+
+			Assert::AreEqual<string>("There are 2 tasks found.", test6.execute());
+			
+			
+			Assert::AreEqual<int>(2, test6.getTasksIndices()->size());
+			vector<int> myVec = *(test6.getTasksIndices());
+			vector<int>::iterator iter = myVec.begin();
+			Assert::AreEqual<int>(1, *iter);
+			++iter;
+			Assert::AreEqual<int>(2, *iter);
+		}
+		TEST_METHOD(searchDateRange2){
+			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+			CommandSearch test7("", new Date(), new Date(2015, 11, 1, 0, 0), NULL,
+				Task::Priority::NORMAL, "", false, false, false);
+			
+			Assert::AreEqual<string>("There are 1 tasks found.", test7.execute());
+
+
+			Assert::AreEqual<int>(1, test7.getTasksIndices()->size());
+			vector<int> myVec = *(test7.getTasksIndices());
+			vector<int>::iterator iter = myVec.begin();
+			Assert::AreEqual<int>(1, *iter);
+		}
+		TEST_METHOD(searchDateRange3){
+			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+			CommandSearch test8("", new Date(2015,11,1,0,0), new Date(2016, 0, 1, 0, 0), NULL,
+				Task::Priority::NORMAL, "", false, false, false);
+
+			Assert::AreEqual<string>("There are 1 tasks found.", test8.execute());
+
+
+			Assert::AreEqual<int>(1, test8.getTasksIndices()->size());
+			vector<int> myVec = *(test8.getTasksIndices());
+			vector<int>::iterator iter = myVec.begin();
+			Assert::AreEqual<int>(2, *iter);
+		}
+		TEST_METHOD(searchAfter){
+			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+			CommandSearch test9("", new Date(2015, 11, 1, 0, 0), NULL, NULL,
+				Task::Priority::NORMAL, "", false, false, false);
+
+			Assert::AreEqual<string>("There are 1 tasks found.", test9.execute());
+
+
+			Assert::AreEqual<int>(1, test9.getTasksIndices()->size());
+			vector<int> myVec = *(test9.getTasksIndices());
+			vector<int>::iterator iter = myVec.begin();
+			Assert::AreEqual<int>(2, *iter);
+		}
+		TEST_METHOD(searchBefore){
+			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+			CommandSearch test10("", NULL, new Date(2015, 11, 1, 0, 0), NULL,
+				Task::Priority::NORMAL, "", false, false, false);
+
+			Assert::AreEqual<string>("There are 1 tasks found.", test10.execute());
+
+
+			Assert::AreEqual<int>(1, test10.getTasksIndices()->size());
+			vector<int> myVec = *(test10.getTasksIndices());
+			vector<int>::iterator iter = myVec.begin();
+			Assert::AreEqual<int>(1, *iter);
+		}
+		TEST_METHOD(searchPriority){
+			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+			CommandSearch test11("", NULL, NULL, NULL,
+				Task::Priority::HIGH, "", false, false, true);
+
+			Assert::AreEqual<string>("There are 2 tasks found.", test11.execute());
+
+			Assert::AreEqual<int>(2, test11.getTasksIndices()->size());
+			vector<int> myVec = *(test11.getTasksIndices());
+			vector<int>::iterator iter = myVec.begin();
+			Assert::AreEqual<int>(2, *iter);
+			++iter;
+			Assert::AreEqual<int>(4, *iter);
+		}
+		TEST_METHOD(searchMarked){
+			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+			CommandSearch test12("", NULL, NULL, NULL,
+				Task::Priority::HIGH, "", true, true, false);
+
+			Assert::AreEqual<string>("There are 1 tasks found.", test12.execute());
+
+			Assert::AreEqual<int>(1, test12.getTasksIndices()->size());
+			vector<int> myVec = *(test12.getTasksIndices());
+			vector<int>::iterator iter = myVec.begin();
+			Assert::AreEqual<int>(4, *iter);
+		}
+		TEST_METHOD(searchEmptySlot1){
+			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+			CommandSearch test13("", NULL, NULL, NULL,
+				Task::Priority::NORMAL, "1 day 5 hours", false, false, false);
+
+			Assert::AreEqual<string>("Next available 1 day 5 hoursis from now!.", test13.execute());
+		}
+		TEST_METHOD(searchEmptySlot2){
+			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+			CommandSearch test14("", NULL, NULL, NULL,
+				Task::Priority::NORMAL, "365 days", false, false, false);
+
+			Assert::AreEqual<string>("Next available 365 daysis from 01 Jan 2016 (Fri), 10:00AM.", test14.execute());
+		}
+	private:
+		void addStandardTasks(){
+			TaskManager::addTask(Task("Marked Task - will be indexed as 4", NULL, NULL, NULL,
+				Task::Priority::HIGH));
+			TaskManager::markTask(1);
+			TaskManager::addTask(Task("Normal Floating Task - will be indexed as 3", NULL, NULL, NULL,
+				Task::Priority::NORMAL));
+			TaskManager::addTask(Task("Timed Task - will be indexed as 2", new Date(2015, 11, 25, 12, 0),
+				new Date(2016, 0, 1, 10, 0), NULL, Task::Priority::HIGH));
+			TaskManager::addTask(Task("Deadline Task - will be indexed as 1", NULL, NULL,
+				new Date(2015, 9, 19, 10, 0), Task::Priority::NORMAL));
+		}
+		void clearTasks(){
+			while (!TaskManager::getAllCurrentTasks()->empty()){
+				TaskManager::removeTask(1);
+			}
+		}
+	};
+}
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\CommandSearchUnitTest.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\SystemTest.cpp
+	 */
+
+#pragma once
+#include "stdafx.h"
+#include "CppUnitTest.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace LogicTest
+{
+	TEST_CLASS(SystemTest){
+	public:
+		TEST_METHOD(SystemTest1AddFloatingTask){
+			//Test Case: code can "add a FLOATING TASK"
+			clearTasks();
+			
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_add_floating_task_1"));
+
+			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+			vector<Task>::iterator iter = myVec.begin();
+			Assert::AreEqual<string>("test_add_floating_task_1 ", iter->getTaskDetails());
+			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+		}
+		TEST_METHOD(SystemTest2AddDeadline){
+			//Test Case: code can "add a Deadline"
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_add_deadline_1 by 7 june 10am"));
+
+			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+			vector<Task>::iterator iter = myVec.begin();
+			Assert::AreEqual<string>("test_add_deadline_1 ", iter->getTaskDetails());
+			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+			Assert::IsTrue(Date(2015,5,7,10,0).sameDate(*(iter->getTaskDeadline())));
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+		}
+		TEST_METHOD(SystemTest3AddTimedTask){
+			//Test Case: code can "add a Timed Task"
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_add_timed_task_1 from today to tomorrow"));
+
+			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+			vector<Task>::iterator iter = myVec.begin();
+			Assert::AreEqual<string>("test_add_timed_task_1 ", iter->getTaskDetails());
+			Assert::IsTrue(Date(Date().getYear(), Date().getMonth(), Date().getDay(), 12, 0).sameDate(*(iter->getTaskStartTime())));
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+		}
+		TEST_METHOD(SystemTest4MarkTaskAsDone){
+			//Test Case: code can mark tasks as done
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_add_floating_task_2"));
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_add_deadline_2 by 7 june 10am"));
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_add_timed_task_2 from today to tomorrow"));
+
+			Assert::AreEqual<string>("Marked Task #2", Controller::processUserInput("mark 2"));
+			Assert::AreEqual<string>("Marked Task #3", Controller::processUserInput("mark 3"));
+			Assert::AreEqual<string>("Marked Task #4", Controller::processUserInput("mark 4"));
+
+			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+			vector<Task>::iterator iter;
+			for (iter = myVec.begin() + 3; iter != myVec.end(); ++iter){
+				Assert::IsTrue(iter->getTaskMarked());
+			}
+		}
+		TEST_METHOD(SystemTest5AutoSort){
+			//Test Case: code automatically sort tasks in order of due date / start date, 
+			//then alphabetical order based on task details
+			//*NOTE*: dated tasks - floating tasks - dated tasks marked - floating tasks marked
+			clearTasks();
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_1_floating"));
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_2_floating"));
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_1_deadline by 25 dec"));
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_2_deadline by this saturday"));
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_1_timed from today to tomorrow"));
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add test_2_timed from 27 nov to 29 dec"));
+
+			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+			vector<Task>::iterator iter = myVec.begin();
+			Assert::AreEqual<string>("test_1_timed ", iter->getTaskDetails());
+			++iter;
+			Assert::AreEqual<string>("test_2_deadline ", iter->getTaskDetails());
+			++iter;
+			Assert::AreEqual<string>("test_2_timed ", iter->getTaskDetails());
+			++iter;
+			Assert::AreEqual<string>("test_1_deadline ", iter->getTaskDetails());
+			++iter;
+			Assert::AreEqual<string>("test_1_floating ", iter->getTaskDetails());
+			++iter;
+			Assert::AreEqual<string>("test_2_floating ", iter->getTaskDetails());
+			++iter;
+		}
+		TEST_METHOD(SystemTest6UpdateDetails){
+			//Test Case: code can update task details
+			clearTasks();
+
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add old name"));
+
+			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+			vector<Task>::iterator iter = myVec.begin();
+			Assert::AreEqual<string>("old name ", iter->getTaskDetails());
+			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+
+			Assert::AreEqual<string>("Updated Task #1!", Controller::processUserInput("update 1 details new name"));
+			myVec = *(TaskManager::getAllCurrentTasks());
+			iter = myVec.begin();
+			Assert::AreEqual<string>("new name ", iter->getTaskDetails());
+			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+		}
+		TEST_METHOD(SystemTest7UpdateDeadline){
+			//Test Case: code can update task deadline
+			clearTasks();
+
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add deadline by today"));
+
+			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+			vector<Task>::iterator iter = myVec.begin();
+			Assert::AreEqual<string>("deadline ", iter->getTaskDetails());
+			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+			Assert::IsTrue(iter->getTaskDeadline()->sameDate(*(today())));
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+
+			Assert::AreEqual<string>("Updated Task #1!", Controller::processUserInput("update 1 deadline tomorrow"));
+			myVec = *(TaskManager::getAllCurrentTasks());
+			iter = myVec.begin();
+			Assert::AreEqual<string>("deadline ", iter->getTaskDetails());
+			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+			Assert::IsTrue(iter->getTaskDeadline()->sameDate(*(tomorrow())));
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+		}
+		TEST_METHOD(SystemTest9UpdateEndTime){
+			//Test Case: code can update task end time
+			clearTasks();
+
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add timed from today to 25 dec"));
+
+			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+			vector<Task>::iterator iter = myVec.begin();
+			Assert::AreEqual<string>("timed ", iter->getTaskDetails());
+			Assert::IsTrue((iter->getTaskStartTime()->sameDate(*(today()))));
+			Assert::IsTrue(iter->getTaskEndTime()->sameDate(Date(Date().getYear(),11,25,12,0)));
+			Assert::IsTrue(iter->getTaskDeadline() == nullptr);
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+
+			Assert::AreEqual<string>("Updated Task #1!", Controller::processUserInput("update 1 endtime tomorrow"));
+			myVec = *(TaskManager::getAllCurrentTasks());
+			iter = myVec.begin();
+			Assert::AreEqual<string>("timed ", iter->getTaskDetails());
+			Assert::IsTrue((iter->getTaskStartTime()->sameDate(*(today()))));
+			Assert::IsTrue(iter->getTaskEndTime()->sameDate(*(tomorrow())));
+			Assert::IsTrue(iter->getTaskDeadline() == nullptr);
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+		}
+		TEST_METHOD(SystemTest8UpdateStartTime){
+			//Test Case: code can update task start time
+			clearTasks();
+
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add timed from today to 25 dec"));
+
+			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+			vector<Task>::iterator iter = myVec.begin();
+			Assert::AreEqual<string>("timed ", iter->getTaskDetails());
+			Assert::IsTrue((iter->getTaskStartTime()->sameDate(*(today()))));
+			Assert::IsTrue(iter->getTaskEndTime()->sameDate(Date(Date().getYear(), 11, 25, 12, 0)));
+			Assert::IsTrue(iter->getTaskDeadline() == nullptr);
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+
+			Assert::AreEqual<string>("Updated Task #1!", Controller::processUserInput("update 1 starttime tomorrow"));
+			myVec = *(TaskManager::getAllCurrentTasks());
+			iter = myVec.begin();
+			Assert::AreEqual<string>("timed ", iter->getTaskDetails());
+			Assert::IsTrue((iter->getTaskStartTime()->sameDate(*(tomorrow()))));
+			Assert::IsTrue(iter->getTaskEndTime()->sameDate(Date(Date().getYear(), 11, 25, 12, 0)));
+			Assert::IsTrue(iter->getTaskDeadline() == nullptr);
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+		}
+		TEST_METHOD(SystemTest10UpdatePriority){
+			//Test Case: code can update task priority
+			clearTasks();
+
+			Assert::AreEqual<string>("Task has been added!", Controller::processUserInput("add task"));
+
+			vector<Task> myVec = *(TaskManager::getAllCurrentTasks());
+			vector<Task>::iterator iter = myVec.begin();
+			Assert::AreEqual<string>("task ", iter->getTaskDetails());
+			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::NORMAL);
+
+			Assert::AreEqual<string>("Updated Task #1!", Controller::processUserInput("update 1 priority high"));
+			myVec = *(TaskManager::getAllCurrentTasks());
+			iter = myVec.begin();
+			Assert::AreEqual<string>("task ", iter->getTaskDetails());
+			Assert::AreEqual<bool>(true, (iter->getTaskStartTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskEndTime() == nullptr));
+			Assert::AreEqual<bool>(true, (iter->getTaskDeadline() == nullptr));
+			Assert::IsTrue(iter->getTaskPriority() == Task::Priority::HIGH);
+		}
+		TEST_METHOD(SystemTest11Delete){
+			//Test Case: code can delete added task
+			clearTasks();
+			addStandardTasks();
+			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
+			Assert::AreEqual<string>("Deleted Task #1", Controller::processUserInput("delete 1"));
+			Assert::AreEqual<int>(3, TaskManager::getAllCurrentTasks()->size());
+			Assert::AreEqual<string>("Deleted Task #1", Controller::processUserInput("delete 1"));
+			Assert::AreEqual<int>(2, TaskManager::getAllCurrentTasks()->size());
+			Assert::AreEqual<string>("Deleted Task #1", Controller::processUserInput("delete 1"));
+			Assert::AreEqual<int>(1, TaskManager::getAllCurrentTasks()->size());
+			Assert::AreEqual<string>("Deleted Task #1", Controller::processUserInput("delete 1"));
+			Assert::AreEqual<int>(0, TaskManager::getAllCurrentTasks()->size());
+		}
+		TEST_METHOD(SystemTest12SimpleSearch){
+			//Test Case: code can do a simple keyword search
+			clearTasks();
+			addStandardTasks();
+			Assert::AreEqual<string>("There are 4 tasks found.", Controller::processUserInput("search Task"));
+		}
+		TEST_METHOD(SystemTest13SpecifySaveLocation){
+			//Test Case: code can specify a specific folder as the data storage location
+			//NOTE: THIS TEST WILL FAIL WHEN THIS CODE IS RUN ON A DIFFERENT COMPUTER.
+			//      ADJUST LOCATION ACCORDINGLY
+			clearTasks();
+			addStandardTasks();
+			Assert::AreEqual<string>("File location changed successfully", Controller::processUserInput("changefileloc C:\\Users\\Adi!\\Desktop"));
+		}
+	private:
+		void clearTasks(){
+			while (!TaskManager::getAllCurrentTasks()->empty()){
+				TaskManager::removeTask(1);
+			}
+		}
+
+		Date* today(){
+			return new Date(Date().getYear(), Date().getMonth(), Date().getDay(), 12, 0);
+		}
+
+		Date* tomorrow(){
+			return new Date(Date().getYear(), Date().getMonth(), Date().getDay() + 1, 12, 0);
+		}
+		void addStandardTasks(){
+			TaskManager::addTask(Task("Marked Task - will be indexed as 4", NULL, NULL, NULL,
+				Task::Priority::HIGH));
+			TaskManager::markTask(1);
+			TaskManager::addTask(Task("Normal Floating Task - will be indexed as 3", NULL, NULL, NULL,
+				Task::Priority::NORMAL));
+			TaskManager::addTask(Task("Timed Task - will be indexed as 2", new Date(2015, 11, 25, 12, 0),
+				new Date(2016, 0, 1, 10, 0), NULL, Task::Priority::HIGH));
+			TaskManager::addTask(Task("Deadline Task - will be indexed as 1", NULL, NULL,
+				new Date(2015, 9, 19, 10, 0), Task::Priority::NORMAL));
+		}
+	};
+}
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\SystemTest.cpp
+
+
+
+
+

@@ -1,0 +1,102 @@
+//@author: a0094024-reused
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandSearch.cpp
+	 */
+
+string CommandSearch::getFirstWord(string userCommand){
+	string commandTypeString = splitParameters(userCommand)[0];
+	return commandTypeString;
+}
+
+// This method only split string based on delimiter space
+vector<string> CommandSearch::splitParameters(string commandParametersString){
+	vector<string> tokens;
+	istringstream iss(commandParametersString);
+	copy(istream_iterator<string>(iss),
+		istream_iterator<string>(),
+		back_inserter<vector<string> >(tokens));
+
+	return tokens;
+}
+
+inline string CommandSearch::trim_right(const string& s, const string& delimiters){
+	return s.substr(0, s.find_last_not_of(delimiters) + 1);
+}
+
+inline string CommandSearch::trim_left(const string& s, const string& delimiters){
+	if (countWordsInString(s) == 0){
+		return "";
+	}
+	return s.substr(s.find_first_not_of(delimiters));
+}
+
+unsigned int CommandSearch::countWordsInString(const string& str)
+{
+	std::stringstream stream(str);
+	return std::distance(std::istream_iterator<std::string>(stream), std::istream_iterator<std::string>());
+}
+
+inline string CommandSearch::trim(const string& s, const string& delimiters){
+	if (!s.empty()){
+		return trim_left(trim_right(s, delimiters), delimiters);
+	}
+	else{
+		return s;
+	}
+}
+
+bool CommandSearch::equalsIgnoreCase(const string& str1, const string& str2){
+	if (str1.size() != str2.size()){
+		return false;
+	}
+	for (string::const_iterator c1 = str1.begin(), c2 = str2.begin(); c1 != str1.end(); ++c1, ++c2){
+		if (tolower(*c1) != tolower(*c2)){
+			return false;
+		}
+	}
+	return true;
+}
+
+int CommandSearch::parseInt(string str){
+	char c;
+	int i = 0;
+	std::stringstream ss(str);
+	ss >> i;
+	if (ss.fail() || ss.get(c)){
+		return INVALID_NUMBER_FORMAT;
+	}
+	else{
+		return i;
+	}
+}
+
+string CommandSearch::replace(string a, string b, string c) {
+	int pos;
+	do {
+		pos = a.find(b);
+		if (pos != -1)  a.replace(pos, b.length(), c);
+	} while (pos != -1);
+	return a;
+}
+
+/*
+* ====================================================================
+*  Variables and Messages Declaration
+* ====================================================================
+*/
+
+char CommandSearch::buffer[255];
+const string CommandSearch::ERROR_TOOMANY_SEARCH_ARGUMENTS = "Enter only 1 search argument!";
+const string CommandSearch::INVALID_DURATION = "Invalid search duration input. Please input in the following format:\n1. __ day(s) __ hour(s) __ minute(s) (all numbers are integers)\n2. __ day(s) __ hour(s) (all numbers are integers)\n3. __ days (number can be  integer or with decimal)\n4. __ hour(s) __ minute(s) (all numbers are integers)\n5. __ hour(s) (number can be integer or with decimals)\n6. __ minute(s) (number can only be integer)\nNOTE: smallest valid duration is 1 minute";
+const string CommandSearch::MESSAGE_NEXT_AVAILABLE_SLOT = "Next available %sis from %s.";
+const string CommandSearch::MESSAGE_FOUND_TASKS = "There are %d tasks found.";
+const string CommandSearch::INVALID_SEARCH_FUNCTION = "Invalid search function.";
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandSearch.cpp
+
+
+
+
+
