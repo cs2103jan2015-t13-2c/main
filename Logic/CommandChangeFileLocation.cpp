@@ -158,7 +158,7 @@ void CommandChangeFileLocation::moveSaveFile(){
 * ====================================================================
 */
 
-const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_CHANGED = "File location changed succesfully";
+const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_CHANGED = "File location changed successfully";
 const string CommandChangeFileLocation::MESSAGE_FILE_LOCATION_INVALID = "Invalid file location, directory doesn't exist!";
 const string CommandChangeFileLocation::MESSAGE_NO_FILE_NAME = "Please specify file location after the command 'changefileloc'";
 const string CommandChangeFileLocation::UNKOWN_ERROR = "The program has encountered unknown error, please contact program developers. In the meantime you can try the following:\n1. Change command parameters";
