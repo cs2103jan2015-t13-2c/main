@@ -1,0 +1,3840 @@
+//@author: a0122357l
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Command.h
+	 */
+
+#pragma once
+#include <string>
+
+using namespace std;
+class Command
+{
+public:
+	Command();
+	~Command();
+	virtual string execute()=0;
+	virtual Command* getInverseCommand()=0;
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Command.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandAdd.cpp
+	 */
+
+#include "CommandAdd.h"
+
+
+CommandAdd::CommandAdd(string taskDetails,
+	Date *taskStartTime,
+	Date *taskEndTime,
+	Date *taskDeadline,
+	Task::Priority taskPriority){
+	_taskDetails = taskDetails;
+	_taskStartTime = taskStartTime;
+	_taskEndTime = taskEndTime;
+	_taskDeadline = taskDeadline;
+	_taskPriority = taskPriority;
+}
+
+
+CommandAdd::~CommandAdd(){
+}
+
+string CommandAdd::execute(){
+	TaskManager instance = *TaskManager::getInstance();
+	Task taskToAdd = Task(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
+		_taskPriority);
+	instance.addTask(taskToAdd);
+	return "Task has been added!";
+}
+
+Command* CommandAdd::getInverseCommand(){
+	TaskManager* taskManagerInstance = TaskManager::getInstance();
+	
+	//getting index to delete
+	Task taskToAdd = Task(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
+		_taskPriority);
+	int indexToDelete = TaskManager::addTask(taskToAdd);
+	TaskManager::removeTask(indexToDelete+1);
+
+	return new CommandDelete(indexToDelete+1);
+}
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandAdd.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandAdd.h
+	 */
+
+
+#pragma once
+#include <string>
+#include "Command.h"
+#include "Date.h"
+#include "Task.h"
+#include "TaskManager.h"
+#include <vector>
+#include "CommandDelete.h"
+
+using namespace std;
+class CommandAdd: public Command
+{
+public:
+	CommandAdd(string taskDetails,
+		Date *taskStartTime,
+		Date *taskEndTime,
+		Date *taskDeadline,
+		Task::Priority taskPriority);
+
+	~CommandAdd();
+	virtual string execute();
+	virtual Command* getInverseCommand();
+
+private:
+	string _taskDetails;
+	Date *_taskStartTime;
+	Date *_taskEndTime;
+	Date *_taskDeadline;
+	Task::Priority _taskPriority;
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandAdd.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandBuilder.cpp
+	 */
+
+
+#include "CommandBuilder.h"
+
+
+
+CommandBuilder::CommandBuilder()
+{
+	clearPreviousCommand();
+}
+
+
+CommandBuilder::~CommandBuilder()
+{
+}
+
+void CommandBuilder::clearPreviousCommand(){
+	_taskDetails = "";
+	_taskStartTime = NULL;
+	_taskEndTime = NULL;
+	_taskDeadline = NULL;
+	_taskPriority = Task::NORMAL;
+	_duration = "";
+	_taskMarked = false;
+	_taskNumber = -1;
+	_foundMarked = false;
+	_foundPriority = false;
+}
+
+string CommandBuilder::getTaskDetails(){
+	return _taskDetails;
+}
+
+Date* CommandBuilder::getTaskStartTime(){
+	return _taskStartTime;
+}
+
+Date* CommandBuilder::getTaskEndTime(){
+	return _taskEndTime;
+}
+
+Date* CommandBuilder::getTaskDeadline(){
+	return _taskDeadline;
+}
+
+Task::Priority CommandBuilder::getTaskPriority(){
+	return _taskPriority;
+}
+
+string CommandBuilder::getDuration(){
+	return _duration;
+}
+
+bool CommandBuilder::getTaskMarked(){
+	return _taskMarked;
+}
+
+int CommandBuilder::getTaskNumber(){
+	return _taskNumber;
+}
+
+void CommandBuilder::setAttributesFromParser(Parser parser){
+	_taskDetails = parser.getTaskDetails();
+	_taskStartTime = parser.getTaskStartTime();
+	_taskEndTime = parser.getTaskEndTime();
+	_taskDeadline = parser.getTaskDeadline();
+	_taskPriority = parser.getTaskPriority();
+	_duration = parser.getDuration();
+	_taskMarked = parser.getTaskMarked();
+	_taskNumber = parser.getTaskNumber();
+	_foundMarked = parser.getFoundMarked();
+	_foundPriority = parser.getFoundPriority();
+}
+
+
+Command* CommandBuilder::parseCommand(string userInput){
+	if (trim(userInput) == "") {
+		return new CommandInvalid(userInput);
+	}
+
+	string commandTypeString = getFirstWord(userInput);
+
+	CommandType commandType = determineCommandType(commandTypeString);
+	
+	Parser parser = Parser::Parser();
+
+	switch (commandType){
+
+	case CommandType::Add:{
+
+		//parser parses in the userInput into its attributes
+		parser.parseCommandAdd(userInput);
+
+		//command builder takes these from parser attributes and sets them as its own
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandAdd(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
+			_taskPriority);
+	}
+
+	case CommandType::Display:{
+		return new CommandDisplay();
+	}
+
+	case CommandType::Update:{
+
+		parser.parseCommandUpdate(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandUpdate(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
+			_taskPriority, _taskNumber);
+	}
+
+	case CommandType::Delete:{
+
+		parser.parseCommandDelete(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandDelete(_taskNumber);
+	}
+
+	case CommandType::Undo:
+
+		return new CommandUndo();
+
+	case CommandType::Mark:
+
+		parser.parseCommandMark(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandMark(_taskNumber);
+
+	case CommandType::Unmark:
+
+		parser.parseCommandUnmark(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandUnmark(_taskNumber);
+
+	case CommandType::Exit:
+
+		return new CommandExit();
+
+	case CommandType::Search:
+
+		parser.parseCommandSearch(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandSearch(_taskDetails, _taskStartTime, _taskEndTime,
+			_taskDeadline, _taskPriority, _duration, _taskMarked, _foundMarked, _foundPriority);
+	
+	case CommandType::Redo:
+
+		return new CommandRedo();
+
+	case CommandType::ChangeFileLocation:
+
+		parser.parseCommandChangeFileLocation(userInput);
+
+		CommandBuilder::setAttributesFromParser(parser);
+
+		return new CommandChangeFileLocation(_taskDetails);
+
+	case CommandType::CheckFileLocation:
+
+		return new CommandCheckFileLocation();
+
+	default:
+		return new CommandInvalid(userInput);
+	}
+
+}
+
+
+//This operation determines which of the supported command types the user
+//wants to perform (commandTypeString is the first word of the user command)
+CommandBuilder::CommandType CommandBuilder::determineCommandType(string commandTypeString) {
+	if (equalsIgnoreCase(commandTypeString, "add")) {
+		return CommandType::Add;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "display")) {
+		return CommandType::Display;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "update")) {
+		return CommandType::Update;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "delete")) {
+		return CommandType::Delete;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "exit")) {
+		return CommandType::Exit;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "undo")) {
+		return CommandType::Undo;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "mark")) {
+		return CommandType::Mark;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "unmark")) {
+		return CommandType::Unmark;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "search")) {
+		return CommandType::Search;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "redo")) {
+		return CommandType::Redo;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "checkfileloc")) {
+		return CommandType::CheckFileLocation;
+	}
+	else if (equalsIgnoreCase(commandTypeString, "changefileloc")) {
+		return CommandType::ChangeFileLocation;
+	}
+	else {
+		return CommandType::Invalid;
+	}
+}
+
+/*
+* ====================================================================
+*  Additional functions
+* ====================================================================
+*/
+string CommandBuilder::removeFirstWord(string userCommand) {
+	return trim(replace(userCommand, getFirstWord(userCommand), ""));
+}
+
+string CommandBuilder::getFirstWord(string userCommand) {
+	string commandTypeString = splitParameters(userCommand)[0];
+	return commandTypeString;
+}
+
+// This method only split string based on delimiter space
+vector<string> CommandBuilder::splitParameters(string commandParametersString){
+	vector<string> tokens;
+	istringstream iss(commandParametersString);
+	copy(istream_iterator<string>(iss),
+		istream_iterator<string>(),
+		back_inserter<vector<string> >(tokens));
+
+	return tokens;
+}
+
+inline string CommandBuilder::trim_right(const string& s, const string& delimiters) {
+	return s.substr(0, s.find_last_not_of(delimiters) + 1);
+}
+
+inline string CommandBuilder::trim_left(const string& s, const string& delimiters) {
+	return s.substr(s.find_first_not_of(delimiters));
+}
+
+inline string CommandBuilder::trim(const string& s, const string& delimiters) {
+	if (!s.empty())
+		return trim_left(trim_right(s, delimiters), delimiters);
+	else
+		return s;
+}
+
+bool CommandBuilder::equalsIgnoreCase(const string& str1, const string& str2) {
+	if (str1.size() != str2.size()) {
+		return false;
+	}
+	for (string::const_iterator c1 = str1.begin(), c2 = str2.begin(); c1 != str1.end(); ++c1, ++c2) {
+		if (tolower(*c1) != tolower(*c2)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+int CommandBuilder::parseInt(string str) {
+	char c;
+	int i = 0;
+	std::stringstream ss(str);
+	ss >> i;
+	if (ss.fail() || ss.get(c)) {
+		return INVALID_NUMBER_FORMAT;
+	}
+	else {
+		return i;
+	}
+}
+
+string CommandBuilder::replace(string a, string b, string c) {
+	int pos;
+	do {
+		pos = a.find(b);
+		if (pos != -1)  a.replace(pos, b.length(), c);
+	} while (pos != -1);
+	return a;
+}
+
+
+char CommandBuilder::buffer[255];
+const string CommandBuilder::INVALID_MESSAGE_FORMAT = "Invalid command format: %s";
+const string CommandBuilder::MESSAGE_PROGRAM_TERMINATION = "Press any key to terminate the program . . .";
+const string CommandBuilder::ERROR_UNRECOGNISED_COMMAND_TYPE = "ERROR: Unrecognised command type";
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandBuilder.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandBuilder.h
+	 */
+
+
+#pragma once
+#include <string>
+#include "Command.h"
+#include "Task.h"
+#include <vector>
+#include <sstream>
+#include "CommandAdd.h"
+#include "CommandInvalid.h"
+#include "CommandDisplay.h"
+#include "Parser.h"
+#include "CommandUpdate.h"
+#include "CommandDelete.h"
+#include "CommandExit.h"
+#include "CommandUndo.h"
+#include "CommandMark.h"
+#include "CommandUnmark.h"
+#include "CommandSearch.h"
+#include "CommandRedo.h"
+#include "CommandChangeFileLocation.h"
+#include "CommandCheckFileLocation.h"
+
+using namespace std;
+
+class CommandBuilder
+{
+public:
+
+	enum CommandType {
+		Add, Display, Update, Delete, Exit, Invalid, Undo, Mark, Unmark, Redo,
+		Search, Sort, CheckFileLocation, ChangeFileLocation
+	};
+
+	CommandBuilder();
+	~CommandBuilder();
+
+	void clearPreviousCommand();
+
+	Command* parseCommand(string userInput);
+
+	CommandBuilder::CommandType determineCommandType(string commandTypeString);
+
+	string getTaskDetails();
+	Date* getTaskStartTime();
+	Date* getTaskEndTime();
+	Date* getTaskDeadline();
+	Task::Priority getTaskPriority();
+	string getDuration();
+	bool getTaskMarked();
+	int getTaskNumber();
+
+	void setAttributesFromParser(Parser parser);
+
+
+	//helper functions
+	static string removeFirstWord(string userCommand);
+	static string getFirstWord(string userCommand);
+	static vector<string> splitParameters(string commandParametersString);
+	static string trim_right(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static string trim_left(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static string trim(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static bool equalsIgnoreCase(const string& str1, const string& str2);
+	static int parseInt(string str);
+	static string replace(string a, string b, string c);
+
+	static char buffer[255];
+	static const string CommandBuilder::INVALID_MESSAGE_FORMAT;
+	static const int INVALID_NUMBER_FORMAT = -1;
+	static const string MESSAGE_PROGRAM_TERMINATION;
+	static const string ERROR_UNRECOGNISED_COMMAND_TYPE;
+
+
+private:
+	int _taskNumber;
+	string _taskDetails;
+	Date *_taskStartTime;
+	Date *_taskEndTime;
+	Date *_taskDeadline;
+	Task::Priority _taskPriority;
+	string _duration;
+	bool _taskMarked;
+	bool _foundMarked;
+	bool _foundPriority;
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandBuilder.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandDelete.cpp
+	 */
+
+#include "CommandDelete.h"
+
+
+const string CommandDelete::MESSAGE_DELETED = "Deleted Task #%d";
+char CommandDelete::buffer[255];
+
+CommandDelete::CommandDelete(int taskNumber)
+{
+	_taskNumber = taskNumber;
+}
+
+
+CommandDelete::~CommandDelete()
+{
+}
+
+string CommandDelete::execute(){
+
+	// get the instance of the Task from task manager
+	TaskManager instance = *TaskManager::getInstance();
+
+	if (_taskNumber <= 0 || _taskNumber > instance.getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+
+	//get the task to edit, remove it from vector.
+	Task currentTask = TaskManager::getTask(_taskNumber);
+	TaskManager::removeTask(_taskNumber);
+
+	sprintf_s(buffer, MESSAGE_DELETED.c_str(), _taskNumber);
+
+	return buffer;
+}
+
+Command* CommandDelete::getInverseCommand(){
+	TaskManager* taskManagerInstance = TaskManager::getInstance();
+
+	if (_taskNumber <= 0 || _taskNumber > taskManagerInstance->getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+	Task currentTask = TaskManager::getTask(_taskNumber);
+	
+	string taskDetails = currentTask.getTaskDetails();
+	Date* taskStartTime = currentTask.getTaskStartTime();
+	Date* taskEndTime = currentTask.getTaskEndTime();
+	Date* taskDeadline = currentTask.getTaskDeadline();
+	Task::Priority taskPriority = currentTask.getTaskPriority();
+	
+	return new CommandAdd(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority);
+}
+
+const string CommandDelete::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandDelete.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandDelete.h
+	 */
+
+#pragma once
+#include <string>
+#include "Command.h"
+#include "Date.h"
+#include "Task.h"
+#include "TaskManager.h"
+#include <vector>
+#include "CommandAdd.h"
+#include "CommandException.h"
+
+using namespace std;
+
+class CommandDelete: public Command
+{
+public:
+	CommandDelete(int taskNumber);
+	~CommandDelete();
+	virtual string execute();
+	virtual Command* getInverseCommand();
+
+	static const string CommandDelete::MESSAGE_DELETED;
+	static char CommandDelete::buffer[255];
+	static const string CommandDelete::ERROR_MESSAGE_COMMAND_TASKNUM;
+
+private:
+	int _taskNumber;
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandDelete.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandException.cpp
+	 */
+
+#include "CommandException.h"
+
+CommandException::CommandException(std::string command){
+
+	CommandException::command = command;
+	message = ERROR_MESSAGE_COMMAND;
+	errorCode = ERROR_CODE_COMMAND;
+
+}
+
+string CommandException::getMessage(){
+	return message + getCommand();
+}
+
+string CommandException::getCommand(){
+	return command;
+}
+
+const string CommandException::ERROR_MESSAGE_COMMAND = "Invalid Command: ";
+const int CommandException::ERROR_CODE_COMMAND = 2;
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandException.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandException.h
+	 */
+
+#pragma once
+#include <string>
+#include "CustomException.h"
+
+using namespace std;
+
+class CommandException : public CustomException
+{
+
+private:
+
+	std::string command;
+
+public:
+
+	CommandException(std::string command);
+	string getMessage();
+	int getErrorCode();
+	string getCommand();
+
+	static const string CommandException::ERROR_MESSAGE_COMMAND;
+	static const int CommandException::ERROR_CODE_COMMAND;
+
+};
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandException.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandExit.cpp
+	 */
+
+string CommandExit::execute(){
+	//clear all temp files, etc
+	exit(0);
+	return "Exit with success!";
+}
+
+Command* CommandExit::getInverseCommand(){
+	return nullptr;
+}
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandExit.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandExit.h
+	 */
+
+#pragma once
+#include "Command.h"
+
+class CommandExit: public Command
+{
+public:
+	CommandExit();
+	~CommandExit();
+	virtual string execute();
+	virtual Command* getInverseCommand();
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandExit.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandInvalid.cpp
+	 */
+
+#include "CommandInvalid.h"
+
+
+CommandInvalid::CommandInvalid(string userInput)
+{
+	_userInput = userInput;
+}
+
+
+CommandInvalid::~CommandInvalid()
+{
+}
+
+string CommandInvalid::execute(){
+	sprintf_s(buffer, INVALID_MESSAGE_FORMAT.c_str(), _userInput.c_str());
+	return buffer;
+}
+
+Command* CommandInvalid::getInverseCommand(){
+	return nullptr;
+}
+
+char CommandInvalid::buffer[255];
+const string CommandInvalid::INVALID_MESSAGE_FORMAT = "Invalid command format: %s";
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandInvalid.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandInvalid.h
+	 */
+
+#pragma once
+#include <string>
+#include <vector>
+#include "Command.h"
+
+using namespace std;
+
+class CommandInvalid: public Command
+{
+public:
+	CommandInvalid(string userInput);
+	~CommandInvalid();
+	virtual string execute();
+	virtual Command* getInverseCommand();
+
+	static char CommandInvalid::buffer[255];
+	static const string CommandInvalid::INVALID_MESSAGE_FORMAT;
+private:
+	string _userInput;
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandInvalid.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandMark.cpp
+	 */
+
+#include "CommandMark.h"
+
+CommandMark::CommandMark(int taskNumber)
+{
+	_taskNumber = taskNumber;
+}
+
+
+CommandMark::~CommandMark()
+{
+}
+
+string CommandMark::execute(){
+
+	// get the instance of the Task from task manager
+	TaskManager instance = *TaskManager::getInstance();
+
+	//get the task to edit
+	Task currentTask = TaskManager::getTask(_taskNumber);
+	
+	//only mark the task if not already marked
+	if (currentTask.getTaskMarked()==true){
+		sprintf_s(buffer, MESSAGE_NOT_MARKED.c_str(), _taskNumber);
+		return buffer;
+	}
+	else{
+		TaskManager::markTask(_taskNumber);
+		sprintf_s(buffer, MESSAGE_MARKED.c_str(), _taskNumber);
+		return buffer;
+	}
+	
+}
+
+Command* CommandMark::getInverseCommand(){
+
+	TaskManager* taskManagerInstance = TaskManager::getInstance();
+
+	if (_taskNumber <= 0 || _taskNumber > taskManagerInstance->getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+	Task currentTask = TaskManager::getTask(_taskNumber);
+
+	if (!currentTask.getTaskMarked()){
+
+		//preparing marked task to add
+		Task currentTask = TaskManager::getTask(_taskNumber);
+		string taskDetails = currentTask.getTaskDetails();
+		Date* taskStartTime = currentTask.getTaskStartTime();
+		Date* taskEndTime = currentTask.getTaskEndTime();
+		Date* taskDeadline = currentTask.getTaskDeadline();
+		Task::Priority taskPriority = currentTask.getTaskPriority();
+		Task taskToAdd = Task(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority);
+		taskToAdd.setTaskMarked(true);
+
+		//deleting unmarked task
+		TaskManager::removeTask(_taskNumber);
+
+		//adding and deleting marked task to get index
+		int indexToUnmark = TaskManager::addTask(taskToAdd);
+		TaskManager::removeTask(indexToUnmark + 1);
+
+		//adding back unmarked task
+		taskToAdd.setTaskMarked(false);
+		TaskManager::addTask(taskToAdd);
+
+		return new CommandUnmark(indexToUnmark + 1);
+	}
+	else{
+		return nullptr;
+	}
+}
+
+const string CommandMark::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
+const string CommandMark::MESSAGE_MARKED = "Marked Task #%d";
+const string CommandMark::MESSAGE_NOT_MARKED = "Task #%d is already marked!";
+char CommandMark::buffer[255];
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandMark.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandMark.h
+	 */
+
+#pragma once
+#include <string>
+#include "Command.h"
+#include "Date.h"
+#include "Task.h"
+#include "TaskManager.h"
+#include <vector>
+#include "CommandUnmark.h"
+#include "CommandException.h"
+
+class CommandMark: public Command
+{
+public:
+	CommandMark(int taskNumber);
+	~CommandMark();
+	virtual string execute();
+	virtual Command* getInverseCommand();
+
+	static const string CommandMark::MESSAGE_MARKED;
+	static const string CommandMark::MESSAGE_NOT_MARKED;
+	static char CommandMark::buffer[255];
+
+	static const string CommandMark::ERROR_MESSAGE_COMMAND_TASKNUM;
+
+private:
+	int _taskNumber;
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandMark.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandRedo.cpp
+	 */
+
+#include "CommandRedo.h"
+
+CommandRedo::CommandRedo()
+{
+}
+
+
+CommandRedo::~CommandRedo()
+{
+}
+
+string CommandRedo::execute(){
+
+	Controller* instance = Controller::getInstance();
+	vector<Command*>* redoStack = instance->getRedoStack();
+
+	if (redoStack->size() == 0){
+		return MESSAGE_NOTHING_TO_REDO;
+	}
+
+	else{
+		Command* redoCommand = (*redoStack)[redoStack->size() - 1];
+		redoStack->pop_back();
+		redoCommand->execute();
+		return MESSAGE_ACTION_REDONE;
+	}
+
+}
+
+Command* CommandRedo::getInverseCommand(){
+	return nullptr;
+}
+
+const string CommandRedo::MESSAGE_NOTHING_TO_REDO = "There is nothing to redo!";
+const string CommandRedo::MESSAGE_ACTION_REDONE = "Action has been redone!";
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandRedo.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandRedo.h
+	 */
+
+#pragma once
+
+#include "Command.h"
+#include "Controller.h"
+
+class CommandRedo : public Command
+{
+public:
+	CommandRedo();
+	~CommandRedo();
+	virtual string execute();
+	virtual Command* getInverseCommand();
+
+	static const string CommandRedo::MESSAGE_NOTHING_TO_REDO;
+	static const string CommandRedo::MESSAGE_ACTION_REDONE;
+};
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandRedo.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandUndo.cpp
+	 */
+
+#include "CommandUndo.h"
+
+const string CommandUndo::MESSAGE_NOTHING_TO_UNDO = "There is nothing to undo!";
+const string CommandUndo::MESSAGE_ACTION_UNDONE = "Action has been undone!";
+
+CommandUndo::CommandUndo()
+{
+}
+
+
+CommandUndo::~CommandUndo()
+{
+}
+
+string CommandUndo::execute(){
+	
+	Controller* instance = Controller::getInstance();
+	vector<Command*>* undoStack = instance->getUndoStack();
+	vector<Command*>* redoStack = instance->getRedoStack();
+
+	if (undoStack->size() == 0){
+		return MESSAGE_NOTHING_TO_UNDO;
+	}
+
+	else{
+		Command* undoCommand = (*undoStack)[undoStack->size()-1];
+		undoStack->pop_back();
+		redoStack->push_back(undoCommand->getInverseCommand());
+		undoCommand->execute();
+		return MESSAGE_ACTION_UNDONE;
+	}
+
+}
+
+Command* CommandUndo::getInverseCommand(){
+	return nullptr;
+}
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandUndo.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandUndo.h
+	 */
+
+#pragma once
+#include "Command.h"
+#include "Controller.h"
+
+class CommandUndo: public Command
+{
+public:
+	CommandUndo();
+	~CommandUndo();
+	virtual string execute();
+	virtual Command* getInverseCommand();
+
+	static const string CommandUndo::MESSAGE_NOTHING_TO_UNDO;
+	static const string CommandUndo::MESSAGE_ACTION_UNDONE;
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandUndo.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandUnmark.cpp
+	 */
+
+#include "CommandUnmark.h"
+
+const string CommandUnmark::MESSAGE_UNMARKED = "Unmarked Task #%d";
+const string CommandUnmark::MESSAGE_NOT_UNMARKED = "Task #%d is already unmarked!";
+char CommandUnmark::buffer[255];
+
+CommandUnmark::CommandUnmark(int taskNumber)
+{
+	_taskNumber = taskNumber;
+}
+
+CommandUnmark::~CommandUnmark()
+{
+}
+
+string CommandUnmark::execute(){
+
+	// get the instance of the Task from task manager
+	TaskManager instance = *TaskManager::getInstance();
+
+	//get the task to edit
+	Task currentTask = TaskManager::getTask(_taskNumber);
+
+	//only mark the task if not already marked
+	if (currentTask.getTaskMarked() == false){
+		sprintf_s(buffer, MESSAGE_NOT_UNMARKED.c_str(), _taskNumber);
+		return buffer;
+	}
+	else{
+		TaskManager::unmarkTask(_taskNumber);
+		sprintf_s(buffer, MESSAGE_UNMARKED.c_str(), _taskNumber);
+		return buffer;
+	}
+
+}
+
+Command* CommandUnmark::getInverseCommand(){
+
+	TaskManager* taskManagerInstance = TaskManager::getInstance();
+
+	if (_taskNumber <= 0 || _taskNumber > taskManagerInstance->getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+	Task currentTask = TaskManager::getTask(_taskNumber);
+
+	if (currentTask.getTaskMarked()){
+		
+		//preparing unmarked task to add
+		Task currentTask = TaskManager::getTask(_taskNumber);
+		string taskDetails = currentTask.getTaskDetails();
+		Date* taskStartTime = currentTask.getTaskStartTime();
+		Date* taskEndTime = currentTask.getTaskEndTime();
+		Date* taskDeadline = currentTask.getTaskDeadline();
+		Task::Priority taskPriority = currentTask.getTaskPriority();
+		Task taskToAdd = Task(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority);
+
+		//deleting marked task
+		TaskManager::removeTask(_taskNumber);
+
+		//adding and deleting unmarked task to get index
+		int indexToMark = TaskManager::addTask(taskToAdd);
+		TaskManager::removeTask(indexToMark + 1);
+
+		//adding back marked task
+		taskToAdd.setTaskMarked(true);
+		TaskManager::addTask(taskToAdd);
+
+		return new CommandMark(indexToMark + 1);
+	}
+	else{
+		return nullptr;
+	}
+}
+
+const string CommandUnmark::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandUnmark.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandUnmark.h
+	 */
+
+#pragma once
+#include <string>
+#include "Command.h"
+#include "Date.h"
+#include "Task.h"
+#include "TaskManager.h"
+#include <vector>
+#include "CommandMark.h"
+
+class CommandUnmark: public Command
+{
+public:
+	CommandUnmark(int taskNumber);
+	~CommandUnmark();
+	virtual string execute();
+	virtual Command* getInverseCommand();
+
+	static const string CommandUnmark::MESSAGE_UNMARKED;
+	static const string CommandUnmark::MESSAGE_NOT_UNMARKED;
+	static char CommandUnmark::buffer[255];
+
+	static const string CommandUnmark::ERROR_MESSAGE_COMMAND_TASKNUM;
+
+private:
+	int _taskNumber;
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandUnmark.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandUpdate.cpp
+	 */
+
+#include "CommandUpdate.h"
+
+const string CommandUpdate::MESSAGE_UPDATED = "Updated Task #%d!";
+char CommandUpdate::buffer[255];
+
+CommandUpdate::CommandUpdate(string taskDetails,
+	Date *taskStartTime,
+	Date *taskEndTime,
+	Date *taskDeadline,
+	Task::Priority taskPriority,
+	int taskNumber){
+	_taskDetails = taskDetails;
+	_taskStartTime = taskStartTime;
+	_taskEndTime = taskEndTime;
+	_taskDeadline = taskDeadline;
+	_taskPriority = taskPriority;
+	_taskNumber = taskNumber;
+}
+
+
+CommandUpdate::~CommandUpdate()
+{
+}
+
+string CommandUpdate::execute(){
+
+	//get the instance of the Task from task manager
+	TaskManager instance = *TaskManager::getInstance();
+	
+	if (_taskNumber <= 0 || _taskNumber > instance.getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+
+	//get the task to edit, remove it from vector.
+	Task currentTask = TaskManager::getTask(_taskNumber);
+	TaskManager::removeTask(_taskNumber);
+	
+	//editing task to add back to vector
+	currentTask.setTaskDetails(_taskDetails);
+	currentTask.setTaskStartTime(_taskStartTime);
+	currentTask.setTaskEndTime(_taskEndTime);
+	currentTask.setTaskDeadline(_taskDeadline);
+	currentTask.setTaskPriority(_taskPriority);
+
+	//adding task back to vector (but at the back, not fixed)
+	instance.addTask(currentTask);
+
+	sprintf_s(buffer, MESSAGE_UPDATED.c_str(), _taskNumber);
+
+	return buffer;
+}
+
+Command* CommandUpdate::getInverseCommand(){
+
+	TaskManager* taskManagerInstance = TaskManager::getInstance();
+	
+	if (_taskNumber <= 0 || _taskNumber > taskManagerInstance->getNumberOfTasks()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+
+	//preparing old task to update
+	Task currentTask = TaskManager::getTask(_taskNumber);
+	string taskDetails = currentTask.getTaskDetails();
+	Date* taskStartTime = currentTask.getTaskStartTime();
+	Date* taskEndTime = currentTask.getTaskEndTime();
+	Date* taskDeadline = currentTask.getTaskDeadline();
+	Task::Priority taskPriority = currentTask.getTaskPriority();
+
+	//preparing new task to add
+	Task taskToAdd = Task(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline, _taskPriority);
+	taskToAdd.setTaskMarked(currentTask.getTaskMarked());
+
+	//deleting old task
+	TaskManager::removeTask(_taskNumber);
+
+	//adding and deleting new task to get index
+	int indexToUpdate = TaskManager::addTask(taskToAdd);
+	TaskManager::removeTask(indexToUpdate + 1);
+
+	//adding back old task
+	TaskManager::addTask(currentTask);
+
+	//undoing task
+	return new CommandUpdate(taskDetails, taskStartTime, taskEndTime, taskDeadline, taskPriority, indexToUpdate+1);
+}
+
+const string CommandUpdate::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandUpdate.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandUpdate.h
+	 */
+
+#pragma once
+#include <string>
+#include "Command.h"
+#include "Date.h"
+#include "Task.h"
+#include "TaskManager.h"
+#include <vector>
+#include "CommandException.h"
+
+class CommandUpdate: public Command
+{
+public:
+	CommandUpdate(string taskDetails,
+		Date *taskStartTime,
+		Date *taskEndTime,
+		Date *taskDeadline,
+		Task::Priority taskPriority,
+		int taskNumber);
+	~CommandUpdate();
+	virtual string execute();
+	virtual Command* getInverseCommand();
+
+	static const string CommandUpdate::MESSAGE_UPDATED;
+	static char CommandUpdate::buffer[255];
+	static const string CommandUpdate::ERROR_MESSAGE_COMMAND_TASKNUM;
+
+private:
+	string _taskDetails;
+	Date *_taskStartTime;
+	Date *_taskEndTime;
+	Date *_taskDeadline;
+	Task::Priority _taskPriority;
+	int _taskNumber;
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CommandUpdate.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Controller.cpp
+	 */
+
+#include "Controller.h"
+
+
+// Global static pointer used to ensure a single instance of the class.
+Controller* Controller::_instance = NULL;
+vector<Command*>* Controller::_undoStack = NULL;
+vector<Command*>* Controller::_redoStack = NULL;
+vector<int>* Controller::_taskIndices = NULL;
+bool Controller::_isSearchCommand;
+
+
+void Controller::setTaskIndices(vector<int>* taskIndices){
+	_taskIndices = taskIndices;
+}
+
+vector<int>* Controller::getTaskIndices(){
+	return _taskIndices;
+}
+
+bool Controller::getIsSearchCommand(){
+	return _isSearchCommand;
+}
+
+Controller::Controller()
+{
+}
+
+Controller* Controller::getInstance(){
+	if (!_instance)
+		_instance = new Controller;
+	return _instance;
+}
+
+vector<Command*>* Controller::getUndoStack(){
+	if (!_undoStack)
+		_undoStack = new vector<Command*>;
+	return _undoStack;
+}
+
+vector<Command*>* Controller::getRedoStack(){
+	if (!_redoStack)
+		_redoStack = new vector<Command*>;
+	return _redoStack;
+}
+
+string Controller::processUserInput(string userInput){
+
+	string feedback;
+	_isSearchCommand = false;
+
+	try{
+
+		TaskManager* taskManager = TaskManager::getInstance();
+		CommandBuilder commandBuilder = CommandBuilder();
+		Command* command = commandBuilder.parseCommand(userInput);
+
+		Command* undoCommand = command->getInverseCommand();
+		
+		if (undoCommand != nullptr){
+			getUndoStack()->push_back(undoCommand);
+			getRedoStack()->clear();
+		}
+
+		feedback = command->execute();
+
+		CommandSearch* commandSearch = dynamic_cast<CommandSearch*>(command);
+
+		if (commandSearch != NULL){
+			setTaskIndices(commandSearch->getTasksIndices());
+			_isSearchCommand = true;
+		}
+
+	}
+	catch (ParseException& e){
+
+		feedback = e.getMessage();
+
+	}
+	catch (CommandException& e){
+
+		feedback = e.getMessage();
+
+	}
+
+	return feedback;
+}
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Controller.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Controller.h
+	 */
+
+#pragma once
+#include <string>
+
+#include "Command.h"
+#include "CommandBuilder.h"
+#include "TaskManager.h"
+#include "Storage.h"
+#include "SuggestionBuilder.h"
+#include "ParseException.h"
+#include "CommandException.h"
+
+using namespace std;
+
+class Controller
+{
+public:
+
+	static Controller* getInstance();
+
+	static vector<Command*>* getUndoStack();
+
+	static vector<Command*>* getRedoStack();
+
+	static string processUserInput(string userInput);
+
+	static void setTaskIndices(vector<int>* taskIndices);
+
+	static vector<int>* getTaskIndices();
+
+	static bool getIsSearchCommand();
+
+private:
+
+	//copy constructor is private
+	Controller& operator=(Controller const&){};
+
+	static Controller *_instance;
+
+	static vector<Command*>* _undoStack;
+
+	static vector<Command*>* _redoStack;
+
+	static vector<int>* _taskIndices;
+
+	static bool _isSearchCommand;
+	
+	Controller();
+	
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Controller.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CustomException.cpp
+	 */
+
+#include "CustomException.h"
+
+CustomException::CustomException(){
+	message = "Error!";
+	errorCode = 0;
+	fatal = false;
+}
+
+CustomException::CustomException(string message){
+	CustomException::message = message;
+	errorCode = 0;
+	fatal = false;
+}
+string CustomException::getMessage() { 
+	return message; 
+}
+
+int CustomException::getErrorCode() {
+	return errorCode; 
+}
+
+bool CustomException::isFatal() {
+	return fatal; 
+}
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CustomException.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CustomException.h
+	 */
+
+#pragma once
+#include <string>
+
+using namespace std;
+
+class CustomException
+{
+
+protected:
+
+	std::string message;
+	int errorCode;
+	bool fatal;
+
+public:
+	CustomException();
+	CustomException(std::string message);
+	std::string getMessage();
+	int getErrorCode();
+	bool isFatal();
+
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\CustomException.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Date.cpp
+	 */
+
+#include "Date.h"
+
+//Default is construct current date
+Date::Date(){
+	std::chrono::system_clock::time_point today = std::chrono::system_clock::now();
+	_currentDate = today;
+}
+
+Date::Date(int year, int mon, int day, int hour, int min){
+	struct std::tm t;
+	t.tm_sec = 0;        // second of minute (0 .. 59 and 60 for leap seconds)
+	t.tm_min = min;        // minute of hour (0 .. 59)
+	t.tm_hour = hour;      // hour of day (0 .. 23)
+	t.tm_mday = day;       // day of month (0 .. 31)
+	t.tm_mon = mon;      // month of year (0 .. 11)
+	t.tm_year = year - 1900; // year since 1900
+	t.tm_isdst = -1;       // determine whether daylight saving time
+	std::time_t tt = std::mktime(&t);
+	if (tt == -1) {
+		throw "no valid system time";
+	}
+	_currentDate = std::chrono::system_clock::from_time_t(tt);
+}
+
+
+string Date::toString(){
+	char buffer[255];
+
+	std::time_t t = std::chrono::system_clock::to_time_t(_currentDate);
+	//std::string ts = ctime(&t);   // convert to calendar time
+	//ts.resize(ts.size() - 1);       // skip trailing newline
+	//return ts;
+
+	struct tm* ts = localtime(&t);
+	strftime(buffer, 80, "%d %b %Y (%a), %I:%M%p", ts);
+	return buffer;
+}
+
+string Date::parseDateToDisplay(){
+	
+	ostringstream dateToDisplay;
+
+	dateToDisplay << "[" << getDay() << "/" << getMonth()
+		<< "/" << getYear() << "] " << getDayName();
+
+	return dateToDisplay.str();
+}
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Date.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Date.cpp
+	 */
+
+bool Date::sameDate(Date dateToCompare){
+	if (getYear() == dateToCompare.getYear() &&
+		getMonth() == dateToCompare.getMonth() &&
+		getDay() == dateToCompare.getDay()){
+		return true;
+	}
+	return false;
+}
+
+std::chrono::system_clock::time_point Date::getTimePoint(){
+	return _currentDate;
+}
+
+
+//process difference between timepoints, looking at minute scale
+//if earlier, return 1
+//if same, return 0
+//if later, return -1
+int Date::isEarlierThan(Date dateToCompare){
+	chrono::time_point<chrono::system_clock> tp;
+	tp = dateToCompare.getTimePoint();
+	std::chrono::minutes dateMinutes = std::chrono::duration_cast<std::chrono::minutes>(getTimePoint() - tp);
+	std::chrono::minutes date2Minutes = std::chrono::duration_cast<std::chrono::minutes>(dateToCompare.getTimePoint() - tp);
+	int numMinutes = date2Minutes.count() - dateMinutes.count();
+	if (numMinutes==0){
+		return 0;
+	}
+	else if (numMinutes>0){
+		return 1;
+	}
+	else{
+		return -1;
+	}
+}
+
+int Date::diffInMinutes(Date dateToCompare){
+	chrono::time_point<chrono::system_clock> tp;
+	tp = dateToCompare.getTimePoint();
+	std::chrono::minutes dateMinutes = std::chrono::duration_cast<std::chrono::minutes>(getTimePoint() - tp);
+	std::chrono::minutes date2Minutes = std::chrono::duration_cast<std::chrono::minutes>(dateToCompare.getTimePoint() - tp);
+	int numMinutes = date2Minutes.count() - dateMinutes.count();
+	return numMinutes;
+}
+
+int Date::getYear(){
+	time_t tt = std::chrono::system_clock::to_time_t(getTimePoint());
+	tm local_tm = *localtime(&tt);
+	return local_tm.tm_year+1900;
+}
+
+int Date::getMonth(){
+	time_t tt = std::chrono::system_clock::to_time_t(getTimePoint());
+	tm local_tm = *localtime(&tt);
+	return local_tm.tm_mon;
+}
+
+int Date::getDay(){
+	time_t tt = std::chrono::system_clock::to_time_t(getTimePoint());
+	tm local_tm = *localtime(&tt);
+	return local_tm.tm_mday;
+}
+
+int Date::getDayName(){
+	time_t tt = std::chrono::system_clock::to_time_t(getTimePoint());
+	tm local_tm = *localtime(&tt);
+	return local_tm.tm_wday;
+}
+
+int Date::getHour(){
+	time_t tt = std::chrono::system_clock::to_time_t(getTimePoint());
+	tm local_tm = *localtime(&tt);
+	return local_tm.tm_hour;
+}
+
+int Date::getMinute(){
+	time_t tt = std::chrono::system_clock::to_time_t(getTimePoint());
+	tm local_tm = *localtime(&tt);
+	return local_tm.tm_min;
+}
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Date.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Date.cpp
+	 */
+
+int Date::parseInt(string str){
+	char c;
+	int i = 0;
+	std::stringstream ss(str);
+	ss >> i;
+	if (ss.fail() || ss.get(c)){
+		return INVALID_NUMBER_FORMAT;
+	}
+	else {
+		return i;
+	}
+}
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Date.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Date.cpp
+	 */
+
+int Date::parseMonthName(string monthName){
+	int mon = 0;
+
+	std::transform(monthName.begin(), monthName.end(), monthName.begin(), ::tolower);
+
+	if (monthName == "january" || monthName == "jan"){
+		mon = 0;
+	} else if (monthName == "february" || monthName == "feb"){
+		mon = 1;
+	} else if (monthName == "march" || monthName == "mar"){
+		mon = 2;
+	} else if (monthName == "april" || monthName == "apr"){
+		mon = 3;
+	} else if (monthName == "may"){
+		mon = 4;
+	} else if (monthName == "june" || monthName == "jun"){
+		mon = 5;
+	} else if (monthName == "july" || monthName == "jul"){
+		mon = 6;
+	} else if (monthName == "august" || monthName == "aug"){
+		mon = 7;
+	} else if (monthName == "september" || monthName == "sep"){
+		mon = 8;
+	} else if (monthName == "october" || monthName == "oct"){
+		mon = 9;
+	} else if (monthName == "november" || monthName == "nov"){
+		mon = 10;
+	} else if (monthName == "december" || monthName == "dec"){
+		mon = 11;
+	} //else throw error
+
+	return mon;
+}
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Date.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Date.h
+	 */
+
+#pragma once
+#include <chrono>
+#include <ctime>
+#include <string>
+#include <vector>
+#include <iostream>
+#include <sstream>
+#include <algorithm>
+
+using namespace std;
+
+class Date
+{
+public:
+	Date();
+	Date(int year, int mon, int day, int hour, int min);
+	
+	int isEarlierThan(Date dateToCompare);
+	int Date::diffInMinutes(Date dateToCompare);
+
+	bool sameDate(Date dateToCompare);
+
+	std::chrono::system_clock::time_point getTimePoint();
+
+	string toString();
+	string parseDateToDisplay();
+	static Date *toDate(string date_str);
+
+	int getYear();
+	int getMonth();
+	int getDay();
+	int getDayName();
+	int getHour();
+	int getMinute();
+
+private:
+	std::chrono::system_clock::time_point _currentDate;
+	//For toDate time-date Parsing
+	static string removeFirstWord(string userCommand);
+	static string getFirstWord(string userCommand);
+	static vector<string> splitParameters(string commandParametersString);
+	static string trim_right(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static string trim_left(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static string trim(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static bool equalsIgnoreCase(const string& str1, const string& str2);
+	static int parseInt(string str);
+	static string replace(string a, string b, string c);
+	static int parseMonthName(string monthName);
+
+	static char buffer[255];
+	static const int INVALID_NUMBER_FORMAT = -1;
+
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Date.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\ParseException.cpp
+	 */
+
+#include "ParseException.h"
+
+ParseException::ParseException(std::string input){
+	
+	ParseException::input = input;
+	message = ERROR_MESSAGE_PARSING;
+	errorCode = ERROR_CODE_PARSING;
+	
+}
+
+string ParseException::getMessage(){
+	return message + getInput();
+}
+
+string ParseException::getInput(){
+	return input;
+}
+
+const string ParseException::ERROR_MESSAGE_PARSING = "Input parsing error: ";
+const int ParseException::ERROR_CODE_PARSING = 1;
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\ParseException.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\ParseException.h
+	 */
+
+#pragma once
+#include <string>
+#include "CustomException.h"
+
+using namespace std;
+
+class ParseException: public CustomException
+{
+
+private:
+
+	std::string input;
+
+public:
+
+	ParseException(std::string input);
+	string getMessage();
+	int getErrorCode();
+	string getInput();
+
+	static const string ParseException::ERROR_MESSAGE_PARSING;
+	static const int ParseException::ERROR_CODE_PARSING;
+
+};
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\ParseException.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Parser.cpp
+	 */
+
+/*
+* ====================================================================
+*  Parser for Command Search
+* ====================================================================
+*/
+void Parser::parseCommandSearch(string userCommand){
+
+	string text = removeFirstWord(userCommand);
+	toLowerCase(text);
+	vector<string> textVec = splitParameters(text);
+	textVec.push_back("\n");	//Represents the end of vector
+
+	string timeString;
+	ostringstream temp;
+	vector<string>::iterator iter = textVec.begin();
+
+	//Search using task details
+	while (!isSearchKeyword(*iter)){
+		temp << *iter << " ";
+		iter++;
+	};
+	_taskDetails = temp.str();
+	temp.str("");
+
+	//Search using task start time 
+	if (equalsIgnoreCase(*iter, "from")){
+		iter++;
+		while (!equalsIgnoreCase(*iter, "to")){
+			temp << *iter << " ";
+			iter++;
+
+			if (iter == textVec.end()){
+				throw CommandException(ERROR_MESSAGE_COMMAND_NOENDTIME);
+			}
+		};
+		timeString = temp.str();
+		_taskStartTime = parseTimeString(timeString);
+		temp.str("");
+
+		//Search using task end time
+		iter++;
+		while (!isSearchKeyword(*iter)){
+			temp << *iter << " ";
+			iter++;
+		};
+		timeString = temp.str();
+		_taskEndTime = parseTimeString(timeString);
+		temp.str("");
+	}
+
+	//Search for tasks before a certain date
+	if (equalsIgnoreCase(*iter, "before")){
+		iter++;
+		while (!isSearchKeyword(*iter)){
+			temp << *iter << " ";
+			iter++;
+		};
+		timeString = temp.str();
+		_taskEndTime = parseTimeString(timeString);
+		temp.str("");
+	}
+
+	//Search for tasks after a certain date
+	if (equalsIgnoreCase(*iter, "after")){
+		iter++;
+		while (!isSearchKeyword(*iter)){
+			temp << *iter << " ";
+			iter++;
+		};
+		timeString = temp.str();
+		_taskStartTime = parseTimeString(timeString);
+		temp.str("");
+	}
+
+	//Search for marked/unmarked tasks
+	if (equalsIgnoreCase(*iter, "done")){
+		_taskMarked = true;
+		_foundMarked = true;
+	} else if (equalsIgnoreCase(*iter, "undone")){
+		_taskMarked = false;
+		_foundMarked = true;
+	}
+
+	//Search using priority
+	if (equalsIgnoreCase(*iter, "#impt") || equalsIgnoreCase(*iter, "#high")){
+		_taskPriority = Task::Priority::HIGH;
+		_foundPriority = true;
+	} 
+
+	//Search for next available timeslot
+	if (equalsIgnoreCase(*iter, "next")){
+		iter++;
+		if (equalsIgnoreCase(*iter, "available")) {
+			iter++;
+		}
+		while (!isSearchKeyword(*iter)){
+			temp << *iter << " ";
+			iter++;
+		}
+		_duration = temp.str();
+	}
+}
+
+/*
+* ====================================================================
+*  Parser for Command Changefileloc
+* ====================================================================
+*/
+void Parser::parseCommandChangeFileLocation(string userCommand){
+	Parser::clearPreviousParse();
+
+	string text = removeFirstWord(userCommand);
+	_taskDetails = text;
+}
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Parser.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\StringDistance.cpp
+	 */
+
+#include "StringDistance.h"
+
+//****************************
+// Get minimum of three values
+//****************************
+
+int StringDistance::Minimum(int a, int b, int c)
+{
+	int mi;
+
+	mi = a;
+	if (b < mi) {
+		mi = b;
+	}
+	if (c < mi) {
+		mi = c;
+	}
+	return mi;
+
+}
+
+//**************************************************
+// Get a pointer to the specified cell of the matrix
+//************************************************** 
+
+int *StringDistance::GetCellPointer(int *pOrigin, int col, int row, int nCols)
+{
+	return pOrigin + col + (row * (nCols + 1));
+}
+
+//*****************************************************
+// Get the contents of the specified cell in the matrix 
+//*****************************************************
+
+int StringDistance::GetAt(int *pOrigin, int col, int row, int nCols)
+{
+	int *pCell;
+
+	pCell = GetCellPointer(pOrigin, col, row, nCols);
+	return *pCell;
+
+}
+
+//*******************************************************
+// Fill the specified cell in the matrix with the value x
+//*******************************************************
+
+void StringDistance::PutAt(int *pOrigin, int col, int row, int nCols, int x)
+{
+	int *pCell;
+
+	pCell = GetCellPointer(pOrigin, col, row, nCols);
+	*pCell = x;
+
+}
+
+//*****************************
+// Compute Levenshtein distance
+//*****************************
+
+int StringDistance::LD(char const *s, char const *t)
+{
+	int *d; // pointer to matrix
+	int n; // length of s
+	int m; // length of t
+	int i; // iterates through s
+	int j; // iterates through t
+	char s_i; // ith character of s
+	char t_j; // jth character of t
+	int cost; // cost
+	int result; // result
+	int cell; // contents of target cell
+	int above; // contents of cell immediately above
+	int left; // contents of cell immediately to left
+	int diag; // contents of cell immediately above and to left
+	int sz; // number of cells in matrix
+
+	// Step 1	
+
+	n = strlen(s);
+	m = strlen(t);
+	if (n == 0) {
+		return m;
+	}
+	if (m == 0) {
+		return n;
+	}
+	sz = (n + 1) * (m + 1) * sizeof(int);
+	d = (int *)malloc(sz);
+
+	// Step 2
+
+	for (i = 0; i <= n; i++) {
+		PutAt(d, i, 0, n, i);
+	}
+
+	for (j = 0; j <= m; j++) {
+		PutAt(d, 0, j, n, j);
+	}
+
+	// Step 3
+
+	for (i = 1; i <= n; i++) {
+
+		s_i = s[i - 1];
+
+		// Step 4
+
+		for (j = 1; j <= m; j++) {
+
+			t_j = t[j - 1];
+
+			// Step 5
+
+			if (s_i == t_j) {
+				cost = 0;
+			}
+			else {
+				cost = 1;
+			}
+
+			// Step 6 
+
+			above = GetAt(d, i - 1, j, n);
+			left = GetAt(d, i, j - 1, n);
+			diag = GetAt(d, i - 1, j - 1, n);
+			cell = Minimum(above + 1, left + 1, diag + cost);
+			PutAt(d, i, j, n, cell);
+		}
+	}
+
+	// Step 7
+
+	result = GetAt(d, n, m, n);
+	free(d);
+	return result;
+
+}
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\StringDistance.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\StringDistance.h
+	 */
+
+#pragma once
+#include <string.h>
+#include <malloc.h>
+
+class StringDistance
+{
+public:
+	static int LD(char const *s, char const *t);
+private:
+	static int Minimum(int a, int b, int c);
+	static int *GetCellPointer(int *pOrigin, int col, int row, int nCols);
+	static int GetAt(int *pOrigin, int col, int row, int nCols);
+	static void PutAt(int *pOrigin, int col, int row, int nCols, int x);
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\StringDistance.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\SuggestionBuilder.cpp
+	 */
+
+#include "SuggestionBuilder.h"
+
+
+SuggestionBuilder::SuggestionBuilder()
+{
+}
+
+
+SuggestionBuilder::~SuggestionBuilder()
+{
+}
+
+
+string SuggestionBuilder::suggestUserInput(string userInput){
+
+	std::transform(userInput.begin(), userInput.end(), userInput.begin(), ::tolower);
+
+	string commandType = suggestCommandType(userInput);
+	
+	//string suggestedCommandArguments = suggestCommandArguments(commandType, userInput);
+
+	string suggestedUserInput = commandType;// +suggestedCommandArguments;
+
+	return suggestedUserInput;
+}
+
+
+string SuggestionBuilder::suggestCommandType(string userInput){
+	
+	if (userInput == ""){
+
+		return "e.g: add, delete, update, search, mark, unmark, undo, checkfilelocation, changefilelocation, help";
+
+	}
+
+	userInput = getFirstWord(userInput);
+	
+	if (isPredictedCommandAdd(userInput)){
+		return "add cs2103 from 6may to 7may #high";
+	}
+
+	else if (isPredictedCommandDelete(userInput)){
+		return "delete [taskNumber]";
+	}
+
+	else if (isPredictedCommandDisplay(userInput)){
+		return "display";
+	}
+
+	else if (isPredictedCommandExit(userInput)){
+		return "exit";
+	}
+
+	else if (isPredictedCommandMark(userInput)){
+		return "mark [taskNumber]";
+	}
+
+	else if (isPredictedCommandUndo(userInput)){
+		return "undo";
+	}
+
+	else if (isPredictedCommandUnmark(userInput)){
+		return "unmark [taskNumber]";
+	}
+
+	else if (isPredictedCommandUpdate(userInput)){
+		return "update [taskNumber] details/deadline/start end";
+	}
+
+	return "invalid";
+
+}
+
+string SuggestionBuilder::suggestCommandArguments(string commandType, string userInput){
+	
+	if (commandType == "add"){
+		return predictCommandAdd(userInput);
+	}
+
+	else if (commandType == "delete"){
+		return "";
+	}
+
+	else if (commandType == "display"){
+		return "";
+	}
+
+	else if (commandType == "exit"){
+		return "";
+	}
+
+	else if (commandType == "mark"){
+		return "";
+	}
+
+	else if (commandType == "undo"){
+		return "";
+	}
+
+	else if (commandType == "unmark"){
+		return "";
+	}
+
+	else if (commandType == "update"){
+		return "";
+		//should add more logic here!
+	}
+
+	return "";
+}
+
+
+string SuggestionBuilder::predictCommandAdd(string userInput){
+
+	string currentArguments = removeFirstWord(userInput);
+
+	ostringstream predictedArguments;
+
+	//return nothing if no current arguments
+	if (currentArguments == ""){
+		return predictedArguments.str();
+	}
+
+	vector<string> textVec = splitParameters(currentArguments);
+	vector<string>::iterator iter = textVec.begin();
+
+	bool hitFirstCommandWord = false;
+	ostringstream taskToAdd;
+
+	bool predictedFrom = false, predictedBy = false, predictedEvery = false;
+	bool predictedThis = false, predictedNext = false, predictedDay = false;
+	string dayValue; 
+
+	while (iter != textVec.end()){
+
+		string predictString = predictedString(*iter);
+		string currentString = *iter;
+
+		if (!predictedFrom && !predictedBy && !predictedEvery){
+
+			if (predictString == "from"){
+				predictedFrom = true;
+				hitFirstCommandWord = true;
+			}
+			else if (predictString == "by"){
+				predictedBy = true;
+				hitFirstCommandWord = true;
+			}
+			else if (predictString == "every"){
+				predictedEvery = true;
+				hitFirstCommandWord = true;
+			}
+		}
+		else if (!predictedDay){
+			if (predictString == "monday" || predictString == "tuesday" ||
+				predictString == "wednesday" || predictString == "thursday" ||
+				predictString == "friday" || predictString == "saturday"
+				|| predictString == "sunday"){
+				dayValue = predictString;
+				predictedDay = true;
+				hitFirstCommandWord = true;
+			}
+		}
+		else if (!predictedThis){
+			if (predictString == "this"){
+				predictedThis = true;
+				hitFirstCommandWord = true;
+			}
+		}
+		else if (!predictedNext){
+			if (predictString == "next"){
+				predictedThis = true;
+				hitFirstCommandWord = true;
+			}
+		}
+
+		if (!hitFirstCommandWord){
+			taskToAdd << " " << currentString;
+		}
+
+		iter++;
+	}
+
+	predictedArguments << taskToAdd.str();
+
+	//forming string
+	if (predictedFrom){
+		if (predictedDay&&predictedThis&&predictedNext){
+			predictedArguments << " from this " << dayValue << " to next ";
+		}
+		else if (predictedDay&&predictedThis&&!predictedNext){
+			predictedArguments << " from this " << dayValue << " to ";
+		}
+		else if (predictedDay&&!predictedThis&&predictedNext){
+			predictedArguments << " from next " << dayValue << " to ";
+		}
+		else if (predictedDay&&!predictedThis&&!predictedNext){
+			predictedArguments << " from " << dayValue << " to ";
+		}
+		else if (!predictedDay){
+			predictedArguments << " from ";
+		}
+	}
+	else if (predictedBy){
+		if (predictedDay&&predictedThis&&predictedNext){
+			predictedArguments << " by " << dayValue;
+		}
+		else if (predictedDay&&predictedThis&&!predictedNext){
+			predictedArguments << " by this " << dayValue;
+		}
+		else if (predictedDay&&!predictedThis&&predictedNext){
+			predictedArguments << " by next " << dayValue;
+		}
+		else if (predictedDay&&!predictedThis&&!predictedNext){
+			predictedArguments << " by " << dayValue;
+		}
+		else if (!predictedDay){
+			predictedArguments << " by ";
+		}
+
+	}
+	else if (predictedEvery){
+		if (predictedDay){
+			predictedArguments << " every " << dayValue;
+		}
+		else if (!predictedDay){
+			predictedArguments << " every ";
+		}
+		//logic for predictedMonth?
+	}
+
+	return predictedArguments.str();
+}
+
+string SuggestionBuilder::predictedString(string text){
+
+	//command words have higher priority
+	string predictString = predictedKeyword(text);
+
+	//days have next priority
+	if (predictString == ""){
+		predictString = predictedDay(text);
+	}
+
+	/*
+	//dates have final priority
+	if (predictString == ""){
+		predictString = predictedDate(text);
+	}*/
+
+	return predictString;
+
+}
+
+string SuggestionBuilder::predictedKeyword(string text){
+
+	if (isPredictedFrom(text)){
+		return "from";
+	}
+	else if (isPredictedTo(text)){
+		return "to";
+	}
+	else if (isPredictedNext(text)){
+		return "next";
+	}
+	else if (isPredictedBy(text)){
+		return "by";
+	}
+	else if (isPredictedThis(text)){
+		return "this";
+	}
+	else if (isPredictedEvery(text)){
+		return "every";
+	}
+	else{
+		return "";
+	}
+
+}
+
+bool SuggestionBuilder::isPredictedFrom(string userInput){
+
+	if (userInput == "f" || userInput == "fr" || 
+		userInput == "fro" || userInput == "from"){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedTo(string userInput){
+
+	if (userInput == "t" || userInput == "to"){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedNext(string userInput){
+
+	if (userInput == "n" || userInput == "ne" ||
+		userInput == "nex" || userInput == "next"){
+		return true;
+	}
+
+	return false;
+}
+
+
+bool SuggestionBuilder::isPredictedBy(string userInput){
+
+	if (userInput == "b" || userInput == "by" ){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedThis(string userInput){
+
+	if (userInput == "t" || userInput == "th" ||
+		userInput == "thi" || userInput == "this"){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedEvery(string userInput){
+
+	if (userInput == "e" || userInput == "ev" ||
+		userInput == "eve" || userInput == "ever"
+		|| userInput == "every"){
+		return true;
+	}
+
+	return false;
+}
+
+string SuggestionBuilder::predictedDay(string text){
+	
+	if (isPredictedMonday(text)){
+		return "monday";
+	}
+	else if (isPredictedTuesday(text)){
+		return "tuesday";
+	}
+	else if (isPredictedWednesday(text)){
+		return "wednesday";
+	}
+	else if (isPredictedThursday(text)){
+		return "thursday";
+	}
+	else if (isPredictedFriday(text)){
+		return "friday";
+	}
+	else if (isPredictedSaturday(text)){
+		return "saturday";
+	}
+	else if (isPredictedSunday(text)){
+		return "sunday";
+	}
+	else{
+		return "";
+	}
+}
+
+bool SuggestionBuilder::isPredictedMonday(string userInput){
+
+	if (userInput == "m" || userInput == "mo" ||
+		userInput == "mon" || userInput == "mond"
+		|| userInput == "monda" || userInput == "monday"){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedTuesday(string userInput){
+
+	if (userInput == "t" || userInput == "tu" ||
+		userInput == "tue" || userInput == "tues"
+		|| userInput == "tuesd" || userInput == "tuesda" 
+		|| userInput == "tuesday"){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedWednesday(string userInput){
+
+	if (userInput == "w" || userInput == "we" ||
+		userInput == "wed" || userInput == "wedn"
+		|| userInput == "wedne" || userInput == "wednes"
+		|| userInput == "wednesd" || userInput == "wednesda"
+		|| userInput == "wednesday"){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedThursday(string userInput){
+
+	if (userInput == "t" || userInput == "th" ||
+		userInput == "thu" || userInput == "thur"
+		|| userInput == "thurs" || userInput == "thursd"
+		|| userInput == "thursda" || userInput == "thursday"){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedFriday(string userInput){
+
+	if (userInput == "f" || userInput == "fr" ||
+		userInput == "fri" || userInput == "frid"
+		|| userInput == "frida" || userInput == "friday"){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedSaturday(string userInput){
+
+	if (userInput == "s" || userInput == "sa" ||
+		userInput == "sat" || userInput == "satu"
+		|| userInput == "satur" || userInput == "saturd"
+		|| userInput == "saturda" || userInput == "saturday"){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedSunday(string userInput){
+
+	if (userInput == "s" || userInput == "su" ||
+		userInput == "sun" || userInput == "sund"
+		|| userInput == "sunda" || userInput == "sunday"){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedCommandAdd(string userInput){
+	
+	if (userInput == "a" || userInput == "ad" || userInput == "add"){
+		return true;
+	}
+
+	if (StringDistance::LD(userInput.c_str(),"add")<=1){
+		return true;
+	}
+
+	return false;
+
+}
+
+bool SuggestionBuilder::isPredictedCommandDelete(string userInput){
+	
+	if (userInput == "d" || userInput == "de" || 
+		userInput == "del" || userInput == "dele" ||
+		userInput == "delet" || userInput == "delete"){
+		return true;
+	}
+
+	if (StringDistance::LD(userInput.c_str(), "delete") <= 1){
+		return true;
+	}
+
+	return false;
+}
+
+
+bool SuggestionBuilder::isPredictedCommandDisplay(string userInput){
+	
+	if (userInput == "d" || userInput == "di" || 
+		userInput == "dis" || userInput == "disp" ||
+		userInput == "displ" || userInput == "display"){
+		return true;
+	}
+
+	if (StringDistance::LD(userInput.c_str(), "display") <= 1){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedCommandExit(string userInput){
+	
+	if (userInput == "e" || userInput == "ex" ||
+		userInput == "exi" || userInput == "exit"){
+		return true;
+	}
+
+	if (StringDistance::LD(userInput.c_str(), "exit") <= 1){
+		return true;
+	}
+
+	return false;
+}
+
+
+bool SuggestionBuilder::isPredictedCommandMark(string userInput){
+
+	if (userInput == "m" || userInput == "ma" ||
+		userInput == "mar" || userInput == "mark"){
+		return true;
+	}
+
+	if (StringDistance::LD(userInput.c_str(), "mark") <= 1){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedCommandUndo(string userInput){
+
+	if (userInput == "u" || userInput == "un" ||
+		userInput == "und" || userInput == "undo"){
+		return true;
+	}
+
+	if (StringDistance::LD(userInput.c_str(), "undo") <= 1){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedCommandUnmark(string userInput){
+
+	if (userInput == "u" || userInput == "un" ||
+		userInput == "unm" || userInput == "unma" ||
+		userInput == "unmar" || userInput == "unmark"){
+		return true;
+	}
+
+	if (StringDistance::LD(userInput.c_str(), "unmark") <= 1){
+		return true;
+	}
+
+	return false;
+}
+
+bool SuggestionBuilder::isPredictedCommandUpdate(string userInput){
+
+	if (userInput == "u" || userInput == "up" ||
+		userInput == "upd" || userInput == "upda" ||
+		userInput == "updat" || userInput == "update"){
+		return true;
+	}
+
+	if (StringDistance::LD(userInput.c_str(), "update") <= 1){
+		return true;
+	}
+
+	return false;
+}
+
+/*
+* ====================================================================
+*  Additional functions
+* ====================================================================
+*/
+string SuggestionBuilder::removeFirstWord(string userCommand) {
+	return trim(replace(userCommand, getFirstWord(userCommand), ""));
+}
+
+string SuggestionBuilder::getFirstWord(string userCommand) {
+	string commandTypeString = splitParameters(userCommand)[0];
+	return commandTypeString;
+}
+
+// This method only split string based on delimiter space
+vector<string> SuggestionBuilder::splitParameters(string commandParametersString){
+	vector<string> tokens;
+	istringstream iss(commandParametersString);
+	copy(istream_iterator<string>(iss),
+		istream_iterator<string>(),
+		back_inserter<vector<string> >(tokens));
+
+	return tokens;
+}
+
+inline string SuggestionBuilder::trim_right(const string& s, const string& delimiters) {
+	return s.substr(0, s.find_last_not_of(delimiters) + 1);
+}
+
+inline string SuggestionBuilder::trim_left(const string& s, const string& delimiters) {
+	return s.substr(s.find_first_not_of(delimiters));
+}
+
+inline string SuggestionBuilder::trim(const string& s, const string& delimiters) {
+	if (!s.empty())
+		return trim_left(trim_right(s, delimiters), delimiters);
+	else
+		return s;
+}
+
+bool SuggestionBuilder::equalsIgnoreCase(const string& str1, const string& str2) {
+	if (str1.size() != str2.size()) {
+		return false;
+	}
+	for (string::const_iterator c1 = str1.begin(), c2 = str2.begin(); c1 != str1.end(); ++c1, ++c2) {
+		if (tolower(*c1) != tolower(*c2)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+int SuggestionBuilder::parseInt(string str) {
+	char c;
+	int i = 0;
+	std::stringstream ss(str);
+	ss >> i;
+	if (ss.fail() || ss.get(c)) {
+		return -1;
+	}
+	else {
+		return i;
+	}
+}
+
+string SuggestionBuilder::replace(string a, string b, string c) {
+	int pos;
+	do {
+		pos = a.find(b);
+		if (pos != -1)  a.replace(pos, b.length(), c);
+	} while (pos != -1);
+	return a;
+}
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\SuggestionBuilder.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\SuggestionBuilder.h
+	 */
+
+#pragma once
+#include <string>
+#include <algorithm>
+#include "CommandBuilder.h"
+#include "ParseException.h"
+#include "StringDistance.h"
+
+using namespace std;
+
+class SuggestionBuilder
+{
+public:
+	SuggestionBuilder();
+	~SuggestionBuilder();
+
+	static string suggestUserInput(string userInput);
+	static string suggestCommandType(string userInput);
+	static string suggestCommandArguments(string commandType, string userInput);
+	//static string commandToString(CommandBuilder::CommandType commandType);
+
+	static string predictCommandAdd(string userInput);
+
+	static bool isPredictedCommandAdd(string userInput);
+	static bool isPredictedCommandDelete(string userInput);
+	static bool isPredictedCommandDisplay(string userInput);
+	static bool isPredictedCommandExit(string userInput);
+	static bool isPredictedCommandMark(string userInput);
+	static bool isPredictedCommandUndo(string userInput);
+	static bool isPredictedCommandUnmark(string userInput);
+	static bool isPredictedCommandUpdate(string userInput);
+
+	//getting predicted string
+	static string predictedString(string text);
+
+	//getting predicted keywords
+	static string predictedKeyword(string text);
+	static bool isPredictedFrom(string userInput);
+	static bool isPredictedTo(string userInput);
+	static bool isPredictedNext(string userInput);
+	static bool isPredictedBy(string userInput);
+	static bool isPredictedThis(string userInput);
+	static bool isPredictedEvery(string userInput);
+
+	//getting predicted days
+	static string predictedDay(string text);
+	static bool isPredictedMonday(string userInput);
+	static bool isPredictedTuesday(string userInput);
+	static bool isPredictedWednesday(string userInput);
+	static bool isPredictedThursday(string userInput);
+	static bool isPredictedFriday(string userInput);
+	static bool isPredictedSaturday(string userInput);
+	static bool isPredictedSunday(string userInput);
+
+	static string predictedDate(string text);
+
+	/*
+	static const string TASK_NUMBER_SUGGESTION;
+	static const string TASK_DETAILS_SUGGESTION;
+	static const string TASK_DATE_SUGGESTION;
+	static const string TASK_DATE_SUGGESTION;
+	*/
+
+	static string removeFirstWord(string userCommand);
+	static string getFirstWord(string userCommand);
+	static vector<string> splitParameters(string commandParametersString);
+	static string trim_right(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static string trim_left(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static string trim(const string& s, const string& delimiters = " \f\n\r\t\v");
+	static bool equalsIgnoreCase(const string& str1, const string& str2);
+	static int parseInt(string str);
+	static string replace(string a, string b, string c);
+
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\SuggestionBuilder.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Task.cpp
+	 */
+
+#include "Task.h"
+
+
+Task::Task(string taskDetails,
+	Date *taskStartTime,
+	Date *taskEndTime,
+	Date *taskDeadline,
+	Task::Priority taskPriority){
+	_taskDetails = taskDetails;
+	_taskStartTime = taskStartTime;
+	_taskEndTime = taskEndTime;
+	_taskDeadline = taskDeadline;
+	_taskPriority = taskPriority;
+	_taskMarked = false;
+
+	if (_taskStartTime == NULL && _taskEndTime == NULL && _taskDeadline == NULL) {
+		_taskType = FLOATING;
+	}
+
+	else if (_taskDeadline == NULL) {
+		_taskType = TIMED;
+	}
+
+	else {
+		_taskType = DEADLINE;
+	}
+}
+
+//Destructor
+Task::~Task(){
+}
+
+//Modifiers
+void Task::setTaskDetails(string taskDetails){
+	_taskDetails = taskDetails;
+}
+
+void Task::setTaskStartTime(Date* taskStartTime){
+	_taskStartTime = taskStartTime;
+}
+
+void Task::setTaskEndTime(Date* taskEndTime){
+	_taskEndTime = taskEndTime;
+}
+
+void Task::setTaskDeadline(Date* taskDeadline){
+	_taskDeadline = taskDeadline;
+}
+
+void Task::setTaskPriority(Priority taskPriority){
+	_taskPriority = taskPriority;
+}
+
+void Task::setTaskMarked(bool taskMarked){
+	_taskMarked = taskMarked;
+}
+
+//Accessors
+Task::Type Task::getTaskType(){
+	return _taskType;
+}
+
+string Task::getTaskDetails(){
+	return _taskDetails;
+}
+
+Date* Task::getTaskStartTime(){
+	return _taskStartTime;
+}
+
+Date* Task::getTaskEndTime(){
+	return _taskEndTime;
+}
+
+Date* Task::getTaskDeadline(){
+	return _taskDeadline;
+}
+
+Task::Priority Task::getTaskPriority(){
+	return _taskPriority;
+}
+
+bool Task::getTaskMarked(){
+	return _taskMarked;
+}
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Task.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Task.h
+	 */
+
+#pragma once
+
+#include <string>
+#include <chrono>
+#include "Date.h"
+
+using namespace std;
+
+class Task{
+
+public:
+	enum Type {
+		TIMED, DEADLINE, FLOATING
+	};
+
+	enum Priority {
+		LOW, NORMAL, HIGH
+	};
+
+	//Constructor
+	Task::Task(string taskDetails,
+		Date *taskStartTime,
+		Date *taskEndTime,
+		Date *taskDeadline,
+		Task::Priority taskPriority);
+
+	//Destructor
+	Task::~Task();
+
+	//Modifiers
+	void Task::setTaskDetails(string taskDetails);
+	void Task::setTaskStartTime(Date* taskStartTime);
+	void Task::setTaskEndTime(Date* taskEndTime);
+	void Task::setTaskDeadline(Date* taskDeadline);
+	void Task::setTaskPriority(Priority taskPriority);
+	void Task::setTaskMarked(bool taskMarked);
+
+	//Accessors
+	Task::Type Task::getTaskType();
+	string Task::getTaskDetails();
+	Date* Task::getTaskStartTime();
+	Date* Task::getTaskEndTime();
+	Date* Task::getTaskDeadline();
+	Task::Priority Task::getTaskPriority();
+	bool Task::getTaskMarked();
+
+private:
+	Task::Type _taskType;
+	string _taskDetails;
+	Date *_taskStartTime;
+	Date *_taskEndTime;
+	Date *_taskDeadline;
+	Task::Priority _taskPriority;
+	bool _taskMarked;
+};
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\Task.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\TaskDisplayer.cpp
+	 */
+
+#include "TaskDisplayer.h"
+
+
+TaskDisplayer::TaskDisplayer()
+{
+}
+
+
+TaskDisplayer::~TaskDisplayer()
+{
+}
+
+string TaskDisplayer::parseAllTasksToDisplay(){
+	
+	TaskManager* instance = TaskManager::getInstance();
+
+	vector<Task>* allCurrentTasks = instance->getAllCurrentTasks();
+
+	ostringstream taskToDisplay;
+
+	vector<Task>::iterator iterTemp;
+
+	//takes care of the case where there is only 0 task
+	if (allCurrentTasks->size() == 0){
+		return "";
+	}
+
+	//should already be arranged in order
+	//this takes care of the case where by all current tasks has no deadline or timed task at all!
+	Task firstTask = allCurrentTasks->at(0);
+	if (!(firstTask.getTaskType() == Task::FLOATING)){
+		taskToDisplay << parseDateToDisplay(firstTask) << "\n";
+	}
+
+	//takes care of the case where there is only 1 task
+	if (allCurrentTasks->size() == 1){
+		taskToDisplay << parseOneTaskToDisplay(firstTask);
+	}
+
+	//iterating through 2 or more tasks to display
+	for (iterTemp = allCurrentTasks->begin(); iterTemp != allCurrentTasks->end(); ++iterTemp) {
+
+		//if ();
+
+	}
+
+	return "hello";
+}
+
+string TaskDisplayer::parseOneTaskToDisplay(Task currentTask){
+	
+	ostringstream taskToDisplay;
+	
+	taskToDisplay << "get stuff from display!";
+	
+	return "hello";
+}
+
+//assuming passing in a deadline task OR timed task
+string TaskDisplayer::parseDateToDisplay(Task currentTask){
+
+	ostringstream dateToDisplay;
+
+	Date* currentDate = currentTask.getTaskDeadline();
+	currentDate = currentTask.getTaskStartTime();
+
+	dateToDisplay << "[" << currentDate->getDay() << "/" << currentDate->getMonth()
+		<< "/" << currentDate->getYear() << "] " << currentDate->getDayName();
+
+	return dateToDisplay.str();
+}
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\TaskDisplayer.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\TaskDisplayer.h
+	 */
+
+#pragma once
+#include "TaskManager.h"
+#include "Task.h"
+#include <string>
+#include <vector>
+
+using namespace std;
+
+class TaskDisplayer
+{
+public:
+	TaskDisplayer();
+	~TaskDisplayer();
+
+	static string parseAllTasksToDisplay();
+
+	static string parseOneTaskToDisplay(Task currentTasks);
+
+	static string parseDateToDisplay(Task currentTasks);
+};
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\TaskDisplayer.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\TaskManager.cpp
+	 */
+
+#include "TaskManager.h"
+
+
+// Global static pointer used to ensure a single instance of the class.
+TaskManager* TaskManager::_instance = NULL;
+vector<Task>* TaskManager::_allCurrentTasks = new vector<Task>;
+
+vector<Task>* TaskManager::_allTimedTasks = new vector<Task>;
+vector<Task>* TaskManager::_allFloatingTasks= new vector<Task>;
+vector<Task>* TaskManager::_allMarkedTimedTasks = new vector<Task>;
+vector<Task>* TaskManager::_allMarkedFloatingTasks = new vector<Task>;
+
+
+TaskManager::TaskManager()
+{
+}
+
+TaskManager* TaskManager::getInstance(){
+	if (!_instance)
+		_instance = new TaskManager;
+	return _instance;
+}
+
+int TaskManager::getNumberOfTasks(){
+	if (_allCurrentTasks->size() == 0){
+		return 0;
+	}
+	else{
+		return _allCurrentTasks->size();
+	}
+}
+
+vector<Task>* TaskManager::getAllCurrentTasks(){
+	return _allCurrentTasks;
+}
+
+vector<Task>* TaskManager::getAllTimedTasks(){
+	return _allTimedTasks;
+}
+
+vector<Task>* TaskManager::getAllFloatingTasks(){
+	return _allFloatingTasks;
+}
+
+vector<Task>* TaskManager::getAllMarkedTimedTasks(){
+	return _allMarkedTimedTasks;
+}
+
+vector<Task>* TaskManager::getAllMarkedFloatingTasks(){
+	return _allMarkedFloatingTasks;
+}
+
+void TaskManager::setAllCurrentTasks(){
+	
+	//reset all current tasks
+	_allCurrentTasks->clear();
+	
+	//iterate through _allTimedTasks first
+	for (unsigned int i = 0; i < _allTimedTasks->size(); i++){
+		_allCurrentTasks->push_back(_allTimedTasks->at(i));
+	}
+
+	//iterate through _allFloatingTasks next
+	for (unsigned int i = 0; i < _allFloatingTasks->size(); i++){
+		_allCurrentTasks->push_back(_allFloatingTasks->at(i));
+	}
+
+	//iterate through _allMarkedTimedTasks next
+	for (unsigned int i = 0; i < _allMarkedTimedTasks->size(); i++){
+		_allCurrentTasks->push_back(_allMarkedTimedTasks->at(i));
+	}
+
+	//iterate through _allMarkedFloatingTasks next
+	for (unsigned int i = 0; i < _allMarkedFloatingTasks->size(); i++){
+		_allCurrentTasks->push_back(_allMarkedFloatingTasks->at(i));
+	}
+}
+
+
+void TaskManager::loadAllCurrentTasks(vector<Task> allCurrentTasks){
+	vector<Task>::iterator iterTasks;
+	for (iterTasks = allCurrentTasks.begin(); 
+		iterTasks != allCurrentTasks.end(); ++iterTasks){
+		addTask(*iterTasks);
+	}
+}
+
+int TaskManager::addTask(Task task){
+
+	int indexAddedTo=0;
+
+	//adding to vector _allTimedTasks
+	if ((task.getTaskType() == Task::DEADLINE || task.getTaskType() == Task::TIMED)
+		&& !task.getTaskMarked()){
+		indexAddedTo += addTimedTask(task, _allTimedTasks);
+	}
+
+	//adding to vector _allFloatingTasks
+	else if ((task.getTaskType() == Task::FLOATING) && !task.getTaskMarked()){
+		indexAddedTo += addFloatingTask(task, _allFloatingTasks);
+		//account for the fact that all floating tasks will be below in the vector
+		indexAddedTo += _allTimedTasks->size();
+	}
+
+	//adding to vector _allMarkedTimedTasks
+	else if (task.getTaskType() == Task::DEADLINE || task.getTaskType() == Task::TIMED){
+		indexAddedTo += addTimedTask(task, _allMarkedTimedTasks);
+		indexAddedTo += _allTimedTasks->size() + _allFloatingTasks->size();
+	}
+
+	//adding to vector _allMarkedFloatingTasks
+	else if (task.getTaskType() == Task::FLOATING){
+		indexAddedTo += addFloatingTask(task, _allMarkedFloatingTasks);
+		indexAddedTo += _allTimedTasks->size() + _allFloatingTasks->size()+ 
+			_allMarkedTimedTasks->size();
+
+	}
+
+	else{
+		assert("Task is not timed, deadline nor floating!");
+	}
+
+	//sets _allCurrentTasks to an addition of the 4 vectors
+	setAllCurrentTasks();
+
+	//saves _allCurrentTasks
+	saveTasks();
+
+	return indexAddedTo;
+}
+
+int TaskManager::addFloatingTask(Task task, vector<Task>* floatingTasks){
+
+	vector<Task>::iterator iterFloating;
+	vector <Task> tempFloating;
+	int addedIndex=0;
+
+	if (floatingTasks->empty()) {
+		tempFloating.push_back(task);
+	}
+	else {
+		for (iterFloating = floatingTasks->begin();
+			iterFloating != floatingTasks->end(); ++iterFloating) {
+			if (task.getTaskDetails().compare(iterFloating->getTaskDetails()) <= 0) {
+				tempFloating.push_back(task);
+				break;
+			}
+			else{
+				tempFloating.push_back(*iterFloating);
+			}
+			addedIndex++;
+		}
+
+		if (iterFloating == floatingTasks->end()){
+			tempFloating.push_back(task);
+		}
+		else{
+			while (iterFloating != floatingTasks->end()){
+				tempFloating.push_back(*iterFloating);
+				++iterFloating;
+			}
+		}
+	}
+
+	//adding to floatingTasks
+	floatingTasks->clear();
+	for (unsigned int i = 0; i < tempFloating.size(); i++){
+		floatingTasks->push_back(tempFloating[i]);
+	}
+
+	return addedIndex;
+}
+
+int TaskManager::addTimedTask(Task task, vector<Task>* timedTasks){
+
+	vector<Task>::iterator iterTimed;
+	vector <Task> tempTimed;
+	int addedIndex = 0;
+
+	if (task.getTaskType() == Task::TIMED) {
+		if (timedTasks->empty()) {
+			tempTimed.push_back(task);
+		}
+		else {
+			for (iterTimed = timedTasks->begin(); iterTimed != timedTasks->end(); ++iterTimed) {
+				if (iterTimed->getTaskType() == Task::DEADLINE) {
+					if (task.getTaskStartTime()->isEarlierThan(*(iterTimed->getTaskDeadline())) > 0) {
+						tempTimed.push_back(task);
+						break;
+					}
+					else if (task.getTaskStartTime()->isEarlierThan(*(iterTimed->getTaskDeadline())) == 0) {
+						if (task.getTaskDetails().compare(iterTimed->getTaskDetails()) <= 0) {
+							tempTimed.push_back(task);
+							break;
+						}
+					}
+				}
+				else if (iterTimed->getTaskType() == Task::TIMED) {
+					if (task.getTaskStartTime()->isEarlierThan(*(iterTimed->getTaskStartTime())) > 0) {
+						tempTimed.push_back(task);
+						break;
+					}
+					else if (task.getTaskStartTime()->isEarlierThan(*(iterTimed->getTaskStartTime())) == 0) {
+						if (task.getTaskDetails().compare(iterTimed->getTaskDetails()) <= 0) {
+							tempTimed.push_back(task);
+							break;
+						}
+					}
+				}
+				tempTimed.push_back(*iterTimed);
+				++addedIndex;
+			}
+
+			if (iterTimed == timedTasks->end()){
+				tempTimed.push_back(task);
+			}
+			else{
+				while (iterTimed != timedTasks->end()){
+					tempTimed.push_back(*iterTimed);
+					++iterTimed;
+				}
+			}
+		}
+	} else if (task.getTaskType() == Task::DEADLINE) {
+		if (timedTasks->empty()) {
+			tempTimed.push_back(task);
+		}
+		else {
+			for (iterTimed = timedTasks->begin(); iterTimed != timedTasks->end(); ++iterTimed) {
+				if (iterTimed->getTaskType() == Task::DEADLINE) {
+					if (task.getTaskDeadline()->isEarlierThan(*(iterTimed->getTaskDeadline())) > 0) {
+						tempTimed.push_back(task);
+						break;
+					}
+					else if (task.getTaskDeadline()->isEarlierThan(*(iterTimed->getTaskDeadline())) == 0) {
+						if (task.getTaskDetails().compare(iterTimed->getTaskDetails()) <= 0) {
+							tempTimed.push_back(task);
+							break;
+						}
+					}
+				}
+				else if (iterTimed->getTaskType() == Task::TIMED) {
+					if (task.getTaskDeadline()->isEarlierThan(*(iterTimed->getTaskStartTime())) > 0) {
+						tempTimed.push_back(task);
+						break;
+					}
+					else if (task.getTaskDeadline()->isEarlierThan(*(iterTimed->getTaskStartTime())) == 0) {
+						if (task.getTaskDetails().compare(iterTimed->getTaskDetails()) <= 0) {
+							tempTimed.push_back(task);
+							break;
+						}
+					}
+				}
+				tempTimed.push_back(*iterTimed);
+				++addedIndex;
+			}
+
+			if (iterTimed == timedTasks->end()){
+				tempTimed.push_back(task);
+			}
+			else{
+				while (iterTimed != timedTasks->end()){
+					tempTimed.push_back(*iterTimed);
+					++iterTimed;
+				}
+			}
+		}
+	}
+
+	timedTasks->clear();
+	for (unsigned int i = 0; i < tempTimed.size(); i++){
+		timedTasks->push_back(tempTimed[i]);
+	}
+
+	return addedIndex;
+}
+
+
+Task TaskManager::getTask(int taskNumber){
+	if (taskNumber>_allCurrentTasks->size()){
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+	return _allCurrentTasks->at(taskNumber - 1);
+}
+
+void TaskManager::removeTask(int taskNumber){
+
+	int timedTaskSize = _allTimedTasks->size();
+	int floatingTaskSize = _allFloatingTasks->size();
+	int markedTimedTaskSize = _allMarkedTimedTasks->size();
+	int markedFloatingTaskSize = _allMarkedFloatingTasks->size();
+	
+	if (taskNumber <= timedTaskSize){
+		_allTimedTasks->erase(_allTimedTasks->begin() + taskNumber - 1);
+	}
+	else if (taskNumber <= timedTaskSize + floatingTaskSize){
+		int index = taskNumber - 1 - timedTaskSize;
+		_allFloatingTasks->erase(_allFloatingTasks->begin() + index);
+	}
+	else if (taskNumber <= timedTaskSize + floatingTaskSize + markedTimedTaskSize){
+		int index = taskNumber - 1 - timedTaskSize - floatingTaskSize;
+		_allMarkedTimedTasks->erase(_allMarkedTimedTasks->begin() + index);
+	}
+	else if (taskNumber <= timedTaskSize + floatingTaskSize + markedTimedTaskSize + 
+		markedFloatingTaskSize){
+		int index = taskNumber - 1 - timedTaskSize - floatingTaskSize - markedTimedTaskSize;
+		_allMarkedFloatingTasks->erase(_allMarkedFloatingTasks->begin() + index);
+	}
+	else{
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+	}
+
+	setAllCurrentTasks();
+	
+	saveTasks();
+}
+
+void TaskManager::markTask(int taskNumber){
+	Task task = getTask(taskNumber);
+	task.setTaskMarked(true);
+	removeTask(taskNumber);
+	addTask(task);
+	setAllCurrentTasks();
+	saveTasks();
+}
+
+void TaskManager::unmarkTask(int taskNumber){
+	Task task = getTask(taskNumber);
+	task.setTaskMarked(false);
+	removeTask(taskNumber);
+	addTask(task);
+	setAllCurrentTasks();
+	saveTasks();
+}
+
+void TaskManager::saveTasks(){
+	Storage* storage = Storage::getInstance();
+	storage->writeToFile();
+}
+
+
+const string TaskManager::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\TaskManager.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\TaskManager.h
+	 */
+
+#pragma once
+#include <string>
+#include <algorithm>
+#include <vector>
+#include "Task.h"
+#include "Storage.h"
+#include "CommandException.h"
+
+using namespace std;
+class TaskManager
+{
+public:
+	static vector<Task>* getAllCurrentTasks();
+	static vector<Task>* getAllTimedTasks();
+	static vector<Task>* getAllFloatingTasks();
+	static vector<Task>* getAllMarkedTimedTasks();
+	static vector<Task>* getAllMarkedFloatingTasks();
+
+	static int getNumberOfTasks();
+	static TaskManager* getInstance();
+
+	//return int value of the index the task was added to
+	static int addTask(Task task);
+	static int addFloatingTask(Task task, vector<Task>* floatingTasks);
+	static int addTimedTask(Task task, vector<Task>* timedTasks);
+
+	static Task getTask(int taskNumber);
+	static void removeTask(int taskNumber);
+	static void TaskManager::saveTasks();
+	static void TaskManager::markTask(int taskNumber);
+	static void TaskManager::unmarkTask(int taskNumber);
+	static void TaskManager::sortTasks();
+	static void setAllCurrentTasks();
+	static void loadAllCurrentTasks(vector<Task> allCurrentTasks);
+
+	static const string TaskManager::ERROR_MESSAGE_COMMAND_TASKNUM;
+
+private:
+	TaskManager();
+
+	static vector<Task>* _allCurrentTasks;
+	static vector<Task>* TaskManager::_allFloatingTasks;
+	static vector<Task>* TaskManager::_allTimedTasks;
+	static vector<Task>* TaskManager::_allMarkedFloatingTasks;
+	static vector<Task>* TaskManager::_allMarkedTimedTasks;
+
+	//copy constructor is private
+	TaskManager& operator=(TaskManager const&){};
+
+	static TaskManager *_instance;
+	};
+
+
+
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\Logic\TaskManager.h
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\CommandBuilderTests.cpp
+	 */
+
+#pragma once
+#include "stdafx.h"
+#include "CppUnitTest.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace LogicTest
+{
+	TEST_CLASS(CommandBuilderTests)
+	{
+	public:
+		
+		TEST_METHOD(CommandBuilderTest1)
+		{
+			//checking that commandBuilder is cleared properly to be used by the next iteration
+			CommandBuilder commandBuilder = CommandBuilder::CommandBuilder();
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskDetails() == "");
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskDeadline() == nullptr);
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskStartTime() == nullptr);
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskEndTime() == nullptr);
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskPriority() == Task::NORMAL);
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskMarked() == false);
+			Assert::AreEqual<bool>(true, commandBuilder.getTaskNumber() == -1);
+
+			//Checking constructing of a add command properly
+			Command* addCommand = commandBuilder.parseCommand("add hello");
+			//Assert::AreEqual<std::string>("CommandAdd", typeid(addCommand).name());
+			Assert::AreEqual<std::string>("Task has been added!", addCommand->execute());
+
+			//Checking constructing of a delete command properly
+			//Command* deleteCommand = commandBuilder.parseCommand("delete 1");
+			//Assert::AreEqual<std::string>("Deleted Task #%d", deleteCommand->execute());
+
+			//Checking constructing of an update command properly
+			//Command* updateCommand = commandBuilder.parseCommand("update 1");
+			//Assert::AreEqual<std::string>("Deleted Task #%d", updateCommand->execute());
+		}
+
+	};
+}
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\CommandBuilderTests.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\StringDistanceTest.cpp
+	 */
+
+#pragma once
+#include "stdafx.h"
+#include "CppUnitTest.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace LogicTest
+{
+	TEST_CLASS(StringDistanceTest){
+	public:
+		TEST_METHOD(StringDistanceTest1){
+			Assert::AreEqual<int>(0, StringDistance::LD("hello", "hello"));
+			Assert::AreEqual<int>(1, StringDistance::LD("hello", "hell"));
+			Assert::AreEqual<int>(2, StringDistance::LD("hello", "helol"));
+			Assert::AreEqual<int>(2, StringDistance::LD("hello", "hlo"));
+		}
+	};
+}
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\StringDistanceTest.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\SuggestionBuilderTest.cpp
+	 */
+
+#pragma once
+#include "stdafx.h"
+#include "CppUnitTest.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace LogicTest
+{
+	TEST_CLASS(SuggestionBuilderTest){
+	public:
+		TEST_METHOD(SuggestionBuilderTest1){
+			//Testing extreme cases of suggested command types
+			//Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("") == "");
+
+			//Testing parsing of suggested command types for add, different extreme cases
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType(" a") == "add");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("a") == "add");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("a ") == "add");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("ad") == "add");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("add") == "add");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("add hello ") == "add");
+
+			//Testing parsing of suggested command types for all other command types
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("del") == "delete");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("disp") == "display");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("exit") == "exit");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("mar") == "mark");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("und") == "undo");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("upd") == "update");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandType("unm") == "unmark");
+
+			//Testing parsing of suggested command arguments
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("delete", "nil") == "");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("display", "nil") == "");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("exit", "nil") == "");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("mark", "nil") == "");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("undo", "nil") == "");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("unmark", "nil") == "");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::suggestCommandArguments("update", "nil") == "");
+
+			//Testing parsing of suggested command arguments
+			Assert::AreEqual<bool>(true, SuggestionBuilder::predictedString("fr") == "from");
+
+			//Testing prediction of command arguments for add, "from"
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello") == " hello");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello f") == " hello from ");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello fr ") == " hello from ");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello fr mon") == " hello from monday to ");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello fr mon t") == " hello from monday to ");
+			//was thinking to fix this, if there are more words than suggestions, dun return anything!
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello fr mon t tue") == " hello from monday to ");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add tue hello fr") == " tue hello from ");
+
+			//Testing prediction of command arguments for add, "by"
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello b sat") == " hello by saturday");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello mummy b sun") == " hello mummy by sunday");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestCommandArguments("add", "add hello mummy bye b sun") == " hello mummy bye by sunday");
+
+			//Testing suggestion of entire user input
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestUserInput("add hello b sat") == "add hello by saturday");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestUserInput("add hello fr sat t") == "add hello from saturday to ");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestUserInput("del ") == "delete");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestUserInput("del 1") == "delete");
+			Assert::AreEqual<bool>(true, SuggestionBuilder::
+				suggestUserInput("dis") == "display");
+		}
+	};
+}
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\SuggestionBuilderTest.cpp
+
+
+
+
+
+	/**
+	 * origin: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\TaskManagerTest.cpp
+	 */
+
+#pragma once
+#include "stdafx.h"
+#include "CppUnitTest.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+namespace LogicTest
+{
+	TEST_CLASS(TaskManagerTest){
+	public:
+		TEST_METHOD(TaskManagerTest1)
+		{
+			//checking both instances are the same, singleton class
+			TaskManager* instance1 = TaskManager::getInstance();
+			TaskManager* instance2 = TaskManager::getInstance();
+			Assert::AreEqual<bool>(true, typeid(*instance1) == typeid(*instance2));
+		}
+	};
+}
+	// End of segment: C:\Users\Adi!\Desktop\CS2103\Taskky\LogicTests\TaskManagerTest.cpp
+
+
+
+
+

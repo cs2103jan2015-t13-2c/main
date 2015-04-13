@@ -1,3 +1,4 @@
+//@author A0094024M
 /*
 This class is to handle the search command. As an object of this class is constructed, it will
 take in the specific attributes as the search objects and search accordingly (e.g. setting 
@@ -12,8 +13,6 @@ Available searches:
 6. Search tasks of specified priority
 7. Search tasks that are done / undone (either)
 8. Search next empty slot
-
-@author: A0094024M Adisurya Nataprawira
 */
 
 #include "CommandSearch.h"
@@ -537,6 +536,7 @@ bool CommandSearch::containNearMatch(string searchName, string taskName){
 	return nearMatch;
 }
 
+
 /*
 * ====================================================================
 *  Additional functions
@@ -553,6 +553,7 @@ string CommandSearch::removeFirstWord(string userCommand){
 	//return trim(replace(userCommand, getFirstWord(userCommand), ""));
 }
 
+//@author A0094024 -reused
 string CommandSearch::getFirstWord(string userCommand){
 	string commandTypeString = splitParameters(userCommand)[0];
 	return commandTypeString;

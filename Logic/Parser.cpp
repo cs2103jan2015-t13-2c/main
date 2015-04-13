@@ -1,3 +1,4 @@
+//@author A0113716M
 /*
 This class is to parse the command line for TASKKY.
 
@@ -8,9 +9,6 @@ to the Command Builder.
 For example, calling "add task by 10 may" will return _taskDetails = "task" 
 and _taskDeadline = "10 may" to the Command Builder, which will create a 
 task based on these parameters.
-
-
-@author: A0113716M Kelvin Koa
 */
 
 #include "Parser.h"
@@ -40,7 +38,6 @@ void Parser::parseCommandAdd(string userCommand){
 	if (text == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_ADD);
 // ----------------------------------------------------------------------
-	toLowerCase(text);
 	vector<string> textVec = splitParameters(text);
 	textVec.push_back("\n");	//Represents the end of vector
 
@@ -61,7 +58,7 @@ void Parser::parseCommandAdd(string userCommand){
 	temp.str("");
 
 	//Adding task deadline (if it is deadline task)
-	if (*iter == "by"){
+	if (equalsIgnoreCase(*iter, "by")){
 		iter++;
 		while (!isKeyword(*iter)){
 			temp << *iter << " ";
@@ -73,9 +70,9 @@ void Parser::parseCommandAdd(string userCommand){
 	}
 
 	//Adding task start time (if it is timed task)
-	if (*iter == "from"){
+	if (equalsIgnoreCase(*iter, "from")){
 		iter++;
-		while (*iter != "to"){
+		while (!equalsIgnoreCase(*iter, "to")){
 // -------------------------Error Catching-------------------------------
 			if (iter == textVec.end())
 				throw CommandException(ERROR_MESSAGE_COMMAND_NOENDTIME);
@@ -103,11 +100,9 @@ void Parser::parseCommandAdd(string userCommand){
 	}
 
 	//Adding task priority
-	if (*iter == "#impt" || *iter == "#high"){
+	if (equalsIgnoreCase(*iter, "#impt") || equalsIgnoreCase(*iter, "#high")){
 		_taskPriority = Task::Priority::HIGH;
-	} else if (*iter == "#low"){
-		_taskPriority = Task::Priority::LOW;
-	}
+	} 
 }
 
 /*
@@ -124,7 +119,6 @@ void Parser::parseCommandUpdate(string userCommand){
 	if (text == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_UPDATE);
 // ----------------------------------------------------------------------
-	toLowerCase(text);
 
 	//Getting the task to change
 	string taskNumberStr = getFirstWord(text);
@@ -139,6 +133,7 @@ void Parser::parseCommandUpdate(string userCommand){
 
 	//Getting the attribute to change
 	text = removeFirstWord(text);
+	toLowerCase(text);
 // -------------------------Error Catching-------------------------------
 	if (text == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_UPDATEARGUMENTS);
@@ -169,9 +164,7 @@ void Parser::parseCommandUpdate(string userCommand){
 		_taskEndTime = (parseTimeString(updatedStr+" "));
 	} 
 	else if (attributeToChange == "priority"){
-		if (updatedStr == "low"){
-			_taskPriority = Task::Priority::LOW;
-		} else if (updatedStr == "normal"){
+		if (updatedStr == "normal"){
 			_taskPriority = Task::Priority::NORMAL;
 		} else if (updatedStr == "high"){
 			_taskPriority = Task::Priority::HIGH;
@@ -233,6 +226,7 @@ void Parser::parseCommandUnmark(string userCommand){
 	_taskNumber = atoi(task_number_str.c_str());
 }
 
+//@author A0122357L
 /*
 * ====================================================================
 *  Parser for Command Search
@@ -258,9 +252,9 @@ void Parser::parseCommandSearch(string userCommand){
 	temp.str("");
 
 	//Search using task start time 
-	if (*iter == "from"){
+	if (equalsIgnoreCase(*iter, "from")){
 		iter++;
-		while (*iter != "to"){
+		while (!equalsIgnoreCase(*iter, "to")){
 			temp << *iter << " ";
 			iter++;
 
@@ -284,7 +278,7 @@ void Parser::parseCommandSearch(string userCommand){
 	}
 
 	//Search for tasks before a certain date
-	if (*iter == "before"){
+	if (equalsIgnoreCase(*iter, "before")){
 		iter++;
 		while (!isSearchKeyword(*iter)){
 			temp << *iter << " ";
@@ -296,7 +290,7 @@ void Parser::parseCommandSearch(string userCommand){
 	}
 
 	//Search for tasks after a certain date
-	if (*iter == "after"){
+	if (equalsIgnoreCase(*iter, "after")){
 		iter++;
 		while (!isSearchKeyword(*iter)){
 			temp << *iter << " ";
@@ -308,27 +302,24 @@ void Parser::parseCommandSearch(string userCommand){
 	}
 
 	//Search for marked/unmarked tasks
-	if (*iter == "done"){
+	if (equalsIgnoreCase(*iter, "done")){
 		_taskMarked = true;
 		_foundMarked = true;
-	} else if (*iter == "undone"){
+	} else if (equalsIgnoreCase(*iter, "undone")){
 		_taskMarked = false;
 		_foundMarked = true;
 	}
 
 	//Search using priority
-	if (*iter == "#impt" || *iter == "#high"){
+	if (equalsIgnoreCase(*iter, "#impt") || equalsIgnoreCase(*iter, "#high")){
 		_taskPriority = Task::Priority::HIGH;
 		_foundPriority = true;
-	} else if (*iter == "#low"){
-		_taskPriority = Task::Priority::LOW;
-		_foundPriority = true;
-	}
+	} 
 
 	//Search for next available timeslot
-	if (*iter == "next"){
+	if (equalsIgnoreCase(*iter, "next")){
 		iter++;
-		if (*iter == "available") {
+		if (equalsIgnoreCase(*iter, "available")) {
 			iter++;
 		}
 		while (!isSearchKeyword(*iter)){
@@ -351,13 +342,18 @@ void Parser::parseCommandChangeFileLocation(string userCommand){
 	_taskDetails = text;
 }
 
+//@author A0113716M -reused
 /*
 * ====================================================================
 *  Additional functions
 * ====================================================================
 */
 string Parser::removeFirstWord(string userCommand){
-	return trim(replace(userCommand, getFirstWord(userCommand), ""));
+	size_t firstSpace = userCommand.find_first_of(' ');
+	return userCommand.substr(firstSpace + 1, userCommand.npos);
+
+	//old function
+	//return trim(replace(userCommand, getFirstWord(userCommand), ""));
 }
 
 string Parser::getFirstWord(string userCommand){
@@ -438,18 +434,23 @@ string Parser::replace(string a, string b, string c) {
 	return a;
 }
 
+//@author A0113716M
 bool Parser::isKeyword(string word){
-	return (word == "by" || word == "from" || word == "every" || word == "#impt" ||
-			word == "#high" || word == "#low" || word == "\n");
+	return (equalsIgnoreCase(word, "by") || equalsIgnoreCase(word, "from") || 
+			equalsIgnoreCase(word, "#impt") || equalsIgnoreCase(word, "#high") ||
+			word == "\n");
 }
 
 bool Parser::isSearchKeyword(string word){
-	return (word == "by" || word == "from" || word == "before" || word == "after" ||
-		word == "#high" || word == "#low" || word == "#impt" || word == "\n"
-		|| word == "done" || word == "undone" || word == "next");
+	return (equalsIgnoreCase(word, "by") || equalsIgnoreCase(word, "from") ||
+			equalsIgnoreCase(word, "#impt") || equalsIgnoreCase(word, "#high") ||
+			equalsIgnoreCase(word, "before") || equalsIgnoreCase(word, "after") ||
+			equalsIgnoreCase(word, "done") || equalsIgnoreCase(word, "undone") ||
+			equalsIgnoreCase(word, "next") || word == "\n");
 }
 
 Date* Parser::parseTimeString(string timeStr){
+	toLowerCase(timeStr);
 // -------------------------Error Catching-------------------------------
 	if (timeStr == "")
 		throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);

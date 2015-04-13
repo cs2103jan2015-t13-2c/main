@@ -1,8 +1,8 @@
+//@author A0094024M
+
 /*
 This class is to check the directory location of the save file for TASKKY.
 Functionalities include showing the directory in which the save file will be written.
-
-@author: A0094024M Adisurya Nataprawira
 */
 
 #include "CommandCheckFileLocation.h"
