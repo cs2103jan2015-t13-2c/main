@@ -14,9 +14,7 @@ namespace LogicTest
 
 			//making sure task has been added to the back of the task vector
 			Assert::AreEqual<bool>(true, Controller::processUserInput("add hello") == "Task has been added!");
-			int numOfTasks = instance->getNumberOfTasks();
-			Assert::AreEqual<bool>(true, allCurrentTasks->at(numOfTasks - 1).getTaskDetails() == "hello");
-
+		} TEST_METHOD(SystemTest2){
 			//add tasks by today test
 
 			Assert::AreEqual<bool>(true, Controller::processUserInput("delete 1") == "Deleted Task #1");

@@ -40,7 +40,6 @@ void Parser::parseCommandAdd(string userCommand){
 	if (text == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_ADD);
 // ----------------------------------------------------------------------
-	toLowerCase(text);
 	vector<string> textVec = splitParameters(text);
 	textVec.push_back("\n");	//Represents the end of vector
 
@@ -61,7 +60,7 @@ void Parser::parseCommandAdd(string userCommand){
 	temp.str("");
 
 	//Adding task deadline (if it is deadline task)
-	if (*iter == "by"){
+	if (equalsIgnoreCase(*iter, "by")){
 		iter++;
 		while (!isKeyword(*iter)){
 			temp << *iter << " ";
@@ -73,9 +72,9 @@ void Parser::parseCommandAdd(string userCommand){
 	}
 
 	//Adding task start time (if it is timed task)
-	if (*iter == "from"){
+	if (equalsIgnoreCase(*iter, "from")){
 		iter++;
-		while (*iter != "to"){
+		while (!equalsIgnoreCase(*iter, "to")){
 // -------------------------Error Catching-------------------------------
 			if (iter == textVec.end())
 				throw CommandException(ERROR_MESSAGE_COMMAND_NOENDTIME);
@@ -103,7 +102,7 @@ void Parser::parseCommandAdd(string userCommand){
 	}
 
 	//Adding task priority
-	if (*iter == "#impt" || *iter == "#high"){
+	if (equalsIgnoreCase(*iter, "#impt") || equalsIgnoreCase(*iter, "high")){
 		_taskPriority = Task::Priority::HIGH;
 	}
 }
@@ -122,7 +121,6 @@ void Parser::parseCommandUpdate(string userCommand){
 	if (text == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_UPDATE);
 // ----------------------------------------------------------------------
-	toLowerCase(text);
 
 	//Getting the task to change
 	string taskNumberStr = getFirstWord(text);
@@ -137,6 +135,7 @@ void Parser::parseCommandUpdate(string userCommand){
 
 	//Getting the attribute to change
 	text = removeFirstWord(text);
+	toLowerCase(text);
 // -------------------------Error Catching-------------------------------
 	if (text == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_UPDATEARGUMENTS);
@@ -254,9 +253,9 @@ void Parser::parseCommandSearch(string userCommand){
 	temp.str("");
 
 	//Search using task start time 
-	if (*iter == "from"){
+	if (equalsIgnoreCase(*iter, "from")){
 		iter++;
-		while (*iter != "to"){
+		while (equalsIgnoreCase(*iter, "to")){
 			temp << *iter << " ";
 			iter++;
 
@@ -280,7 +279,7 @@ void Parser::parseCommandSearch(string userCommand){
 	}
 
 	//Search for tasks before a certain date
-	if (*iter == "before"){
+	if (equalsIgnoreCase(*iter, "before")){
 		iter++;
 		while (!isSearchKeyword(*iter)){
 			temp << *iter << " ";
@@ -292,7 +291,7 @@ void Parser::parseCommandSearch(string userCommand){
 	}
 
 	//Search for tasks after a certain date
-	if (*iter == "after"){
+	if (equalsIgnoreCase(*iter, "after")){
 		iter++;
 		while (!isSearchKeyword(*iter)){
 			temp << *iter << " ";
@@ -304,24 +303,24 @@ void Parser::parseCommandSearch(string userCommand){
 	}
 
 	//Search for marked/unmarked tasks
-	if (*iter == "done"){
+	if (equalsIgnoreCase(*iter, "done")){
 		_taskMarked = true;
 		_foundMarked = true;
-	} else if (*iter == "undone"){
+	} else if (equalsIgnoreCase(*iter, "undone")){
 		_taskMarked = false;
 		_foundMarked = true;
 	}
 
 	//Search using priority
-	if (*iter == "#impt" || *iter == "#high"){
+	if (equalsIgnoreCase(*iter, "#impt") || equalsIgnoreCase(*iter, "#high")){
 		_taskPriority = Task::Priority::HIGH;
 		_foundPriority = true;
 	} 
 
 	//Search for next available timeslot
-	if (*iter == "next"){
+	if (equalsIgnoreCase(*iter, "next")){
 		iter++;
-		if (*iter == "available") {
+		if (equalsIgnoreCase(*iter, "available")) {
 			iter++;
 		}
 		while (!isSearchKeyword(*iter)){
@@ -432,17 +431,21 @@ string Parser::replace(string a, string b, string c) {
 }
 
 bool Parser::isKeyword(string word){
-	return (word == "by" || word == "from" || word == "every" || word == "#impt" ||
-			word == "#high" || word == "#low" || word == "\n");
+	return (equalsIgnoreCase(word, "by") || equalsIgnoreCase(word, "from") || 
+			equalsIgnoreCase(word, "#impt") || equalsIgnoreCase(word, "#high") ||
+			word == "\n");
 }
 
 bool Parser::isSearchKeyword(string word){
-	return (word == "by" || word == "from" || word == "before" || word == "after" ||
-		word == "#high" || word == "#low" || word == "#impt" || word == "\n"
-		|| word == "done" || word == "undone" || word == "next");
+	return (equalsIgnoreCase(word, "by") || equalsIgnoreCase(word, "from") ||
+			equalsIgnoreCase(word, "#impt") || equalsIgnoreCase(word, "#high") ||
+			equalsIgnoreCase(word, "before") || equalsIgnoreCase(word, "after") ||
+			equalsIgnoreCase(word, "done") || equalsIgnoreCase(word, "undone") ||
+			equalsIgnoreCase(word, "next") || word == "\n");
 }
 
 Date* Parser::parseTimeString(string timeStr){
+	toLowerCase(timeStr);
 // -------------------------Error Catching-------------------------------
 	if (timeStr == "")
 		throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);
