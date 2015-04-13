@@ -74,7 +74,7 @@ void Parser::parseCommandAdd(string userCommand){
 	//Adding task start time (if it is timed task)
 	if (equalsIgnoreCase(*iter, "from")){
 		iter++;
-		while (equalsIgnoreCase(*iter, "to")){
+		while (!equalsIgnoreCase(*iter, "to")){
 // -------------------------Error Catching-------------------------------
 			if (iter == textVec.end())
 				throw CommandException(ERROR_MESSAGE_COMMAND_NOENDTIME);
@@ -255,7 +255,7 @@ void Parser::parseCommandSearch(string userCommand){
 	//Search using task start time 
 	if (equalsIgnoreCase(*iter, "from")){
 		iter++;
-		while (equalsIgnoreCase(*iter, "to")){
+		while (!equalsIgnoreCase(*iter, "to")){
 			temp << *iter << " ";
 			iter++;
 
