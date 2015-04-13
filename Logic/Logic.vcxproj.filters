@@ -27,7 +27,6 @@
     <ClCompile Include="StringDistance.cpp" />
     <ClCompile Include="SuggestionBuilder.cpp" />
     <ClCompile Include="Task.cpp" />
-    <ClCompile Include="TaskDisplayer.cpp" />
     <ClCompile Include="TaskManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -56,7 +55,6 @@
     <ClInclude Include="StringDistance.h" />
     <ClInclude Include="SuggestionBuilder.h" />
     <ClInclude Include="Task.h" />
-    <ClInclude Include="TaskDisplayer.h" />
     <ClInclude Include="TaskManager.h" />
   </ItemGroup>
 </Project>

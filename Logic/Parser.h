@@ -13,8 +13,7 @@
 
 using namespace std;
 
-class Parser
-{
+class Parser{
 public:
 	Parser();
 	~Parser();
@@ -69,8 +68,8 @@ public:
 	static const string Parser::ERROR_MESSAGE_PARSING_DAYNAME;
 	static const string Parser::ERROR_MESSAGE_PARSING_MONTHNAME;
 	static const string Parser::ERROR_MESSAGE_PARSING_INVALIDTIME;
-	static const string Parser::ERROR_MESSAGE_COMMAND_NOENDTIME;
-	static const string Parser::ERROR_MESSAGE_COMMAND_INVALIDENDTIME;
+	static const string Parser::ERROR_MESSAGE_NOENDTIME;
+	static const string Parser::ERROR_MESSAGE_INVALIDENDTIME;
 	static const string Parser::ERROR_MESSAGE_PARSING_TASK;
 	static const string Parser::ERROR_MESSAGE_DELETE_TASKNUM;
 

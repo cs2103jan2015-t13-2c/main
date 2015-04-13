@@ -13,9 +13,7 @@
 #include "TaskkyGUI.h"
 #include "Storage.h"
 #include "TaskManager.h"
-#include "TaskDisplayer.h"
 #include "Date.h"
-#include <shellapi.h>
 
 namespace TaskkyUI {
 
@@ -82,11 +80,12 @@ namespace TaskkyUI {
 			}
 
 		}
-	private: System::Windows::Forms::Label^  label12;
+	private: System::Windows::Forms::Label^  HelpButton;
+	public:
+
 
 	public: System::Windows::Forms::TextBox^  UserInput;
-	private:
-	public:
+
 
 	protected:
 		/// <summary>
@@ -99,64 +98,23 @@ namespace TaskkyUI {
 				delete components;
 			}
 		}
-
-	protected:
-
-
-
-
-
-	private: System::Windows::Forms::Label^  label1;
+	private: System::Windows::Forms::Label^  TASKKYTitle;
 	private: System::Windows::Forms::Label^  CurrentTime;
-
 	private: System::Windows::Forms::Timer^  timer1;
-	private: System::Windows::Forms::Label^  SuggestionBuilder;
+	private: System::Windows::Forms::Label^  SuggestionText;
 	private: System::Windows::Forms::Label^  FeedbackUserInput;
-
-
-
 	private: System::Windows::Forms::ListView^  listView1;
 	private: System::Windows::Forms::ColumnHeader^  TaskNumber;
 	private: System::Windows::Forms::ColumnHeader^  StartTime;
 	private: System::Windows::Forms::ColumnHeader^  EndTime;
 	private: System::Windows::Forms::ColumnHeader^  TaskDetails;
-
-
-
-
 	private: System::Windows::Forms::Label^  UrgentTask;
-
 	private: System::Windows::Forms::Label^  NumberOfUrgentTask;
 	private: System::Windows::Forms::Label^  DueToday;
-
-
 	private: System::Windows::Forms::Label^  NumberOfTaskDueToday;
 	private: System::Windows::Forms::Label^  OverdueTask;
-
-
 	private: System::Windows::Forms::Label^  NumberOfOverdueTask;
-
-
-
-
-
-
-	private:
-
-	public:
-
-
-
-
-
-	private:
-
-
-
 	private: System::ComponentModel::IContainer^  components;
-
-
-
 	private:
 		/// <summary>
 		/// Required designer variable.
@@ -173,10 +131,10 @@ namespace TaskkyUI {
 			this->components = (gcnew System::ComponentModel::Container());
 			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(TaskkyGUI::typeid));
 			this->UserInput = (gcnew System::Windows::Forms::TextBox());
-			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->TASKKYTitle = (gcnew System::Windows::Forms::Label());
 			this->CurrentTime = (gcnew System::Windows::Forms::Label());
 			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
-			this->SuggestionBuilder = (gcnew System::Windows::Forms::Label());
+			this->SuggestionText = (gcnew System::Windows::Forms::Label());
 			this->FeedbackUserInput = (gcnew System::Windows::Forms::Label());
 			this->listView1 = (gcnew System::Windows::Forms::ListView());
 			this->TaskNumber = (gcnew System::Windows::Forms::ColumnHeader());
@@ -189,7 +147,7 @@ namespace TaskkyUI {
 			this->NumberOfTaskDueToday = (gcnew System::Windows::Forms::Label());
 			this->OverdueTask = (gcnew System::Windows::Forms::Label());
 			this->NumberOfOverdueTask = (gcnew System::Windows::Forms::Label());
-			this->label12 = (gcnew System::Windows::Forms::Label());
+			this->HelpButton = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// UserInput
@@ -211,18 +169,17 @@ namespace TaskkyUI {
 			this->UserInput->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &TaskkyGUI::UserInputTextBox_KeyDown);
 			this->UserInput->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &TaskkyGUI::UserInputTextBox_KeyPress);
 			// 
-			// label1
+			// TASKKYTitle
 			// 
-			this->label1->BackColor = System::Drawing::Color::Transparent;
-			this->label1->Font = (gcnew System::Drawing::Font(L"Consolas", 39.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->TASKKYTitle->BackColor = System::Drawing::Color::Transparent;
+			this->TASKKYTitle->Font = (gcnew System::Drawing::Font(L"Consolas", 39.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label1->ForeColor = System::Drawing::Color::WhiteSmoke;
-			this->label1->Location = System::Drawing::Point(51, 7);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(366, 58);
-			this->label1->TabIndex = 14;
-			this->label1->Text = L"T.A.S.K.K.Y";
-			this->label1->Click += gcnew System::EventHandler(this, &TaskkyGUI::label1_Click);
+			this->TASKKYTitle->ForeColor = System::Drawing::Color::WhiteSmoke;
+			this->TASKKYTitle->Location = System::Drawing::Point(51, 7);
+			this->TASKKYTitle->Name = L"TASKKYTitle";
+			this->TASKKYTitle->Size = System::Drawing::Size(366, 58);
+			this->TASKKYTitle->TabIndex = 14;
+			this->TASKKYTitle->Text = L"T.A.S.K.K.Y";
 			// 
 			// CurrentTime
 			// 
@@ -237,25 +194,22 @@ namespace TaskkyUI {
 			this->CurrentTime->TabIndex = 15;
 			this->CurrentTime->Text = L"00:00";
 			this->CurrentTime->TextChanged += gcnew System::EventHandler(this, &TaskkyGUI::timer1_Tick);
-			this->CurrentTime->Click += gcnew System::EventHandler(this, &TaskkyGUI::label2_Click_1);
 			// 
 			// timer1
 			// 
 			this->timer1->Tick += gcnew System::EventHandler(this, &TaskkyGUI::timer1_Tick);
 			// 
-			// SuggestionBuilder
+			// SuggestionText
 			// 
-			this->SuggestionBuilder->AutoSize = true;
-			this->SuggestionBuilder->BackColor = System::Drawing::Color::Transparent;
-			this->SuggestionBuilder->Font = (gcnew System::Drawing::Font(L"Consolas", 9.75F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
+			this->SuggestionText->AutoSize = true;
+			this->SuggestionText->BackColor = System::Drawing::Color::Transparent;
+			this->SuggestionText->Font = (gcnew System::Drawing::Font(L"Consolas", 9.75F, System::Drawing::FontStyle::Italic, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->SuggestionBuilder->ForeColor = System::Drawing::Color::White;
-			this->SuggestionBuilder->Location = System::Drawing::Point(26, 187);
-			this->SuggestionBuilder->Name = L"SuggestionBuilder";
-			this->SuggestionBuilder->Size = System::Drawing::Size(0, 15);
-			this->SuggestionBuilder->TabIndex = 16;
-			this->SuggestionBuilder->TextChanged += gcnew System::EventHandler(this, &TaskkyGUI::label4_TextChanged);
-			this->SuggestionBuilder->Click += gcnew System::EventHandler(this, &TaskkyGUI::label4_Click);
+			this->SuggestionText->ForeColor = System::Drawing::Color::White;
+			this->SuggestionText->Location = System::Drawing::Point(26, 187);
+			this->SuggestionText->Name = L"SuggestionText";
+			this->SuggestionText->Size = System::Drawing::Size(0, 15);
+			this->SuggestionText->TabIndex = 16;
 			// 
 			// FeedbackUserInput
 			// 
@@ -284,7 +238,6 @@ namespace TaskkyUI {
 			this->listView1->TabIndex = 19;
 			this->listView1->UseCompatibleStateImageBehavior = false;
 			this->listView1->View = System::Windows::Forms::View::Details;
-			this->listView1->SelectedIndexChanged += gcnew System::EventHandler(this, &TaskkyGUI::listView1_SelectedIndexChanged_1);
 			// 
 			// TaskNumber
 			// 
@@ -331,8 +284,6 @@ namespace TaskkyUI {
 			this->NumberOfUrgentTask->Size = System::Drawing::Size(28, 39);
 			this->NumberOfUrgentTask->TabIndex = 21;
 			this->NumberOfUrgentTask->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
-			this->NumberOfUrgentTask->TextChanged += gcnew System::EventHandler(this, &TaskkyGUI::label7_TextChanged);
-			this->NumberOfUrgentTask->Click += gcnew System::EventHandler(this, &TaskkyGUI::label7_Click);
 			// 
 			// DueToday
 			// 
@@ -384,14 +335,18 @@ namespace TaskkyUI {
 			this->NumberOfOverdueTask->TabIndex = 25;
 			this->NumberOfOverdueTask->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
 			// 
-			// label12
+			// HelpButton
 			// 
-			this->label12->AutoSize = true;
-			this->label12->Location = System::Drawing::Point(630, 553);
-			this->label12->Name = L"label12";
-			this->label12->Size = System::Drawing::Size(67, 13);
-			this->label12->TabIndex = 28;
-			this->label12->Text = L"Hide/Unhide";
+			this->HelpButton->AutoSize = true;
+			this->HelpButton->BackColor = System::Drawing::Color::Transparent;
+			this->HelpButton->Font = (gcnew System::Drawing::Font(L"Calibri", 9, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->HelpButton->ForeColor = System::Drawing::Color::WhiteSmoke;
+			this->HelpButton->Location = System::Drawing::Point(622, 551);
+			this->HelpButton->Name = L"HelpButton";
+			this->HelpButton->Size = System::Drawing::Size(93, 14);
+			this->HelpButton->TabIndex = 26;
+			this->HelpButton->Text = L"Press F1 For Help";
 			// 
 			// TaskkyGUI
 			// 
@@ -401,9 +356,9 @@ namespace TaskkyUI {
 			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
 			this->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
 			this->ClientSize = System::Drawing::Size(735, 575);
-			this->Controls->Add(this->label1);
+			this->Controls->Add(this->HelpButton);
+			this->Controls->Add(this->TASKKYTitle);
 			this->Controls->Add(this->FeedbackUserInput);
-			this->Controls->Add(this->label12);
 			this->Controls->Add(this->NumberOfOverdueTask);
 			this->Controls->Add(this->OverdueTask);
 			this->Controls->Add(this->NumberOfTaskDueToday);
@@ -411,7 +366,7 @@ namespace TaskkyUI {
 			this->Controls->Add(this->NumberOfUrgentTask);
 			this->Controls->Add(this->UrgentTask);
 			this->Controls->Add(this->listView1);
-			this->Controls->Add(this->SuggestionBuilder);
+			this->Controls->Add(this->SuggestionText);
 			this->Controls->Add(this->CurrentTime);
 			this->Controls->Add(this->UserInput);
 			this->DoubleBuffered = true;
@@ -422,20 +377,12 @@ namespace TaskkyUI {
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"TaskkyGUI";
 			this->Load += gcnew System::EventHandler(this, &TaskkyGUI::timer1_Tick);
-			this->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &TaskkyGUI::TaskkyGUI_KeyPress);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
 	private: System::Void TaskkyGUIContent_Load(System::Object^  sender, System::EventArgs^  e) {
-
-
-
-	}
-
-	public: System::Void UserInputTextBox_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-
 	}
 
 	public: System::Windows::Forms::ListViewItem^ addNewItem(int taskNumber,
@@ -494,6 +441,7 @@ namespace TaskkyUI {
 
 			}
 
+			
 			listView1->Items->Clear();
 
 
@@ -752,13 +700,15 @@ namespace TaskkyUI {
 			}
 
 		}
+		SuggestionText->Text = "e.g: add, delete, update, search, mark, unmark, undo, checkfilelocation, changefilelocation";
+		SuggestionText->Text = gcnew String(SuggestionBuilder::suggestUserInput(command).c_str());
+
 	}
 
 	private: System::Void richTextBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 	}
 	private: System::Void UserInputTextBox_TextChanged_1(System::Object^  sender, System::EventArgs^  e) {
 		command = msclr::interop::marshal_as< std::string >(UserInput->Text);
-
 	}
 	private: System::Void label2_Click(System::Object^  sender, System::EventArgs^  e) {
 	}
@@ -808,213 +758,6 @@ namespace TaskkyUI {
 
 	}
 
-	private: System::Void label4_TextChanged(System::Object^ sender, System::EventArgs^ e){
-
-	}
-	private: System::Void label4_Click(System::Object^  sender, System::EventArgs^  e) {
-
-	}
-	private: System::Void checkedListBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-	}
-	private: System::Void listView1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-
-
-
-
-
-	}
-	private: System::Void label1_Click(System::Object^  sender, System::EventArgs^  e) {
-	}
-	private: System::Void dataGridView1_CellContentClick(System::Object^  sender, System::Windows::Forms::DataGridViewCellEventArgs^  e) {
-	}
-	private: System::Void listView1_SelectedIndexChanged_1(System::Object^  sender, System::EventArgs^  e) {
-	}
-	private: System::Void label7_Click(System::Object^  sender, System::EventArgs^  e) {
-
-	}
-	private: System::Void label7_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-	}
-	private: System::Void TaskkyGUI_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
-
-
-
-	}
-	private: System::Void label12_Click(System::Object^  sender, System::EventArgs^  e) {
-		listView1->Items->Clear();
-
-
-		TaskManager *taskManager = TaskManager::getInstance();
-		int taskNumber = 0;
-		int taskUrgent = 0;
-		int taskDueToday = 0;
-		int taskOverdue = 0;
-
-		//adding all current timed tasks
-		vector<Task> *allTimedTasks;
-		allTimedTasks = taskManager->getAllTimedTasks();
-
-		for (int i = 0; i != allTimedTasks->size(); i++){
-			Task task = (*allTimedTasks)[i];
-			//check here
-
-
-			if (task.getTaskType() == Task::TIMED)
-
-			{
-				if (task.getTaskPriority() == Task::HIGH){
-					taskUrgent += 1;
-				}
-
-				//setting new parameters to add next task
-
-				taskNumber += 1;
-				string startDate = task.getTaskStartTime()->toString();
-				string endDate = task.getTaskEndTime()->toString();
-
-				string taskDetails = task.getTaskDetails();
-
-				int taskPriority = task.getTaskPriority();
-
-
-				ListViewItem^ defaultEntry;
-
-				//adding first item of the row
-				defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
-
-				//adding second, third and forth item of the row
-
-
-				defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
-				defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
-				defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
-				defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
-
-
-				if (task.getTaskPriority() == Task::HIGH)
-				{
-					defaultEntry->ForeColor = Color::DarkRed;
-				}
-
-
-
-				array<ListViewItem^>^temp1 = { defaultEntry };
-				listView1->Items->AddRange(temp1);
-
-
-
-				//else{
-				//defaultEntry->ForeColor = Color::White;
-				//}
-			}
-
-
-			if (task.getTaskType() == Task::DEADLINE)
-
-			{
-				if (task.getTaskPriority() == Task::HIGH){
-					taskUrgent += 1;
-				}
-
-				//setting new parameters to add next task
-
-				taskNumber += 1;
-				string startDate = task.getTaskDeadline()->toString();
-				string endDate = "----------";
-
-
-				if (task.getTaskDeadline()->sameDate(Date::Date())){
-					taskDueToday += 1;
-				}
-
-				//if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())){
-
-				//	taskOverdue += 1;
-				//}
-
-
-				//}
-
-				string taskDetails = task.getTaskDetails();
-				int taskPriority = task.getTaskPriority();
-				ListViewItem^ defaultEntry;
-
-				//adding first item of the row
-				defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
-
-				//adding second, third and forth item of the row
-
-
-				defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
-				defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
-				defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
-				defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
-
-				array<ListViewItem^>^temp1 = { defaultEntry };
-				listView1->Items->AddRange(temp1);
-				if (task.getTaskPriority() == Task::HIGH)
-				{
-
-					defaultEntry->ForeColor = Color::DarkRed;
-				}
-
-
-			}
-
-
-		}
-
-
-
-		//adding all current floating tasks
-		vector<Task> *allFloatingTasks;
-		allFloatingTasks = taskManager->getAllFloatingTasks();
-
-		for (int i = 0; i != allFloatingTasks->size(); i++){
-			Task task = (*allFloatingTasks)[i];
-
-			if (task.getTaskPriority() == Task::HIGH){
-				taskUrgent += 1;
-			}
-
-
-			//setting new parameters to add next task
-
-			taskNumber += 1;
-			string startDate = "----------";
-			string endDate = "----------";
-			string taskDetails = task.getTaskDetails();
-			int taskPriority = task.getTaskPriority();
-
-
-			ListViewItem^ defaultEntry;
-
-			//adding first item of the row
-			defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
-
-			//adding second, third and forth item of the row
-			defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
-			defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
-			defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
-			defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
-
-			array<ListViewItem^>^temp1 = { defaultEntry };
-			listView1->Items->AddRange(temp1);
-			if (task.getTaskPriority() == Task::HIGH)
-			{
-
-				defaultEntry->ForeColor = Color::DarkRed;
-			}
-
-		}
-	}
-	private: System::Void label13_Click(System::Object^  sender, System::EventArgs^  e) {
-
-		System::Void UserInputTextBox_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e);
-
-	}
-	private: System::Void label12_DoubleClick(System::Object^  sender, System::EventArgs^  e) {
-
-	}
 	private: System::Void UserInputTextBox_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e) {
 		if (e->KeyCode == Keys::PageDown){
 			listView1->Focus();
@@ -1030,8 +773,6 @@ namespace TaskkyUI {
 		if (e->KeyCode == Keys::F1){
 			ShellExecuteA(NULL, "open", "..\\help.pdf", NULL, NULL, 0);
 		}
-	}
-	private: System::Void label2_Click_1(System::Object^  sender, System::EventArgs^  e) {
 	}
 	};
 }

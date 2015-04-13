@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<componentModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" xmlns:dm10="http://schemas.microsoft.com/dsltools/SimpleShapesModel" xmlns:dm11="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ActivityDesigner" dslVersion="1.0.0.0" Id="c8a0f7ff-742a-441e-908e-49412abf79aa" name="Taskky" linkedPackageId="69ebe68c-8a34-4fae-b6c1-af24b9c8a04f" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner">
+<componentModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" dslVersion="1.0.0.0" Id="c8a0f7ff-742a-441e-908e-49412abf79aa" name="Taskky" linkedPackageId="69ebe68c-8a34-4fae-b6c1-af24b9c8a04f" xmlns="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner">
   <packagedElements>
     <componentModelHasComponents>
       <component Id="3e27d289-9882-43ae-8369-8855d91a3d91" name="Logic" isAbstract="false" isLeaf="false" isActiveClass="false">
@@ -23,10 +23,6 @@
           <dependency Id="fe8508b7-3e5a-4c7a-a542-a277de1480ac">
             <componentMoniker Id="3e27d289-9882-43ae-8369-8855d91a3d91" LastKnownName="Logic" />
             <elementDefinition Id="7b274fb2-0197-4332-be52-7ca5d636dcf1" />
-          </dependency>
-          <dependency Id="3d2095dc-29b9-4d96-977d-ab0dd13a09d7">
-            <componentMoniker Id="56b61862-da22-48b3-9609-aa14d7dc50c4" LastKnownName="Storage" />
-            <elementDefinition Id="d358cb36-730f-433f-8090-dc22f887bf9b" />
           </dependency>
         </suppliersInternal>
       </component>

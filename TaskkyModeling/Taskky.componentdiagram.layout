@@ -22,14 +22,6 @@
         <componentShapeMoniker Id="3086adc5-0148-4aa9-9ee5-870dc8beffbf" />
       </nodes>
     </dependencyConnector>
-    <dependencyConnector edgePoints="[(1.25 : 2.7); (1.25 : 3.075); (6.75 : 3.075); (6.75 : 2.7)]" fixedFrom="Caller" fixedTo="Caller" customColor="Black">
-      <dependencyMoniker Id="3d2095dc-29b9-4d96-977d-ab0dd13a09d7" />
-      <relativeChildShapes />
-      <nodes>
-        <componentShapeMoniker Id="51411abf-f665-4d85-b65c-74644a2e7a81" />
-        <componentShapeMoniker Id="aee3771e-ba60-489a-b5b6-51c98f9880bc" />
-      </nodes>
-    </dependencyConnector>
     <dependencyConnector edgePoints="[(4.75 : 2.225); (6 : 2.225)]" fixedFrom="Caller" fixedTo="Caller" customColor="Black">
       <dependencyMoniker Id="624ddad2-3a02-405d-af06-33e6c3b61149" />
       <relativeChildShapes />

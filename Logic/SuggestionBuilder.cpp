@@ -1,4 +1,4 @@
-//@author A0122357L
+//@author A0114084N
 
 #include "SuggestionBuilder.h"
 
@@ -19,7 +19,7 @@ string SuggestionBuilder::suggestUserInput(string userInput){
 
 	string commandType = suggestCommandType(userInput);
 
-	string suggestedUserInput = commandType;// +suggestedCommandArguments;
+	string suggestedUserInput = commandType;
 
 	return suggestedUserInput;
 }
@@ -64,7 +64,7 @@ string SuggestionBuilder::suggestCommandType(string userInput){
 	}
 
 	else if (isPredictedCommandUpdate(userInput)){
-		return "update [taskNumber] details/deadline/start end";
+		return "update [taskNumber] details/deadline/starttime/endtime/priority [things to be updated]";
 	}
 	else if (isPredictedCommandCheckSavedFileLocation(userInput)){
 		return "checkfileloc";
@@ -72,387 +72,19 @@ string SuggestionBuilder::suggestCommandType(string userInput){
 	else if (isPredictedChangeFileLocation(userInput)){
 		return "changefileloc [New Directory]";
 	}
+	else if (isPredictedCommandSearch(userInput)){
+		return "search next available [xx day yy hour zz min]";
+	}
+	else if (isPredictedCommandHelp(userInput)){
+		return "Help : Press F1";
+	}
 
 	return "invalid";
 
 }
 
-string SuggestionBuilder::suggestCommandArguments(string commandType, string userInput){
 
-	if (commandType == "add"){
-		return predictCommandAdd(userInput);
-	}
 
-	else if (commandType == "delete"){
-		return "";
-	}
-
-	else if (commandType == "display"){
-		return "";
-	}
-
-	else if (commandType == "exit"){
-		return "";
-	}
-
-	else if (commandType == "mark"){
-		return "";
-	}
-
-	else if (commandType == "undo"){
-		return "";
-	}
-
-	else if (commandType == "unmark"){
-		return "";
-	}
-
-	else if (commandType == "update"){
-		return "";
-		//should add more logic here!
-	}
-
-	return "";
-}
-
-
-string SuggestionBuilder::predictCommandAdd(string userInput){
-
-	string currentArguments = removeFirstWord(userInput);
-
-	ostringstream predictedArguments;
-
-	//return nothing if no current arguments
-	if (currentArguments == ""){
-		return predictedArguments.str();
-	}
-
-	vector<string> textVec = splitParameters(currentArguments);
-	vector<string>::iterator iter = textVec.begin();
-
-	bool hitFirstCommandWord = false;
-	ostringstream taskToAdd;
-
-	bool predictedFrom = false, predictedBy = false, predictedEvery = false;
-	bool predictedThis = false, predictedNext = false, predictedDay = false;
-	string dayValue;
-
-	while (iter != textVec.end()){
-
-		string predictString = predictedString(*iter);
-		string currentString = *iter;
-
-		if (!predictedFrom && !predictedBy && !predictedEvery){
-
-			if (predictString == "from"){
-				predictedFrom = true;
-				hitFirstCommandWord = true;
-			}
-			else if (predictString == "by"){
-				predictedBy = true;
-				hitFirstCommandWord = true;
-			}
-			else if (predictString == "every"){
-				predictedEvery = true;
-				hitFirstCommandWord = true;
-			}
-		}
-		else if (!predictedDay){
-			if (predictString == "monday" || predictString == "tuesday" ||
-				predictString == "wednesday" || predictString == "thursday" ||
-				predictString == "friday" || predictString == "saturday"
-				|| predictString == "sunday"){
-				dayValue = predictString;
-				predictedDay = true;
-				hitFirstCommandWord = true;
-			}
-		}
-		else if (!predictedThis){
-			if (predictString == "this"){
-				predictedThis = true;
-				hitFirstCommandWord = true;
-			}
-		}
-		else if (!predictedNext){
-			if (predictString == "next"){
-				predictedThis = true;
-				hitFirstCommandWord = true;
-			}
-		}
-
-		if (!hitFirstCommandWord){
-			taskToAdd << " " << currentString;
-		}
-
-		iter++;
-	}
-
-	predictedArguments << taskToAdd.str();
-
-	//forming string
-	if (predictedFrom){
-		if (predictedDay&&predictedThis&&predictedNext){
-			predictedArguments << " from this " << dayValue << " to next ";
-		}
-		else if (predictedDay&&predictedThis&&!predictedNext){
-			predictedArguments << " from this " << dayValue << " to ";
-		}
-		else if (predictedDay&&!predictedThis&&predictedNext){
-			predictedArguments << " from next " << dayValue << " to ";
-		}
-		else if (predictedDay&&!predictedThis&&!predictedNext){
-			predictedArguments << " from " << dayValue << " to ";
-		}
-		else if (!predictedDay){
-			predictedArguments << " from ";
-		}
-	}
-	else if (predictedBy){
-		if (predictedDay&&predictedThis&&predictedNext){
-			predictedArguments << " by " << dayValue;
-		}
-		else if (predictedDay&&predictedThis&&!predictedNext){
-			predictedArguments << " by this " << dayValue;
-		}
-		else if (predictedDay&&!predictedThis&&predictedNext){
-			predictedArguments << " by next " << dayValue;
-		}
-		else if (predictedDay&&!predictedThis&&!predictedNext){
-			predictedArguments << " by " << dayValue;
-		}
-		else if (!predictedDay){
-			predictedArguments << " by ";
-		}
-
-	}
-	else if (predictedEvery){
-		if (predictedDay){
-			predictedArguments << " every " << dayValue;
-		}
-		else if (!predictedDay){
-			predictedArguments << " every ";
-		}
-		//logic for predictedMonth?
-	}
-
-	return predictedArguments.str();
-}
-
-string SuggestionBuilder::predictedString(string text){
-
-	//command words have higher priority
-	string predictString = predictedKeyword(text);
-
-	//days have next priority
-	if (predictString == ""){
-		predictString = predictedDay(text);
-	}
-
-	/*
-	//dates have final priority
-	if (predictString == ""){
-	predictString = predictedDate(text);
-	}*/
-
-	return predictString;
-
-}
-
-string SuggestionBuilder::predictedKeyword(string text){
-
-	if (isPredictedFrom(text)){
-		return "from";
-	}
-	else if (isPredictedTo(text)){
-		return "to";
-	}
-	else if (isPredictedNext(text)){
-		return "next";
-	}
-	else if (isPredictedBy(text)){
-		return "by";
-	}
-	else if (isPredictedThis(text)){
-		return "this";
-	}
-	else if (isPredictedEvery(text)){
-		return "every";
-	}
-	else{
-		return "";
-	}
-
-}
-
-bool SuggestionBuilder::isPredictedFrom(string userInput){
-
-	if (userInput == "f" || userInput == "fr" ||
-		userInput == "fro" || userInput == "from"){
-		return true;
-	}
-
-	return false;
-}
-
-bool SuggestionBuilder::isPredictedTo(string userInput){
-
-	if (userInput == "t" || userInput == "to"){
-		return true;
-	}
-
-	return false;
-}
-
-bool SuggestionBuilder::isPredictedNext(string userInput){
-
-	if (userInput == "n" || userInput == "ne" ||
-		userInput == "nex" || userInput == "next"){
-		return true;
-	}
-
-	return false;
-}
-
-
-bool SuggestionBuilder::isPredictedBy(string userInput){
-
-	if (userInput == "b" || userInput == "by"){
-		return true;
-	}
-
-	return false;
-}
-
-bool SuggestionBuilder::isPredictedThis(string userInput){
-
-	if (userInput == "t" || userInput == "th" ||
-		userInput == "thi" || userInput == "this"){
-		return true;
-	}
-
-	return false;
-}
-
-bool SuggestionBuilder::isPredictedEvery(string userInput){
-
-	if (userInput == "e" || userInput == "ev" ||
-		userInput == "eve" || userInput == "ever"
-		|| userInput == "every"){
-		return true;
-	}
-
-	return false;
-}
-
-string SuggestionBuilder::predictedDay(string text){
-
-	if (isPredictedMonday(text)){
-		return "monday";
-	}
-	else if (isPredictedTuesday(text)){
-		return "tuesday";
-	}
-	else if (isPredictedWednesday(text)){
-		return "wednesday";
-	}
-	else if (isPredictedThursday(text)){
-		return "thursday";
-	}
-	else if (isPredictedFriday(text)){
-		return "friday";
-	}
-	else if (isPredictedSaturday(text)){
-		return "saturday";
-	}
-	else if (isPredictedSunday(text)){
-		return "sunday";
-	}
-	else{
-		return "";
-	}
-}
-
-bool SuggestionBuilder::isPredictedMonday(string userInput){
-
-	if (userInput == "m" || userInput == "mo" ||
-		userInput == "mon" || userInput == "mond"
-		|| userInput == "monda" || userInput == "monday"){
-		return true;
-	}
-
-	return false;
-}
-
-bool SuggestionBuilder::isPredictedTuesday(string userInput){
-
-	if (userInput == "t" || userInput == "tu" ||
-		userInput == "tue" || userInput == "tues"
-		|| userInput == "tuesd" || userInput == "tuesda"
-		|| userInput == "tuesday"){
-		return true;
-	}
-
-	return false;
-}
-
-bool SuggestionBuilder::isPredictedWednesday(string userInput){
-
-	if (userInput == "w" || userInput == "we" ||
-		userInput == "wed" || userInput == "wedn"
-		|| userInput == "wedne" || userInput == "wednes"
-		|| userInput == "wednesd" || userInput == "wednesda"
-		|| userInput == "wednesday"){
-		return true;
-	}
-
-	return false;
-}
-
-bool SuggestionBuilder::isPredictedThursday(string userInput){
-
-	if (userInput == "t" || userInput == "th" ||
-		userInput == "thu" || userInput == "thur"
-		|| userInput == "thurs" || userInput == "thursd"
-		|| userInput == "thursda" || userInput == "thursday"){
-		return true;
-	}
-
-	return false;
-}
-
-bool SuggestionBuilder::isPredictedFriday(string userInput){
-
-	if (userInput == "f" || userInput == "fr" ||
-		userInput == "fri" || userInput == "frid"
-		|| userInput == "frida" || userInput == "friday"){
-		return true;
-	}
-
-	return false;
-}
-
-bool SuggestionBuilder::isPredictedSaturday(string userInput){
-
-	if (userInput == "s" || userInput == "sa" ||
-		userInput == "sat" || userInput == "satu"
-		|| userInput == "satur" || userInput == "saturd"
-		|| userInput == "saturda" || userInput == "saturday"){
-		return true;
-	}
-
-	return false;
-}
-
-bool SuggestionBuilder::isPredictedSunday(string userInput){
-
-	if (userInput == "s" || userInput == "su" ||
-		userInput == "sun" || userInput == "sund"
-		|| userInput == "sunda" || userInput == "sunday"){
-		return true;
-	}
-
-	return false;
-}
 
 bool SuggestionBuilder::isPredictedCommandAdd(string userInput){
 
@@ -609,6 +241,34 @@ bool SuggestionBuilder::isPredictedChangeFileLocation(string userInput){
 	return false;
 }
 
+bool SuggestionBuilder::isPredictedCommandSearch(string userInput){
+	if (userInput == "s" || userInput == "se" ||
+		userInput == "sea" || userInput == "sear" ||
+		userInput == "searc" || userInput == "search"){
+		return true;
+	}
+
+	if (StringDistance::LD(userInput.c_str(), "search") <= 1){
+		return true;
+	}
+	return false;
+
+
+}
+
+bool SuggestionBuilder::isPredictedCommandHelp(string userInput){
+	if (userInput == "h" || userInput == "he" ||
+		userInput == "hel" || userInput == "help"){
+		return true;
+	}
+
+	if (StringDistance::LD(userInput.c_str(), "help") <= 1){
+		return true;
+	}
+	return false;
+
+
+}
 
 
 /*

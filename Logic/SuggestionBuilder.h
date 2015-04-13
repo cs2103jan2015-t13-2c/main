@@ -1,4 +1,4 @@
-//@author A0122357L
+//@author A0114084N
 #pragma once
 #include <string>
 #include <algorithm>
@@ -16,10 +16,9 @@ public:
 
 	static string suggestUserInput(string userInput);
 	static string suggestCommandType(string userInput);
-	static string suggestCommandArguments(string commandType, string userInput);
+	
 	//static string commandToString(CommandBuilder::CommandType commandType);
 
-	static string predictCommandAdd(string userInput);
 
 	static bool isPredictedCommandAdd(string userInput);
 	static bool isPredictedCommandDelete(string userInput);
@@ -31,9 +30,9 @@ public:
 	static bool isPredictedCommandUpdate(string userInput);
 	static bool isPredictedCommandCheckSavedFileLocation(string userInput);
 	static bool isPredictedChangeFileLocation(string userInput);
+	static bool isPredictedCommandSearch(string userInput);
+	static bool isPredictedCommandHelp(string userInput);
 
-	//getting predicted string
-	static string predictedString(string text);
 
 	//getting predicted keywords
 	static string predictedKeyword(string text);
@@ -44,15 +43,6 @@ public:
 	static bool isPredictedThis(string userInput);
 	static bool isPredictedEvery(string userInput);
 
-	//getting predicted days
-	static string predictedDay(string text);
-	static bool isPredictedMonday(string userInput);
-	static bool isPredictedTuesday(string userInput);
-	static bool isPredictedWednesday(string userInput);
-	static bool isPredictedThursday(string userInput);
-	static bool isPredictedFriday(string userInput);
-	static bool isPredictedSaturday(string userInput);
-	static bool isPredictedSunday(string userInput);
 
 	static string predictedDate(string text);
 

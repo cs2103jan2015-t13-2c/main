@@ -2,6 +2,7 @@
 Debug/ErrorLog.txt
 *.idb
 TaskkyUI/ErrorLog.txt
+<<<<<<< HEAD
 *.ipch
 Logic/Release/rapidjson-master/.gitignore
 Logic/Release/rapidjson-master/.gitmodules
@@ -645,3 +646,7 @@ TaskkyUI/Release/rapidjson-master/example/simpledom/simpledom.cpp
 TaskkyUI/Release/rapidjson-master/example/simplereader/simplereader.cpp
 TaskkyUI/Release/rapidjson-master/example/simplewriter/simplewriter.cpp
 TaskkyUI/Release/rapidjson-master/example/tutorial/tutorial.cpp
+=======
+Taskky (KEL).opensdf
+ipch/logictests-3f08394e/logictests-668001ad.ipch
+>>>>>>> origin/master
