@@ -385,6 +385,7 @@ namespace TaskkyUI {
 	private: System::Void TaskkyGUIContent_Load(System::Object^  sender, System::EventArgs^  e) {
 	}
 
+
 	public: System::Windows::Forms::ListViewItem^ addNewItem(int taskNumber,
 		string startDate, string endDate, string taskDetails, int taskPriority,
 		bool taskMarked) {
