@@ -5,6 +5,21 @@
 Controller* Controller::_instance = NULL;
 vector<Command*>* Controller::_undoStack = NULL;
 vector<Command*>* Controller::_redoStack = NULL;
+vector<int>* Controller::_taskIndices = NULL;
+bool Controller::_isSearchCommand;
+
+
+void Controller::setTaskIndices(vector<int>* taskIndices){
+	_taskIndices = taskIndices;
+}
+
+vector<int>* Controller::getTaskIndices(){
+	return _taskIndices;
+}
+
+bool Controller::getIsSearchCommand(){
+	return _isSearchCommand;
+}
 
 Controller::Controller()
 {
@@ -31,6 +46,7 @@ vector<Command*>* Controller::getRedoStack(){
 string Controller::processUserInput(string userInput){
 
 	string feedback;
+	_isSearchCommand = false;
 
 	try{
 
@@ -46,6 +62,13 @@ string Controller::processUserInput(string userInput){
 		}
 
 		feedback = command->execute();
+
+		CommandSearch* commandSearch = dynamic_cast<CommandSearch*>(command);
+
+		if (commandSearch != NULL){
+			setTaskIndices(commandSearch->getTasksIndices());
+			_isSearchCommand = true;
+		}
 
 	}
 	catch (ParseException& e){
