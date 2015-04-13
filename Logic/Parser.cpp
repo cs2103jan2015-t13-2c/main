@@ -357,7 +357,11 @@ void Parser::parseCommandChangeFileLocation(string userCommand){
 * ====================================================================
 */
 string Parser::removeFirstWord(string userCommand){
-	return trim(replace(userCommand, getFirstWord(userCommand), ""));
+	size_t firstSpace = userCommand.find_first_of(' ');
+	return userCommand.substr(firstSpace + 1, userCommand.npos);
+
+	//old function
+	//return trim(replace(userCommand, getFirstWord(userCommand), ""));
 }
 
 string Parser::getFirstWord(string userCommand){
