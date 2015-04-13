@@ -26,7 +26,7 @@ public:
 	virtual string execute();
 	virtual Command* getInverseCommand();
 
-	vector<int> getTasksIndices();
+	vector<int>* getTasksIndices();
 
 private:
 	string _taskDetails;
@@ -39,7 +39,7 @@ private:
 	bool _foundMarked;
 	bool _foundPriority;
 
-	vector<int> foundTasksIndices;
+	vector<int>* foundTasksIndices;
 
 	static const int ACCEPTABLE_DISTANCE = 3;
 

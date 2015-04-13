@@ -22,6 +22,12 @@ public:
 
 	static string processUserInput(string userInput);
 
+	static void setTaskIndices(vector<int>* taskIndices);
+
+	static vector<int>* getTaskIndices();
+
+	static bool getIsSearchCommand();
+
 private:
 
 	//copy constructor is private
@@ -30,6 +36,10 @@ private:
 	static Controller *_instance;
 
 	static vector<Command*>* _undoStack;
+
+	static vector<int>* _taskIndices;
+
+	static bool _isSearchCommand;
 	
 	Controller();
 	

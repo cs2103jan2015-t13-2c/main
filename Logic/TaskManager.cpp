@@ -1,52 +1,201 @@
-#include "TaskManager.h"
-
-
 /*
+This class is used to manage Taskky's representation of all current Tasks
+It is a singleton class, so that there will only be 1 instance of the tasks
+
 When a task is added, it is auto sorted following this method:
 1. Timed tasks come first, in chronological then alphabetical order
 2. Floating tasks come next, in alphabetical order
 3. Marked timed tasks come next, in chronological then alphabetical order
 4. Marked floating tasks come last
-*/
-//This class is used to manage the program's internal representation of all current Tasks
-//It is a singleton class, so that there will only be 1 instance of the tasks
 
-
-/*
-This class is to manipulate the internal task management for TASKKY.
-
-Functionalities include loading the tasks saved in storage in chronological, and alphabetical order
-
-
+This class also has functions to supports mark, unmark, deletion and finding 
+the insertion point of tasks into Taskky's internal representation of Tasks
 
 @author: A0122357L Lee Kai Yi
 */
 
-// Global static pointer used to ensure a single instance of the class.
-TaskManager* TaskManager::_instance = NULL;
-
-//vector representing all the tasks in order
-vector<Task>* TaskManager::_allCurrentTasks = new vector<Task>;
-
-//vectors representing the different categories of tasks
-vector<Task>* TaskManager::_allTimedTasks = new vector<Task>;
-vector<Task>* TaskManager::_allFloatingTasks= new vector<Task>;
-vector<Task>* TaskManager::_allMarkedTimedTasks = new vector<Task>;
-vector<Task>* TaskManager::_allMarkedFloatingTasks = new vector<Task>;
+#include "TaskManager.h"
 
 
-TaskManager::TaskManager()
-{
+
+/*
+* ====================================================================
+*  Main Program
+* ====================================================================
+*/
+
+//Loading all the current tasks into Taskky from a vector<Task>
+//
+//@param the vector of tasks you want to load from
+void TaskManager::loadAllCurrentTasks(vector<Task> allCurrentTasks){
+
+	vector<Task>::iterator iterTasks;
+
+	for (iterTasks = allCurrentTasks.begin();
+		iterTasks != allCurrentTasks.end(); ++iterTasks){
+
+		addTask(*iterTasks);
+
+	}
 }
 
-TaskManager* TaskManager::getInstance(){
-	if (!_instance)
-		_instance = new TaskManager;
-	return _instance;
+
+//Adds a task into the appropriate vector, based on its type
+//
+//@param the task you want to add into Taskky
+void TaskManager::addTask(Task task){
+
+	int indexToInsert = getIndex(task);
+
+	vector<Task>* vectorToInsert = getVector(task);
+
+	vectorToInsert->insert(vectorToInsert->begin() 
+		+ indexToInsert, task);
+
+	setAllCurrentTasks();
+}
+
+
+//Accesses and gets a task based on its task number displayed on screen
+//
+//@param the task number on screen to get the task from
+Task TaskManager::getTask(int taskNumber){
+
+	if (taskNumber>_allCurrentTasks->size()){
+
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+
+	}
+
+	return _allCurrentTasks->at(taskNumber - 1);
+}
+
+
+//Removes a task based on its task number displayed on screen
+//
+//@param the task number on screen you want to remove
+void TaskManager::removeTask(int taskNumber){
+
+	//Getting the sizes of all the vectors
+	int timedTaskSize = _allTimedTasks->size();
+	int floatingTaskSize = _allFloatingTasks->size();
+	int markedTimedTaskSize = _allMarkedTimedTasks->size();
+	int markedFloatingTaskSize = _allMarkedFloatingTasks->size();
+
+	if (taskNumber <= timedTaskSize){
+
+		_allTimedTasks->erase(_allTimedTasks->begin() + taskNumber - 1);
+
+	}
+
+	else if (taskNumber <= timedTaskSize + floatingTaskSize){
+
+		int index = taskNumber - 1 - timedTaskSize;
+
+		_allFloatingTasks->erase(_allFloatingTasks->begin() + index);
+
+	}
+
+	else if (taskNumber <= timedTaskSize + 
+		floatingTaskSize + markedTimedTaskSize){
+
+		int index = taskNumber - 1 - timedTaskSize - floatingTaskSize;
+
+		_allMarkedTimedTasks->erase(_allMarkedTimedTasks->begin() + index);
+
+	}
+
+	else if (taskNumber <= timedTaskSize + floatingTaskSize + markedTimedTaskSize +
+		markedFloatingTaskSize){
+		
+		int index = taskNumber - 1 - timedTaskSize - 
+			floatingTaskSize - markedTimedTaskSize;
+
+		_allMarkedFloatingTasks->erase(_allMarkedFloatingTasks->begin() + index);
+
+	}
+
+	else{
+
+		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
+
+	}
+
+	setAllCurrentTasks();
+}
+
+
+//Marks a task based on its task number displayed on screen
+//
+//@param the task number on screen you want to mark
+void TaskManager::markTask(int taskNumber){
+
+	Task task = getTask(taskNumber);
+
+	task.setTaskMarked(true);
+
+	removeTask(taskNumber);
+
+	addTask(task);
+
+	setAllCurrentTasks();
+
+}
+
+
+//Unmarks a task based on its task number displayed on screen
+//
+//@param the task number on screen you want to unmark
+void TaskManager::unmarkTask(int taskNumber){
+
+	Task task = getTask(taskNumber);
+
+	task.setTaskMarked(false);
+
+	removeTask(taskNumber);
+
+	addTask(task);
+
+	setAllCurrentTasks();
+}
+
+
+//Writes the task storage to file
+void TaskManager::saveTasks(){
+
+	Storage* storage = Storage::getInstance();
+
+	storage->writeToFile();
+
+}
+
+
+//Gets the number of task internally
+int TaskManager::getNumberOfTasks(){
+
+	if (_allCurrentTasks->size() == 0){
+
+		return 0;
+
+	}
+
+	else{
+
+		return _allCurrentTasks->size();
+
+	}
 }
 
 
 
+/*
+* ====================================================================
+*  Second Level of Abstraction
+* ====================================================================
+*/
+
+//Updating the allCurrentTasks vector to reflect an addition of the 4 
+//other vector<task> that stores my data
 void TaskManager::setAllCurrentTasks(){
 	
 	//reset all current tasks
@@ -74,44 +223,31 @@ void TaskManager::setAllCurrentTasks(){
 }
 
 
-void TaskManager::loadAllCurrentTasks(vector<Task> allCurrentTasks){
-	vector<Task>::iterator iterTasks;
-	for (iterTasks = allCurrentTasks.begin(); 
-		iterTasks != allCurrentTasks.end(); ++iterTasks){
-		addTask(*iterTasks);
-	}
-}
 
 
-void TaskManager::addTask(Task task){
 
-	int indexToInsert = getIndex(task);
-	vector<Task>* vectorToInsert = getVector(task);
 
-	vectorToInsert->insert(vectorToInsert->begin() + indexToInsert, task);
-
-	setAllCurrentTasks();
-}
 
 int TaskManager::getIndex(Task task){
 
+	TaskType taskType = determineTaskType(task);
+
 	//task should be added to the _allTimedTasks vector
-	if ((task.getTaskType() == Task::DEADLINE || task.getTaskType() == Task::TIMED)
-		&& !task.getTaskMarked()){
+	if (taskType == TaskType::Timed){
 
 		return getTimedIndexToInsert(task, _allTimedTasks);
 
 	}
 
 	//task should be added to the _allFloatingTasks vector
-	else if ((task.getTaskType() == Task::FLOATING) && !task.getTaskMarked()){
+	else if (taskType == TaskType::Floating){
 
 		return getFloatingIndexToInsert(task, _allFloatingTasks);
 
 	}
 
 	//task should be added to the _allMarkedTimedTasks vector
-	else if (task.getTaskType() == Task::DEADLINE || task.getTaskType() == Task::TIMED){
+	else if (taskType == TaskType::MarkedTimed){
 
 		return getTimedIndexToInsert(task, _allMarkedTimedTasks);
 
@@ -126,25 +262,31 @@ int TaskManager::getIndex(Task task){
 
 }
 
+
+//Finding the vector to add this new Task
+//
+//@param the Task that you want to insert
+//@return the vector in _allCurrentTasks that you should insert the task in
 vector<Task>* TaskManager::getVector(Task task){
 
+	TaskType taskType = determineTaskType(task);
+
 	//task should be added to the _allTimedTasks vector
-	if ((task.getTaskType() == Task::DEADLINE || task.getTaskType() == Task::TIMED)
-		&& !task.getTaskMarked()){
+	if (taskType == TaskType::Timed){
 
 		return _allTimedTasks;
 
 	}
 
 	//task should be added to the _allFloatingTasks vector
-	else if ((task.getTaskType() == Task::FLOATING) && !task.getTaskMarked()){
+	else if (taskType == TaskType::Floating){
 
 		return _allFloatingTasks;
 
 	}
 
 	//task should be added to the _allMarkedTimedTasks vector
-	else if (task.getTaskType() == Task::DEADLINE || task.getTaskType() == Task::TIMED){
+	else if (taskType == TaskType::MarkedTimed){
 
 		return _allMarkedTimedTasks;
 
@@ -167,16 +309,17 @@ int TaskManager::getIndexToInsert(Task task){
 
 	int indexAddedTo = 0;
 
+	TaskType taskType = determineTaskType(task);
+
 	//task should be added to the _allTimedTasks vector
-	if ((task.getTaskType() == Task::DEADLINE || task.getTaskType() == Task::TIMED)
-		&& !task.getTaskMarked()){
+	if (taskType==TaskType::Timed){
 		
 		indexAddedTo += getTimedIndexToInsert(task, _allTimedTasks);
 
 	}
 
 	//task should be added to the _allFloatingTasks vector
-	else if ((task.getTaskType() == Task::FLOATING) && !task.getTaskMarked()){
+	else if (taskType == TaskType::Floating){
 		
 		indexAddedTo += getFloatingIndexToInsert(task, _allFloatingTasks);
 		//account for the fact that all floating tasks will be below in the vector
@@ -185,7 +328,7 @@ int TaskManager::getIndexToInsert(Task task){
 	}
 
 	//task should be added to the _allMarkedTimedTasks vector
-	else if (task.getTaskType() == Task::DEADLINE || task.getTaskType() == Task::TIMED){
+	else if (taskType == TaskType::MarkedTimed){
 		
 		indexAddedTo += getTimedIndexToInsert(task, _allMarkedTimedTasks);
 		indexAddedTo += _allTimedTasks->size() + _allFloatingTasks->size();
@@ -193,7 +336,7 @@ int TaskManager::getIndexToInsert(Task task){
 	}
 
 	//task should be added to the _allMarkedFloatingTasks vector
-	else if (task.getTaskType() == Task::FLOATING){
+	else{
 		
 		indexAddedTo += getFloatingIndexToInsert(task, _allMarkedFloatingTasks);
 		indexAddedTo += _allTimedTasks->size() + _allFloatingTasks->size() +
@@ -202,6 +345,41 @@ int TaskManager::getIndexToInsert(Task task){
 	}
 
 	return indexAddedTo;
+}
+
+
+//Determining the task type of the task that you want to insert
+//
+//@param the Task that you want to insert
+//@return the TaskType of the Task you want to insert
+TaskManager::TaskType TaskManager::determineTaskType(Task task){
+	
+	if ((task.getTaskType() == Task::DEADLINE ||
+		task.getTaskType() == Task::TIMED) && !task.getTaskMarked()){
+
+		return TaskType::Timed;
+
+	}
+
+	else if ((task.getTaskType() == Task::FLOATING) &&
+		!task.getTaskMarked()){
+
+		return TaskType::Floating;
+
+	}
+
+	else if (task.getTaskType() == Task::DEADLINE ||
+		task.getTaskType() == Task::TIMED){
+
+		return TaskType::MarkedTimed;
+
+	}
+
+	else{
+
+		return TaskType::MarkedFloating;
+
+	}
 }
 
 
@@ -284,14 +462,18 @@ bool TaskManager::isChronologicallyArranged(Task firstTask, Task secondTask){
 
 		if (secondTask.getTaskType() == Task::DEADLINE) {
 
-			if (firstTask.getTaskStartTime()->isEarlierThan(*(secondTask.getTaskDeadline())) < 0) {
+			string comp1 = firstTask.getTaskStartTime()->toString();
+			string comp2 = secondTask.getTaskDeadline()->toString();
+			if (firstTask.getTaskStartTime()->isEarlierThan(*(secondTask.getTaskDeadline())) > 0) {
 				return true;
 			}
 		}
 
 		else if (secondTask.getTaskType() == Task::TIMED) {
 
-			if (firstTask.getTaskStartTime()->isEarlierThan(*(secondTask.getTaskStartTime())) < 0) {
+			string comp1 = firstTask.getTaskStartTime()->toString();
+			string comp2 = secondTask.getTaskStartTime()->toString();
+			if (firstTask.getTaskStartTime()->isEarlierThan(*(secondTask.getTaskStartTime())) > 0) {
 				return true;
 			}
 		}
@@ -305,14 +487,18 @@ bool TaskManager::isChronologicallyArranged(Task firstTask, Task secondTask){
 
 		if (secondTask.getTaskType() == Task::DEADLINE) {
 
-			if (firstTask.getTaskDeadline()->isEarlierThan(*(secondTask.getTaskDeadline())) < 0) {
+			string comp1 = firstTask.getTaskDeadline()->toString();
+			string comp2 = secondTask.getTaskDeadline()->toString();
+			if (firstTask.getTaskDeadline()->isEarlierThan(*(secondTask.getTaskDeadline())) > 0) {
 				return true;
 			}
 		}
 
 		else if (secondTask.getTaskType() == Task::TIMED) {
 
-			if (firstTask.getTaskDeadline()->isEarlierThan(*(secondTask.getTaskStartTime())) < 0) {
+			string comp1 = firstTask.getTaskDeadline()->toString();
+			string comp2 = secondTask.getTaskStartTime()->toString();
+			if (firstTask.getTaskDeadline()->isEarlierThan(*(secondTask.getTaskStartTime())) > 0) {
 				return true;
 			}
 		}
@@ -322,71 +508,28 @@ bool TaskManager::isChronologicallyArranged(Task firstTask, Task secondTask){
 }
 
 
-Task TaskManager::getTask(int taskNumber){
-	if (taskNumber>_allCurrentTasks->size()){
-		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
-	}
-	return _allCurrentTasks->at(taskNumber - 1);
+
+
+
+
+
+
+
+/*
+* ====================================================================
+*  Constructor, Getters and Setters
+* ====================================================================
+*/
+
+TaskManager::TaskManager()
+{
 }
 
-void TaskManager::removeTask(int taskNumber){
-
-	int timedTaskSize = _allTimedTasks->size();
-	int floatingTaskSize = _allFloatingTasks->size();
-	int markedTimedTaskSize = _allMarkedTimedTasks->size();
-	int markedFloatingTaskSize = _allMarkedFloatingTasks->size();
-	
-	if (taskNumber <= timedTaskSize){
-		_allTimedTasks->erase(_allTimedTasks->begin() + taskNumber - 1);
-	}
-	else if (taskNumber <= timedTaskSize + floatingTaskSize){
-		int index = taskNumber - 1 - timedTaskSize;
-		_allFloatingTasks->erase(_allFloatingTasks->begin() + index);
-	}
-	else if (taskNumber <= timedTaskSize + floatingTaskSize + markedTimedTaskSize){
-		int index = taskNumber - 1 - timedTaskSize - floatingTaskSize;
-		_allMarkedTimedTasks->erase(_allMarkedTimedTasks->begin() + index);
-	}
-	else if (taskNumber <= timedTaskSize + floatingTaskSize + markedTimedTaskSize + 
-		markedFloatingTaskSize){
-		int index = taskNumber - 1 - timedTaskSize - floatingTaskSize - markedTimedTaskSize;
-		_allMarkedFloatingTasks->erase(_allMarkedFloatingTasks->begin() + index);
-	}
-	else{
-		throw CommandException(ERROR_MESSAGE_COMMAND_TASKNUM);
-	}
-
-	setAllCurrentTasks();
-}
-
-void TaskManager::markTask(int taskNumber){
-	Task task = getTask(taskNumber);
-	task.setTaskMarked(true);
-	removeTask(taskNumber);
-	addTask(task);
-	setAllCurrentTasks();
-}
-
-void TaskManager::unmarkTask(int taskNumber){
-	Task task = getTask(taskNumber);
-	task.setTaskMarked(false);
-	removeTask(taskNumber);
-	addTask(task);
-	setAllCurrentTasks();
-}
-
-void TaskManager::saveTasks(){
-	Storage* storage = Storage::getInstance();
-	storage->writeToFile();
-}
-
-int TaskManager::getNumberOfTasks(){
-	if (_allCurrentTasks->size() == 0){
-		return 0;
-	}
-	else{
-		return _allCurrentTasks->size();
-	}
+//Ensures the Singleton pattern is adhered to
+TaskManager* TaskManager::getInstance(){
+	if (!_instance)
+		_instance = new TaskManager;
+	return _instance;
 }
 
 vector<Task>* TaskManager::getAllCurrentTasks(){
@@ -409,5 +552,23 @@ vector<Task>* TaskManager::getAllMarkedFloatingTasks(){
 	return _allMarkedFloatingTasks;
 }
 
+
+/*
+* ====================================================================
+*  Variables and Messages Declaration
+* ====================================================================
+*/
+
+// Global static pointer used to ensure a single instance of the class.
+TaskManager* TaskManager::_instance = NULL;
+
+//vector representing all the tasks in order
+vector<Task>* TaskManager::_allCurrentTasks = new vector<Task>;
+
+//vectors representing the different categories of tasks
+vector<Task>* TaskManager::_allTimedTasks = new vector<Task>;
+vector<Task>* TaskManager::_allFloatingTasks = new vector<Task>;
+vector<Task>* TaskManager::_allMarkedTimedTasks = new vector<Task>;
+vector<Task>* TaskManager::_allMarkedFloatingTasks = new vector<Task>;
 
 const string TaskManager::ERROR_MESSAGE_COMMAND_TASKNUM = "Invalid task number!";

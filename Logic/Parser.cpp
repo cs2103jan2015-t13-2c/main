@@ -451,8 +451,8 @@ Date* Parser::parseTimeString(string timeStr){
 	int year = Date().getYear();
 	int mon(0); 
 	int day(0); 
-	int hour(23);
-	int minute(59);
+	int hour(12);
+	int minute(0);
 	string temp;
 
 	temp = getFirstWord(timeStr);

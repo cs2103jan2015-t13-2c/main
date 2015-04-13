@@ -1,15 +1,40 @@
+/*
+This class is to check the directory location of the save file for TASKKY.
+Functionalities include showing the directory in which the save file will be written.
+
+@author: A0094024M Adisurya Nataprawira
+*/
+
 #include "CommandCheckFileLocation.h"
 
+/*
+* ====================================================================
+*  Constructors, Modifiers, Accessors and Destructors
+* ====================================================================
+*/
 
+//Constructor
 CommandCheckFileLocation::CommandCheckFileLocation()
 {
 }
 
-
+//Destructor
 CommandCheckFileLocation::~CommandCheckFileLocation()
 {
 }
 
+
+/*
+* ====================================================================
+*  Inherited Functions
+* ====================================================================
+*/
+
+//This function executes the checkfileloc command. It will access the file containing
+//the directory and return the save file directory.
+//
+//@param: none
+//@return: save file directory
 string CommandCheckFileLocation::execute(){
 
 	ostringstream oss;
@@ -19,45 +44,70 @@ string CommandCheckFileLocation::execute(){
 	TaskManager instance = *TaskManager::getInstance();
 
 	currentName = getFileLocation();
-
-	if (currentName == "default"){
-		oss << "Save file is at default location";
+	if (currentName == DEFAULT_STRING){
+		return SAVE_FILE_AT_DEFAULT;
 	} else {
-		oss << "Save file is at " << currentName;
+		sprintf(buffer, SAVE_FILE_AT.c_str(), currentName.c_str());
+		return buffer;
 	}
-
-	return oss.str();
 
 }
 
+//There is no undo function for check file location, hence this function returns a null pointer
+//
+//@param: none
+//@return: null pointer
 Command* CommandCheckFileLocation::getInverseCommand(){
 	return nullptr;
 }
 
+
+/*
+* ====================================================================
+*  Second Abstractions
+* ====================================================================
+*/
+
+//Opens the file location and returns the directory.
+//
+//@param: none
+//@return: save file directory
 string CommandCheckFileLocation::getFileLocation(){
-	
-	ostringstream oss;
+
 	string currentName;
-
-	if (FILE *file = fopen("saveFileLocation.txt", "r")) {
-		fclose(file);
-	}
-	else {
-		FILE* createFile = fopen("saveFileLocation.txt", "wb"); // non-Windows use "w"
-		fclose(createFile);
-
-	}
-
-	ifstream readFile("saveFileLocation.txt");
+	checkDirectoryTXT();
+	
+	ifstream readFile(DIRECTORY_TXT.c_str());
 	if (readFile.is_open()){
 		getline(readFile, currentName);
 		if (currentName.empty()) {
-			oss << "default";
+			return DEFAULT_STRING;
 		}
 		else {
-			oss << currentName;
+			return currentName;
 		}
 	}
-
-	return oss.str();
 }
+
+void CommandCheckFileLocation::checkDirectoryTXT(){
+	if (FILE *file = fopen(DIRECTORY_TXT.c_str(), "r")) {
+		fclose(file);
+	}
+	else {
+		FILE* createFile = fopen(DIRECTORY_TXT.c_str(), "wb"); // non-Windows use "w"
+		fclose(createFile);
+	}
+	return;
+}
+
+/*
+* ====================================================================
+*  Variables and Messages Declaration
+* ====================================================================
+*/
+
+char CommandCheckFileLocation::buffer[255];
+const string CommandCheckFileLocation::DEFAULT_STRING = "default";
+const string CommandCheckFileLocation::SAVE_FILE_AT_DEFAULT = "Save File is at default location.";
+const string CommandCheckFileLocation::SAVE_FILE_AT = "Save File is at %s.";
+const string CommandCheckFileLocation::DIRECTORY_TXT = "saveFileLocation.txt";

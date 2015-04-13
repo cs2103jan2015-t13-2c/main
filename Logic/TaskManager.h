@@ -10,6 +10,11 @@ using namespace std;
 class TaskManager
 {
 public:
+
+	enum TaskType {
+		Timed, Floating, MarkedTimed, MarkedFloating
+	};
+
 	static vector<Task>* getAllCurrentTasks();
 	static vector<Task>* getAllTimedTasks();
 	static vector<Task>* getAllFloatingTasks();
@@ -19,7 +24,6 @@ public:
 	static int getNumberOfTasks();
 	static TaskManager* getInstance();
 
-	//return int value of the index the task was added to
 	static void addTask(Task task);
 	static int addFloatingTask(Task task, vector<Task>* floatingTasks);
 	static int addTimedTask(Task task, vector<Task>* timedTasks);
@@ -29,9 +33,10 @@ public:
 	static void TaskManager::saveTasks();
 	static void TaskManager::markTask(int taskNumber);
 	static void TaskManager::unmarkTask(int taskNumber);
-	static void TaskManager::sortTasks();
 	static void setAllCurrentTasks();
 	static void loadAllCurrentTasks(vector<Task> allCurrentTasks);
+
+	static TaskType determineTaskType(Task task);
 
 	static int TaskManager::getIndex(Task task);
 	static vector<Task>* TaskManager::getVector(Task task);
@@ -39,7 +44,6 @@ public:
 	static int getIndexToInsert(Task task); 
 	static int getFloatingIndexToInsert(Task task, vector<Task>* floatingTasks);
 	static int getTimedIndexToInsert(Task task, vector<Task>* timedTasks);
-
 	static bool isAlphabeticallyArranged(Task firstTask, Task secondTask);
 	static bool isChronologicallyArranged(Task firstTask, Task secondTask);
 

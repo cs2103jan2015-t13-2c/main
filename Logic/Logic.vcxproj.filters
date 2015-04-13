@@ -35,9 +35,6 @@
     <ClCompile Include="CommandAdd.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
-    <ClCompile Include="CommandBuilder.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
     <ClCompile Include="CommandChangeFileLocation.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
@@ -71,6 +68,7 @@
     <ClCompile Include="CommandUpdate.cpp">
       <Filter>Commands</Filter>
     </ClCompile>
+    <ClCompile Include="CommandBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Controller.h" />
@@ -106,9 +104,6 @@
     <ClInclude Include="CommandAdd.h">
       <Filter>Commands</Filter>
     </ClInclude>
-    <ClInclude Include="CommandBuilder.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
     <ClInclude Include="CommandChangeFileLocation.h">
       <Filter>Commands</Filter>
     </ClInclude>
@@ -142,6 +137,7 @@
     <ClInclude Include="CommandUpdate.h">
       <Filter>Commands</Filter>
     </ClInclude>
+    <ClInclude Include="CommandBuilder.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Exceptions">

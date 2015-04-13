@@ -83,16 +83,19 @@ Command* CommandMark::getInverseCommand(){
 			taskEndTime, taskDeadline, taskPriority);
 		taskToAdd.setTaskMarked(true);
 
+		vector<Task> allCurr = *TaskManager::getAllCurrentTasks();
 		//deleting unmarked task
 		TaskManager::removeTask(_taskNumber);
+		//allCurr = *TaskManager::getAllCurrentTasks();
 
 		//getting index to add new updated task to
 		int indexToUnmark = TaskManager::getIndexToInsert(taskToAdd);
 
 		//adding back unmarked task
 		taskToAdd.setTaskMarked(false);
-		TaskManager::addTask(taskToAdd);
 
+		TaskManager::addTask(taskToAdd);
+		
 		return new CommandUnmark(indexToUnmark + 1);
 	}
 

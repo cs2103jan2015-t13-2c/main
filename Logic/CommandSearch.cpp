@@ -44,6 +44,7 @@ CommandSearch::CommandSearch(string taskDetails,
 	_taskMarked = taskMarked;
 	_foundMarked = foundMarked;
 	_foundPriority = foundPriority;
+	foundTasksIndices = new vector < int > ;
 }
 
 //Default destructor
@@ -52,7 +53,7 @@ CommandSearch::~CommandSearch()
 }
 
 //Returns the integer vector of the tasks found
-vector<int> CommandSearch::getTasksIndices(){
+vector<int>* CommandSearch::getTasksIndices(){
 	return foundTasksIndices;
 }
 
@@ -136,10 +137,10 @@ string CommandSearch::searchByName(string taskname) {
 	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter){
 		if (containExactMatch(taskname, iter->getTaskDetails())){
 			++count;
-			foundTasksIndices.push_back(position);
+			foundTasksIndices->push_back(position);
 		} else if (containNearMatch(taskname, iter->getTaskDetails())){
 			++count;
-			foundTasksIndices.push_back(position);
+			foundTasksIndices->push_back(position);
 		}
 		++position;
 	}
@@ -158,8 +159,6 @@ string CommandSearch::searchByName(string taskname) {
 //@return: feedback on number of match found
 string CommandSearch::searchDateRange(Date dateFrom, Date dateTo) {
 
-	ostringstream oss;
-
 	vector<Task> TaskVector = *(TaskManager::getAllCurrentTasks());
 	vector<Task>::iterator iter;
 	int count = 0;
@@ -169,17 +168,17 @@ string CommandSearch::searchDateRange(Date dateFrom, Date dateTo) {
 		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING;
 		++iter){
 		if (iter->getTaskType() == Task::DEADLINE) {
-			if (dateFrom.isEarlierThan(*(iter->getTaskDeadline())) >= 0) {
-				if (dateTo.isEarlierThan(*(iter->getTaskDeadline())) <= 0) {
+			if (dateFrom.isEarlierThan(*(iter->getTaskDeadline())) >= 0){
+				if (dateTo.isEarlierThan(*(iter->getTaskDeadline())) <= 0){
 					++count;
-					foundTasksIndices.push_back(position);
+					foundTasksIndices->push_back(position);
 				}
 			}
 		}
 		else if (iter->getTaskType() == Task::TIMED) {
 			if (dateFrom.isEarlierThan(*(iter->getTaskStartTime())) >= 0) {
 				if (dateTo.isEarlierThan(*(iter->getTaskStartTime())) <= 0) {
-					foundTasksIndices.push_back(position);
+					foundTasksIndices->push_back(position);
 					++count;
 				}
 			}
@@ -214,13 +213,13 @@ string CommandSearch::searchAfterDate(Date dateAfter) {
 		++iter){
 		if (iter->getTaskType() == Task::DEADLINE) {
 			if (dateAfter.isEarlierThan(*(iter->getTaskDeadline())) >= 0) {
-				foundTasksIndices.push_back(position);
+				foundTasksIndices->push_back(position);
 				++count;
 			}
 		}
 		else if (iter->getTaskType() == Task::TIMED) {
 			if (dateAfter.isEarlierThan(*(iter->getTaskStartTime())) >= 0) {
-				foundTasksIndices.push_back(position);
+				foundTasksIndices->push_back(position);
 				++count;
 			}
 		}
@@ -253,13 +252,13 @@ string CommandSearch::searchBeforeDate(Date dateBefore) {
 		++iter){
 		if (iter->getTaskType() == Task::DEADLINE) {
 			if (dateBefore.isEarlierThan(*(iter->getTaskDeadline())) <= 0) {
-				foundTasksIndices.push_back(position);
+				foundTasksIndices->push_back(position);
 				++count;
 			}
 		}
 		else if (iter->getTaskType() == Task::TIMED) {
 			if (dateBefore.isEarlierThan(*(iter->getTaskStartTime())) <= 0) {
-				foundTasksIndices.push_back(position);
+				foundTasksIndices->push_back(position);
 				++count;
 			}
 		}
@@ -286,7 +285,7 @@ string CommandSearch::searchPriority(Task::Priority priority) {
 
 	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
 		if (priority == iter->getTaskPriority()) {
-			foundTasksIndices.push_back(position);
+			foundTasksIndices->push_back(position);
 			++count;
 		}
 		++position;
@@ -312,7 +311,7 @@ string CommandSearch::searchMarked(bool marked) {
 
 	for (iter = TaskVector.begin(); iter != TaskVector.end(); ++iter) {
 		if (marked == iter->getTaskMarked()) {
-			foundTasksIndices.push_back(position);
+			foundTasksIndices->push_back(position);
 			++count;
 		}
 		++position;

@@ -35,7 +35,7 @@ public:
 
 	Command* parseCommand(string userInput);
 
-	CommandBuilder::CommandType determineCommandType(string commandTypeString);
+	static CommandBuilder::CommandType determineCommandType(string commandTypeString);
 
 	string getTaskDetails();
 	Date* getTaskStartTime();
