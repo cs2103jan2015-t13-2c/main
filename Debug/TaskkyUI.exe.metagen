@@ -20,7 +20,6 @@ Class TaskkyUI.TaskkyGUI: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
   Fields:
     System.Windows.Forms.TextBox UserInput : Public
   Methods:
-    UserInputTextBox_TextChanged(Object, EventArgs): PrivateScope, Public, HideBySig
     addNewItem(Int32, basic_string<char\,std::char_traits<char>\,std::allocator<char> >*, basic_string<char\,std::char_traits<char>\,std::allocator<char> >*, basic_string<char\,std::char_traits<char>\,std::allocator<char> >*, Int32, Boolean(HasFieldMarshal)): PrivateScope, Public, HideBySig
     UserInputTextBox_KeyPress(Object, KeyPressEventArgs): PrivateScope, Public, HideBySig
     timer1_Tick(Object, EventArgs): PrivateScope, Public, HideBySig
