@@ -10,7 +10,7 @@ namespace LogicTest
 	TEST_CLASS(CommandBuilderTests)
 	{
 	public:
-		
+
 		TEST_METHOD(CommandBuilderTest1)
 		{
 			//checking that commandBuilder is cleared properly to be used by the next iteration
@@ -35,11 +35,10 @@ namespace LogicTest
 			//Checking constructing of an update command properly
 			//Command* updateCommand = commandBuilder.parseCommand("update 1");
 			//Assert::AreEqual<std::string>("Deleted Task #%d", updateCommand->execute());
-<<<<<<< HEAD
-		
-		
 
-			Assert::AreEqual<bool>(true, CommandBuilder::CommandType::Add == 
+
+
+			Assert::AreEqual<bool>(true, CommandBuilder::CommandType::Add ==
 				CommandBuilder::determineCommandType("add"));
 			Assert::AreEqual<bool>(true, CommandBuilder::CommandType::Display ==
 				CommandBuilder::determineCommandType("display"));
@@ -62,9 +61,7 @@ namespace LogicTest
 			Assert::AreEqual<bool>(true, CommandBuilder::CommandType::ChangeFileLocation ==
 				CommandBuilder::determineCommandType("changefileloc"));
 
-		
-=======
->>>>>>> origin/master
+
 		}
 
 	};

@@ -10,7 +10,7 @@
 #include "CommandDelete.h"
 
 using namespace std;
-class CommandAdd: public Command
+class CommandAdd : public Command
 {
 public:
 
@@ -21,14 +21,10 @@ public:
 		Task::Priority taskPriority);
 
 	virtual string execute();
-<<<<<<< HEAD
-	
+
 	virtual Command* getInverseCommand();
 
 	static const string CommandAdd::MESSAGE_ADDED;
-=======
-	virtual Command* getInverseCommand();
->>>>>>> origin/master
 
 private:
 	string _taskDetails;

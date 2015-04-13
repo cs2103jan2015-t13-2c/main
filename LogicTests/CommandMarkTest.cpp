@@ -8,7 +8,7 @@ namespace LogicTests
 	TEST_CLASS(CommandMarkTest)
 	{
 	public:
-		
+
 		TEST_METHOD(MarkTaskTest)
 		{
 

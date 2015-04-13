@@ -66,7 +66,7 @@ namespace TaskkyUI {
 
 	protected:
 
-	
+
 
 
 
@@ -393,19 +393,19 @@ namespace TaskkyUI {
 		}
 #pragma endregion
 	private: System::Void TaskkyGUIContent_Load(System::Object^  sender, System::EventArgs^  e) {
-		
 
-		
+
+
 	}
 
 	public: System::Void UserInputTextBox_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 
 	}
 
-	public: System::Windows::Forms::ListViewItem^ addNewItem(int taskNumber, 
+	public: System::Windows::Forms::ListViewItem^ addNewItem(int taskNumber,
 		string startDate, string endDate, string taskDetails, int taskPriority,
 		bool taskMarked) {
-		
+
 		ListViewItem^ newItem;
 
 		//adding first item of the row
@@ -441,12 +441,9 @@ namespace TaskkyUI {
 	public: System::Void UserInputTextBox_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
 
 		//When Enter is pressed
-		
-		if (e->KeyChar == (char)13){
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
+		if (e->KeyChar == (char)13){
+
 			//get data from the textbox
 
 			Controller* controllerInstance = Controller::getInstance();
@@ -490,10 +487,6 @@ namespace TaskkyUI {
 					}
 
 					else if (task.getTaskType() == Task::DEADLINE){
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 						ListViewItem^ newEntry = addNewItem(index,
 							task.getTaskDeadline()->parseDateToDisplay(),
 							"--------", task.getTaskDetails(),
@@ -521,21 +514,12 @@ namespace TaskkyUI {
 
 			else{
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> origin/master
 				TaskManager *taskManager = TaskManager::getInstance();
 				int taskNumber = 0;
 				int taskUrgent = 0;
 				int taskDueToday = 0;
 				int taskOverdue = 0;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 				//adding all current timed tasks
 
 				vector<Task> *allTimedTasks;
@@ -585,17 +569,13 @@ namespace TaskkyUI {
 						int taskPriority = task.getTaskPriority();
 						bool markedTask = {};
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 						if (task.getTaskDeadline()->sameDate(Date::Date())){
 
 							taskDueToday += 1;
 						}
 
 						if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())<0){
-							
+
 							taskOverdue += 1;
 						}
 
@@ -610,7 +590,7 @@ namespace TaskkyUI {
 
 						if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())<0){
 
-						newEntry->ForeColor = Color::DarkGoldenrod;
+							newEntry->ForeColor = Color::DarkGoldenrod;
 						}
 					}
 
@@ -678,10 +658,6 @@ namespace TaskkyUI {
 						listView1->Items->AddRange(MarkedTimedTasks);
 					}
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 					if (task.getTaskType() == Task::DEADLINE){
 
 						//setting new parameters to add next task
@@ -740,28 +716,17 @@ namespace TaskkyUI {
 			}
 
 		}
-<<<<<<< HEAD
 	}
 
-=======
-
-		SuggestionBuilder->Text = "e.g: add, delete, update, search, mark, unmark, undo, checkfilelocation, changefilelocation, help";
-
-
-		SuggestionBuilder->Text = gcnew String(SuggestionBuilder::suggestUserInput(command).c_str());
-
-
-	}
->>>>>>> origin/master
 	private: System::Void richTextBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 	}
 	private: System::Void UserInputTextBox_TextChanged_1(System::Object^  sender, System::EventArgs^  e) {
 		command = msclr::interop::marshal_as< std::string >(UserInput->Text);
-		
+
 	}
 	private: System::Void label2_Click(System::Object^  sender, System::EventArgs^  e) {
 	}
-	
+
 	private: System::Void checkBox1_CheckedChanged(System::Object^  sender, System::EventArgs^  e) {
 	}
 	private: System::Void richTextBox1_TextChanged_1(System::Object^  sender, System::EventArgs^  e) {
@@ -769,7 +734,7 @@ namespace TaskkyUI {
 	private: System::Void label1_Click_1(System::Object^  sender, System::EventArgs^  e) {
 	}
 	private: System::Void textBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-		
+
 	}
 	public: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e) {
 
@@ -815,134 +780,182 @@ namespace TaskkyUI {
 	}
 	private: System::Void checkedListBox1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
 	}
-private: System::Void listView1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
-
-	
-	
+	private: System::Void listView1_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
 
 
-}
-private: System::Void label1_Click(System::Object^  sender, System::EventArgs^  e) {
-}
-private: System::Void dataGridView1_CellContentClick(System::Object^  sender, System::Windows::Forms::DataGridViewCellEventArgs^  e) {
-}
-private: System::Void listView1_SelectedIndexChanged_1(System::Object^  sender, System::EventArgs^  e) {
-}
-private: System::Void label7_Click(System::Object^  sender, System::EventArgs^  e) {
-	
-}
-private: System::Void label7_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-}
-private: System::Void TaskkyGUI_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
-	
-	
-		
-}
-private: System::Void label12_Click(System::Object^  sender, System::EventArgs^  e) {
-	listView1->Items->Clear();
 
 
-	TaskManager *taskManager = TaskManager::getInstance();
-	int taskNumber = 0;
-	int taskUrgent = 0;
-	int taskDueToday = 0;
-	int taskOverdue = 0;
 
-	//adding all current timed tasks
-	vector<Task> *allTimedTasks;
-	allTimedTasks = taskManager->getAllTimedTasks();
+	}
+	private: System::Void label1_Click(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void dataGridView1_CellContentClick(System::Object^  sender, System::Windows::Forms::DataGridViewCellEventArgs^  e) {
+	}
+	private: System::Void listView1_SelectedIndexChanged_1(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void label7_Click(System::Object^  sender, System::EventArgs^  e) {
 
-	for (int i = 0; i != allTimedTasks->size(); i++){
-		Task task = (*allTimedTasks)[i];
-		//check here
-
-
-		if (task.getTaskType() == Task::TIMED)
-
-		{
-			if (task.getTaskPriority() == Task::HIGH){
-				taskUrgent += 1;
-			}
-
-			//setting new parameters to add next task
-
-			taskNumber += 1;
-			string startDate = task.getTaskStartTime()->toString();
-			string endDate = task.getTaskEndTime()->toString();
-
-			string taskDetails = task.getTaskDetails();
-
-			int taskPriority = task.getTaskPriority();
+	}
+	private: System::Void label7_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void TaskkyGUI_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e) {
 
 
-			ListViewItem^ defaultEntry;
 
-			//adding first item of the row
-			defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
-
-			//adding second, third and forth item of the row
+	}
+	private: System::Void label12_Click(System::Object^  sender, System::EventArgs^  e) {
+		listView1->Items->Clear();
 
 
-			defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
-			defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
-			defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
-			defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
+		TaskManager *taskManager = TaskManager::getInstance();
+		int taskNumber = 0;
+		int taskUrgent = 0;
+		int taskDueToday = 0;
+		int taskOverdue = 0;
+
+		//adding all current timed tasks
+		vector<Task> *allTimedTasks;
+		allTimedTasks = taskManager->getAllTimedTasks();
+
+		for (int i = 0; i != allTimedTasks->size(); i++){
+			Task task = (*allTimedTasks)[i];
+			//check here
 
 
-			if (task.getTaskPriority() == Task::HIGH)
+			if (task.getTaskType() == Task::TIMED)
+
 			{
-				defaultEntry->ForeColor = Color::DarkRed;
+				if (task.getTaskPriority() == Task::HIGH){
+					taskUrgent += 1;
+				}
+
+				//setting new parameters to add next task
+
+				taskNumber += 1;
+				string startDate = task.getTaskStartTime()->toString();
+				string endDate = task.getTaskEndTime()->toString();
+
+				string taskDetails = task.getTaskDetails();
+
+				int taskPriority = task.getTaskPriority();
+
+
+				ListViewItem^ defaultEntry;
+
+				//adding first item of the row
+				defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
+
+				//adding second, third and forth item of the row
+
+
+				defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
+				defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
+				defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
+				defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
+
+
+				if (task.getTaskPriority() == Task::HIGH)
+				{
+					defaultEntry->ForeColor = Color::DarkRed;
+				}
+
+
+
+				array<ListViewItem^>^temp1 = { defaultEntry };
+				listView1->Items->AddRange(temp1);
+
+
+
+				//else{
+				//defaultEntry->ForeColor = Color::White;
+				//}
 			}
 
 
+			if (task.getTaskType() == Task::DEADLINE)
 
-			array<ListViewItem^>^temp1 = { defaultEntry };
-			listView1->Items->AddRange(temp1);
+			{
+				if (task.getTaskPriority() == Task::HIGH){
+					taskUrgent += 1;
+				}
+
+				//setting new parameters to add next task
+
+				taskNumber += 1;
+				string startDate = task.getTaskDeadline()->toString();
+				string endDate = "----------";
 
 
+				if (task.getTaskDeadline()->sameDate(Date::Date())){
+					taskDueToday += 1;
+				}
 
-			//else{
-			//defaultEntry->ForeColor = Color::White;
-			//}
+				//if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())){
+
+				//	taskOverdue += 1;
+				//}
+
+
+				//}
+
+				string taskDetails = task.getTaskDetails();
+				int taskPriority = task.getTaskPriority();
+				ListViewItem^ defaultEntry;
+
+				//adding first item of the row
+				defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
+
+				//adding second, third and forth item of the row
+
+
+				defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
+				defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
+				defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
+				defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
+
+				array<ListViewItem^>^temp1 = { defaultEntry };
+				listView1->Items->AddRange(temp1);
+				if (task.getTaskPriority() == Task::HIGH)
+				{
+
+					defaultEntry->ForeColor = Color::DarkRed;
+				}
+
+
+			}
+
+
 		}
 
 
-		if (task.getTaskType() == Task::DEADLINE)
 
-		{
+		//adding all current floating tasks
+		vector<Task> *allFloatingTasks;
+		allFloatingTasks = taskManager->getAllFloatingTasks();
+
+		for (int i = 0; i != allFloatingTasks->size(); i++){
+			Task task = (*allFloatingTasks)[i];
+
 			if (task.getTaskPriority() == Task::HIGH){
 				taskUrgent += 1;
 			}
 
+
 			//setting new parameters to add next task
 
 			taskNumber += 1;
-			string startDate = task.getTaskDeadline()->toString();
+			string startDate = "----------";
 			string endDate = "----------";
-
-
-			if (task.getTaskDeadline()->sameDate(Date::Date())){
-				taskDueToday += 1;
-			}
-
-			//if ((Date::Date()).isEarlierThan(*task.getTaskDeadline())){
-
-			//	taskOverdue += 1;
-			//}
-
-
-			//}
-
 			string taskDetails = task.getTaskDetails();
 			int taskPriority = task.getTaskPriority();
+
+
 			ListViewItem^ defaultEntry;
 
 			//adding first item of the row
 			defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
 
 			//adding second, third and forth item of the row
-
-
 			defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
 			defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
 			defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
@@ -955,82 +968,34 @@ private: System::Void label12_Click(System::Object^  sender, System::EventArgs^ 
 
 				defaultEntry->ForeColor = Color::DarkRed;
 			}
-			
 
 		}
+	}
+	private: System::Void label13_Click(System::Object^  sender, System::EventArgs^  e) {
 
+		System::Void UserInputTextBox_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e);
 
 	}
+	private: System::Void label12_DoubleClick(System::Object^  sender, System::EventArgs^  e) {
 
-
-
-	//adding all current floating tasks
-	vector<Task> *allFloatingTasks;
-	allFloatingTasks = taskManager->getAllFloatingTasks();
-
-	for (int i = 0; i != allFloatingTasks->size(); i++){
-		Task task = (*allFloatingTasks)[i];
-
-		if (task.getTaskPriority() == Task::HIGH){
-			taskUrgent += 1;
+	}
+	private: System::Void UserInputTextBox_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e) {
+		if (e->KeyCode == Keys::PageDown){
+			listView1->Focus();
+			SendKeys::SendWait("{PGDN}");
+			UserInput->Focus();
+		}
+		else if (e->KeyCode == Keys::PageUp){
+			listView1->Focus();
+			SendKeys::SendWait("{PGUP}");
+			UserInput->Focus();
 		}
 
-
-		//setting new parameters to add next task
-
-		taskNumber += 1;
-		string startDate = "----------";
-		string endDate = "----------";
-		string taskDetails = task.getTaskDetails();
-		int taskPriority = task.getTaskPriority();
-
-
-		ListViewItem^ defaultEntry;
-
-		//adding first item of the row
-		defaultEntry = gcnew ListViewItem(Convert::ToString(taskNumber));
-
-		//adding second, third and forth item of the row
-		defaultEntry->SubItems->Add(gcnew String(startDate.c_str()));
-		defaultEntry->SubItems->Add(gcnew String(endDate.c_str()));
-		defaultEntry->SubItems->Add(gcnew String(taskDetails.c_str()));
-		defaultEntry->SubItems->Add(Convert::ToString(taskPriority));
-
-		array<ListViewItem^>^temp1 = { defaultEntry };
-		listView1->Items->AddRange(temp1);
-		if (task.getTaskPriority() == Task::HIGH)
-		{
-
-			defaultEntry->ForeColor = Color::DarkRed;
+		if (e->KeyCode == Keys::F1){
+			ShellExecuteA(NULL, "open", "..\\help.pdf", NULL, NULL, 0);
 		}
-
 	}
-}
-private: System::Void label13_Click(System::Object^  sender, System::EventArgs^  e) {
-		
-	System::Void UserInputTextBox_KeyPress(System::Object^  sender, System::Windows::Forms::KeyPressEventArgs^  e);
-
-}
-private: System::Void label12_DoubleClick(System::Object^  sender, System::EventArgs^  e) {
-
-}
-private: System::Void UserInputTextBox_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e) {
-	if (e->KeyCode == Keys::PageDown){
-		listView1->Focus();
-		SendKeys::SendWait("{PGDN}");
-		UserInput->Focus();
+	private: System::Void label2_Click_1(System::Object^  sender, System::EventArgs^  e) {
 	}
-	else if (e->KeyCode == Keys::PageUp){
-		listView1->Focus();
-		SendKeys::SendWait("{PGUP}");
-		UserInput->Focus();
-	}
-
-	if (e->KeyCode == Keys::F1){
-		ShellExecuteA(NULL, "open", "..\\help.pdf", NULL, NULL, 0);
-	}
-}
-private: System::Void label2_Click_1(System::Object^  sender, System::EventArgs^  e) {
-}
-};
+	};
 }

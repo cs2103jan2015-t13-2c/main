@@ -1,8 +1,5 @@
 //@author A0122357L
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
 #include "Date.h"
 
 //Default is construct current date
@@ -42,7 +39,7 @@ string Date::toString(){
 }
 
 string Date::parseDateToDisplay(){
-	
+
 	ostringstream dateToDisplay;
 
 	dateToDisplay << "[" << getDay() << "/" << getMonth()
@@ -79,7 +76,7 @@ Date *Date::toDate(string date_str){
 	int year = parseInt(date_str);
 
 
-	Date *date =  new Date (year, month, day, hours, minutes);
+	Date *date = new Date(year, month, day, hours, minutes);
 
 	return date;
 
@@ -110,7 +107,7 @@ int Date::isEarlierThan(Date dateToCompare){
 	std::chrono::minutes dateMinutes = std::chrono::duration_cast<std::chrono::minutes>(getTimePoint() - tp);
 	std::chrono::minutes date2Minutes = std::chrono::duration_cast<std::chrono::minutes>(dateToCompare.getTimePoint() - tp);
 	int numMinutes = date2Minutes.count() - dateMinutes.count();
-	if (numMinutes==0){
+	if (numMinutes == 0){
 		return 0;
 	}
 	else if (numMinutes>0){
@@ -133,7 +130,7 @@ int Date::diffInMinutes(Date dateToCompare){
 int Date::getYear(){
 	time_t tt = std::chrono::system_clock::to_time_t(getTimePoint());
 	tm local_tm = *localtime(&tt);
-	return local_tm.tm_year+1900;
+	return local_tm.tm_year + 1900;
 }
 
 int Date::getMonth(){
@@ -250,27 +247,38 @@ int Date::parseMonthName(string monthName){
 
 	if (monthName == "january" || monthName == "jan"){
 		mon = 0;
-	} else if (monthName == "february" || monthName == "feb"){
+	}
+	else if (monthName == "february" || monthName == "feb"){
 		mon = 1;
-	} else if (monthName == "march" || monthName == "mar"){
+	}
+	else if (monthName == "march" || monthName == "mar"){
 		mon = 2;
-	} else if (monthName == "april" || monthName == "apr"){
+	}
+	else if (monthName == "april" || monthName == "apr"){
 		mon = 3;
-	} else if (monthName == "may"){
+	}
+	else if (monthName == "may"){
 		mon = 4;
-	} else if (monthName == "june" || monthName == "jun"){
+	}
+	else if (monthName == "june" || monthName == "jun"){
 		mon = 5;
-	} else if (monthName == "july" || monthName == "jul"){
+	}
+	else if (monthName == "july" || monthName == "jul"){
 		mon = 6;
-	} else if (monthName == "august" || monthName == "aug"){
+	}
+	else if (monthName == "august" || monthName == "aug"){
 		mon = 7;
-	} else if (monthName == "september" || monthName == "sep"){
+	}
+	else if (monthName == "september" || monthName == "sep"){
 		mon = 8;
-	} else if (monthName == "october" || monthName == "oct"){
+	}
+	else if (monthName == "october" || monthName == "oct"){
 		mon = 9;
-	} else if (monthName == "november" || monthName == "nov"){
+	}
+	else if (monthName == "november" || monthName == "nov"){
 		mon = 10;
-	} else if (monthName == "december" || monthName == "dec"){
+	}
+	else if (monthName == "december" || monthName == "dec"){
 		mon = 11;
 	} //else throw error
 

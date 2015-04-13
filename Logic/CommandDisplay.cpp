@@ -12,16 +12,16 @@ CommandDisplay::~CommandDisplay(){
 string CommandDisplay::execute(){
 	ostringstream oss;
 	vector<Task>::iterator iter;
-	
+
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
 	vector<Task>* allTasksPtr = taskManagerInstance->getAllCurrentTasks();
-	if (allTasksPtr->size()==0){
+	if (allTasksPtr->size() == 0){
 		return "There are no tasks to display!";
 	}
 	vector<Task> allTasks = *allTasksPtr;
 
 	//Counts Task Number
-	int taskNumber=1;
+	int taskNumber = 1;
 	for (iter = allTasks.begin(); iter != allTasks.end(); ++iter) {
 		oss << printTaskToUser(*iter, taskNumber);
 		taskNumber++;
@@ -64,19 +64,12 @@ string CommandDisplay::printTaskToUser(Task toPrint, int taskNumber) {
 	//Prints Task Priority
 	Task::Priority checkPri = (toPrint).getTaskPriority();
 	switch (checkPri) {
-<<<<<<< HEAD
-		case Task::HIGH: {
-=======
-		case Task::LOW: {
-			oss << "PRIORITY: LOW" << endl;
-			break;
-		} case Task::HIGH: {
->>>>>>> origin/master
-			oss << "PRIORITY: HIGH" << endl;
-			break;
-		} default: {
-			break;
-		}
+	case Task::HIGH: {
+		oss << "PRIORITY: HIGH" << endl;
+		break;
+	} default: {
+		break;
+	}
 	}
 
 	bool checkMarked = (toPrint).getTaskMarked();

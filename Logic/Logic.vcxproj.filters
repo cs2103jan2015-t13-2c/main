@@ -1,156 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-<<<<<<< HEAD
-    <ClCompile Include="Controller.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="Storage.cpp" />
-    <ClCompile Include="SuggestionBuilder.cpp" />
-    <ClCompile Include="TaskDisplayer.cpp" />
-    <ClCompile Include="TaskManager.cpp" />
-    <ClCompile Include="CommandException.cpp">
-      <Filter>Exceptions</Filter>
-    </ClCompile>
-    <ClCompile Include="CustomException.cpp">
-      <Filter>Exceptions</Filter>
-    </ClCompile>
-    <ClCompile Include="ParseException.cpp">
-      <Filter>Exceptions</Filter>
-    </ClCompile>
-    <ClCompile Include="Date.cpp">
-      <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="ErrorLogger.cpp">
-      <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="Task.cpp">
-      <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="StringDistance.cpp">
-      <Filter>Utility</Filter>
-    </ClCompile>
-    <ClCompile Include="Command.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandAdd.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandChangeFileLocation.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandCheckFileLocation.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandDelete.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandDisplay.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandExit.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandInvalid.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandMark.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandSearch.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandUndo.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandUnmark.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandUpdate.cpp">
-      <Filter>Commands</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandBuilder.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Controller.h" />
-    <ClInclude Include="Parser.h" />
-    <ClInclude Include="Storage.h" />
-    <ClInclude Include="SuggestionBuilder.h" />
-    <ClInclude Include="TaskDisplayer.h" />
-    <ClInclude Include="TaskManager.h" />
-    <ClInclude Include="CommandException.h">
-      <Filter>Exceptions</Filter>
-    </ClInclude>
-    <ClInclude Include="CustomException.h">
-      <Filter>Exceptions</Filter>
-    </ClInclude>
-    <ClInclude Include="ParseException.h">
-      <Filter>Exceptions</Filter>
-    </ClInclude>
-    <ClInclude Include="Date.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="ErrorLogger.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Task.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="StringDistance.h">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="Command.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandAdd.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandChangeFileLocation.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandCheckFileLocation.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandDelete.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandDisplay.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandExit.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandInvalid.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandMark.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandSearch.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandUndo.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandUnmark.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandUpdate.h">
-      <Filter>Commands</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandBuilder.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="Exceptions">
-      <UniqueIdentifier>{3c13a46b-a7de-4636-8426-d787e88bb800}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utility">
-      <UniqueIdentifier>{a543d600-bb1f-4ad3-be7e-2be3056b61c9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Commands">
-      <UniqueIdentifier>{10cf5754-28cf-467b-833d-e2b35df0efd7}</UniqueIdentifier>
-    </Filter>
-=======
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandAdd.cpp" />
     <ClCompile Include="CommandBuilder.cpp" />
@@ -162,7 +12,6 @@
     <ClCompile Include="CommandExit.cpp" />
     <ClCompile Include="CommandInvalid.cpp" />
     <ClCompile Include="CommandMark.cpp" />
-    <ClCompile Include="CommandRedo.cpp" />
     <ClCompile Include="CommandSearch.cpp" />
     <ClCompile Include="CommandUndo.cpp" />
     <ClCompile Include="CommandUnmark.cpp" />
@@ -170,6 +19,7 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="CustomException.cpp" />
     <ClCompile Include="Date.cpp" />
+    <ClCompile Include="ErrorLogger.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ParseException.cpp" />
     <ClCompile Include="Parser.cpp" />
@@ -192,7 +42,6 @@
     <ClInclude Include="CommandExit.h" />
     <ClInclude Include="CommandInvalid.h" />
     <ClInclude Include="CommandMark.h" />
-    <ClInclude Include="CommandRedo.h" />
     <ClInclude Include="CommandSearch.h" />
     <ClInclude Include="CommandUndo.h" />
     <ClInclude Include="CommandUnmark.h" />
@@ -200,6 +49,7 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="CustomException.h" />
     <ClInclude Include="Date.h" />
+    <ClInclude Include="ErrorLogger.h" />
     <ClInclude Include="ParseException.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Storage.h" />
@@ -208,6 +58,5 @@
     <ClInclude Include="Task.h" />
     <ClInclude Include="TaskDisplayer.h" />
     <ClInclude Include="TaskManager.h" />
->>>>>>> origin/master
   </ItemGroup>
 </Project>

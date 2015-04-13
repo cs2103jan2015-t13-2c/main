@@ -8,7 +8,7 @@
 #include <vector>
 #include "CommandException.h"
 
-class CommandUpdate: public Command
+class CommandUpdate : public Command
 {
 public:
 
@@ -20,11 +20,6 @@ public:
 		int taskNumber);
 
 	virtual string execute();
-	virtual Command* getInverseCommand();
-
-	static const string CommandUpdate::MESSAGE_UPDATED;
-	static char CommandUpdate::buffer[255];
-	static const string CommandUpdate::ERROR_MESSAGE_COMMAND_TASKNUM;
 
 	virtual Command* getInverseCommand();
 

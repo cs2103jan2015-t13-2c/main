@@ -8,7 +8,7 @@
 #include <vector>
 #include "CommandMark.h"
 
-class CommandUnmark: public Command
+class CommandUnmark : public Command
 {
 public:
 
@@ -22,8 +22,6 @@ public:
 	static const string CommandUnmark::MESSAGE_NOT_UNMARKED;
 	static const string CommandUnmark::ERROR_MESSAGE_COMMAND_TASKNUM;
 	static char CommandUnmark::buffer[255];
-
-	static const string CommandUnmark::ERROR_MESSAGE_COMMAND_TASKNUM;
 
 private:
 	int _taskNumber;

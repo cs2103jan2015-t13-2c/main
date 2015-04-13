@@ -1,16 +1,13 @@
 //@author A0122357L
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
 #include "ParseException.h"
 
 ParseException::ParseException(std::string input){
-	
+
 	ParseException::input = input;
 	message = ERROR_MESSAGE_PARSING;
 	errorCode = ERROR_CODE_PARSING;
-	
+
 }
 
 string ParseException::getMessage(){

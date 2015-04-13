@@ -2,7 +2,7 @@
 /*
 This class is to manipulate the save file for TASKKY.
 
-Functionalities include writing the vector of Tasks into the save file and parsing the saved 
+Functionalities include writing the vector of Tasks into the save file and parsing the saved
 file into a vector of Tasks.
 
 The save file has to be named "Save.json", but location of the file can be anywhere, handled
@@ -156,7 +156,8 @@ string Storage::determineFileName(){
 	std::string fileDirectory = CommandCheckFileLocation::getFileLocation();
 	if (fileDirectory == "default"){
 		filename = findProgramDirectory() + "/Save.json";
-	} else {
+	}
+	else {
 		filename = fileDirectory + "/Save.json";
 	}
 
@@ -324,7 +325,7 @@ rapidjson::Value Storage::convertTaskToJSON(Task task, rapidjson::Document::Allo
 	rapidjson::Value marked;
 	char buffer[1024];
 	int len;
-	
+
 	//Check Task Details
 	len = sprintf(buffer, task.getTaskDetails().c_str());
 	taskname.SetString(buffer, len, allocator);
@@ -376,12 +377,14 @@ rapidjson::Value Storage::convertTaskToJSON(Task task, rapidjson::Document::Allo
 		int leng = sprintf(prior, "HIGH");
 
 		priority.SetString(prior, leng, allocator);
-	} else if (task.getTaskPriority() == Task::Priority::NORMAL) {
+	}
+	else if (task.getTaskPriority() == Task::Priority::NORMAL) {
 		char prior[1024];
 		int leng = sprintf(prior, "NORMAL");
 
 		priority.SetString(prior, leng, allocator);
-	} else {
+	}
+	else {
 		char prior[1024];
 		int leng = sprintf(prior, "NORMAL");
 
@@ -391,7 +394,8 @@ rapidjson::Value Storage::convertTaskToJSON(Task task, rapidjson::Document::Allo
 	//Check if task is marked
 	if (task.getTaskMarked()){
 		marked.SetBool(true);
-	} else {
+	}
+	else {
 		marked.SetBool(false);
 	}
 

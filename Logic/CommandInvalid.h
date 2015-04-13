@@ -6,17 +6,14 @@
 
 using namespace std;
 
-class CommandInvalid: public Command
+class CommandInvalid : public Command
 {
 public:
 
 	CommandInvalid(string userInput);
 
 	virtual string execute();
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
 	virtual Command* getInverseCommand();
 
 	static char CommandInvalid::buffer[255];

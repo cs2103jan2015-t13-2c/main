@@ -1,17 +1,14 @@
 //@author A0113716M
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
 /*
 This class is to parse the command line for TASKKY.
 
-The parser will parse the user command differently depending on the 
-keyword(ADD, UPDATE, DELETE, etc.), and return the necessary parameters 
-to the Command Builder. 
+The parser will parse the user command differently depending on the
+keyword(ADD, UPDATE, DELETE, etc.), and return the necessary parameters
+to the Command Builder.
 
-For example, calling "add task by 10 may" will return _taskDetails = "task" 
-and _taskDeadline = "10 may" to the Command Builder, which will create a 
+For example, calling "add task by 10 may" will return _taskDetails = "task"
+and _taskDeadline = "10 may" to the Command Builder, which will create a
 task based on these parameters.
 */
 
@@ -38,10 +35,10 @@ void Parser::parseCommandAdd(string userCommand){
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
 
 	string text = removeFirstWord(userCommand);
-// -------------------------Error Catching-------------------------------
+	// -------------------------Error Catching-------------------------------
 	if (text == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_ADD);
-// ----------------------------------------------------------------------
+	// ----------------------------------------------------------------------
 	vector<string> textVec = splitParameters(text);
 	textVec.push_back("\n");	//Represents the end of vector
 
@@ -54,10 +51,10 @@ void Parser::parseCommandAdd(string userCommand){
 		temp << *iter << " ";
 		iter++;
 	};
-// -------------------------Error Catching-------------------------------
+	// -------------------------Error Catching-------------------------------
 	if (temp.str() == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_TASK);
-// ----------------------------------------------------------------------
+	// ----------------------------------------------------------------------
 	_taskDetails = temp.str();
 	temp.str("");
 
@@ -77,10 +74,10 @@ void Parser::parseCommandAdd(string userCommand){
 	if (equalsIgnoreCase(*iter, "from")){
 		iter++;
 		while (!equalsIgnoreCase(*iter, "to")){
-// -------------------------Error Catching-------------------------------
+			// -------------------------Error Catching-------------------------------
 			if (iter == textVec.end())
 				throw CommandException(ERROR_MESSAGE_COMMAND_NOENDTIME);
-// ----------------------------------------------------------------------			
+			// ----------------------------------------------------------------------			
 			temp << *iter << " ";
 			iter++;
 		};
@@ -96,21 +93,17 @@ void Parser::parseCommandAdd(string userCommand){
 		};
 		timeString = temp.str();
 		_taskEndTime = parseTimeString(timeString);
-// -------------------------Error Catching-------------------------------
-		if (_taskEndTime->isEarlierThan(*(_taskStartTime)) == 1) 
+		// -------------------------Error Catching-------------------------------
+		if (_taskEndTime->isEarlierThan(*(_taskStartTime)) == 1)
 			throw CommandException(ERROR_MESSAGE_COMMAND_INVALIDENDTIME);
-// ----------------------------------------------------------------------
+		// ----------------------------------------------------------------------
 		temp.str("");
 	}
 
 	//Adding task priority
 	if (equalsIgnoreCase(*iter, "#impt") || equalsIgnoreCase(*iter, "#high")){
 		_taskPriority = Task::Priority::HIGH;
-<<<<<<< HEAD
 	}
-=======
-	} 
->>>>>>> origin/master
 }
 
 /*
@@ -123,10 +116,10 @@ void Parser::parseCommandUpdate(string userCommand){
 
 	ostringstream oss;
 	string text = removeFirstWord(userCommand);
-// -------------------------Error Catching-------------------------------
+	// -------------------------Error Catching-------------------------------
 	if (text == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_UPDATE);
-// ----------------------------------------------------------------------
+	// ----------------------------------------------------------------------
 
 	//Getting the task to change
 	string taskNumberStr = getFirstWord(text);
@@ -142,41 +135,43 @@ void Parser::parseCommandUpdate(string userCommand){
 	//Getting the attribute to change
 	text = removeFirstWord(text);
 	toLowerCase(text);
-// -------------------------Error Catching-------------------------------
+	// -------------------------Error Catching-------------------------------
 	if (text == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_UPDATEARGUMENTS);
-// ----------------------------------------------------------------------
+	// ----------------------------------------------------------------------
 	string attributeToChange = getFirstWord(text);
 
 	//Getting the details to change
 	string updatedStr;
 	text = removeFirstWord(text);
-// -------------------------Error Catching-------------------------------
+	// -------------------------Error Catching-------------------------------
 	if (text == "")
 		throw ParseException(ERROR_MESSAGE_PARSING_MISSINGDETAILS);
-// ----------------------------------------------------------------------
+	// ----------------------------------------------------------------------
 	updatedStr = text;
 
 
 	//Changes are made here
 	if (attributeToChange == "details"){
-		_taskDetails = updatedStr+" ";
-	} 
+		_taskDetails = updatedStr + " ";
+	}
 	else if (attributeToChange == "deadline"){
-		_taskDeadline = (parseTimeString(updatedStr+" "));
-	} 
+		_taskDeadline = (parseTimeString(updatedStr + " "));
+	}
 	else if (attributeToChange == "starttime"){
-		_taskStartTime = (parseTimeString(updatedStr+" "));
-	} 
+		_taskStartTime = (parseTimeString(updatedStr + " "));
+	}
 	else if (attributeToChange == "endtime"){
-		_taskEndTime = (parseTimeString(updatedStr+" "));
-	} 
+		_taskEndTime = (parseTimeString(updatedStr + " "));
+	}
 	else if (attributeToChange == "priority"){
 		if (updatedStr == "normal"){
 			_taskPriority = Task::Priority::NORMAL;
-		} else if (updatedStr == "high"){
+		}
+		else if (updatedStr == "high"){
 			_taskPriority = Task::Priority::HIGH;
-		} else{
+		}
+		else{
 			throw ParseException(ERROR_MESSAGE_PARSING_PRIORITY);
 		}
 	}
@@ -194,10 +189,10 @@ void Parser::parseCommandDelete(string userCommand){
 	Parser::clearPreviousParse();
 
 	string text = removeFirstWord(userCommand);
-// -------------------------Error Catching-------------------------------
+	// -------------------------Error Catching-------------------------------
 	if (text == "")
 		throw ParseException(ERROR_MESSAGE_DELETE_TASKNUM);
-// ----------------------------------------------------------------------
+	// ----------------------------------------------------------------------
 
 	string task_number_str = getFirstWord(text);
 	text = removeFirstWord(text);
@@ -313,7 +308,8 @@ void Parser::parseCommandSearch(string userCommand){
 	if (equalsIgnoreCase(*iter, "done")){
 		_taskMarked = true;
 		_foundMarked = true;
-	} else if (equalsIgnoreCase(*iter, "undone")){
+	}
+	else if (equalsIgnoreCase(*iter, "undone")){
 		_taskMarked = false;
 		_foundMarked = true;
 	}
@@ -322,7 +318,7 @@ void Parser::parseCommandSearch(string userCommand){
 	if (equalsIgnoreCase(*iter, "#impt") || equalsIgnoreCase(*iter, "#high")){
 		_taskPriority = Task::Priority::HIGH;
 		_foundPriority = true;
-	} 
+	}
 
 	//Search for next available timeslot
 	if (equalsIgnoreCase(*iter, "next")){
@@ -345,19 +341,11 @@ void Parser::parseCommandSearch(string userCommand){
 */
 void Parser::parseCommandChangeFileLocation(string userCommand){
 	Parser::clearPreviousParse();
-<<<<<<< HEAD
 
 	string text = removeFirstWord(userCommand);
 	_taskDetails = text;
 }
 
-=======
-
-	string text = removeFirstWord(userCommand);
-	_taskDetails = text;
-}
-
->>>>>>> origin/master
 //@author A0113716M -reused
 /*
 * ====================================================================
@@ -412,7 +400,8 @@ unsigned int Parser::countWordsInString(const string& str)
 inline string Parser::trim(const string& s, const string& delimiters){
 	if (!s.empty()){
 		return trim_left(trim_right(s, delimiters), delimiters);
-	} else{
+	}
+	else{
 		return s;
 	}
 }
@@ -436,7 +425,8 @@ int Parser::parseInt(string str){
 	ss >> i;
 	if (ss.fail() || ss.get(c)){
 		return INVALID_NUMBER_FORMAT;
-	} else{
+	}
+	else{
 		return i;
 	}
 }
@@ -452,29 +442,29 @@ string Parser::replace(string a, string b, string c) {
 
 //@author A0113716M
 bool Parser::isKeyword(string word){
-	return (equalsIgnoreCase(word, "by") || equalsIgnoreCase(word, "from") || 
-			equalsIgnoreCase(word, "#impt") || equalsIgnoreCase(word, "#high") ||
-			word == "\n");
+	return (equalsIgnoreCase(word, "by") || equalsIgnoreCase(word, "from") ||
+		equalsIgnoreCase(word, "#impt") || equalsIgnoreCase(word, "#high") ||
+		word == "\n");
 }
 
 bool Parser::isSearchKeyword(string word){
 	return (equalsIgnoreCase(word, "by") || equalsIgnoreCase(word, "from") ||
-			equalsIgnoreCase(word, "#impt") || equalsIgnoreCase(word, "#high") ||
-			equalsIgnoreCase(word, "before") || equalsIgnoreCase(word, "after") ||
-			equalsIgnoreCase(word, "done") || equalsIgnoreCase(word, "undone") ||
-			equalsIgnoreCase(word, "next") || word == "\n");
+		equalsIgnoreCase(word, "#impt") || equalsIgnoreCase(word, "#high") ||
+		equalsIgnoreCase(word, "before") || equalsIgnoreCase(word, "after") ||
+		equalsIgnoreCase(word, "done") || equalsIgnoreCase(word, "undone") ||
+		equalsIgnoreCase(word, "next") || word == "\n");
 }
 
 Date* Parser::parseTimeString(string timeStr){
 	toLowerCase(timeStr);
-// -------------------------Error Catching-------------------------------
+	// -------------------------Error Catching-------------------------------
 	if (timeStr == "")
 		throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);
-// ----------------------------------------------------------------------
-		
+	// ----------------------------------------------------------------------
+
 	int year = Date().getYear();
-	int mon(0); 
-	int day(0); 
+	int mon(0);
+	int day(0);
 	int hour(12);
 	int minute(0);
 	string temp;
@@ -521,16 +511,16 @@ Date* Parser::parseTimeString(string timeStr){
 	//E.g. User types in "9 apr"
 	else {
 		day = parseInt(temp);
-// -------------------------Error Catching-------------------------------
+		// -------------------------Error Catching-------------------------------
 		if (day > 31 || day < 0)
 			throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);
-// ----------------------------------------------------------------------
+		// ----------------------------------------------------------------------
 
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
-// -------------------------Error Catching-------------------------------
+		// -------------------------Error Catching-------------------------------
 		if (timeStr == "")
 			throw CommandException(ERROR_MESSAGE_PARSING_INVALIDTIME);
-// ----------------------------------------------------------------------
+		// ----------------------------------------------------------------------
 
 		temp = (getFirstWord(timeStr));
 		mon = parseMonthName(temp);
@@ -539,16 +529,17 @@ Date* Parser::parseTimeString(string timeStr){
 	timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
 	if (timeStr != "") {
 		temp = getFirstWord(timeStr);
-	} 
+	}
 	else {
 		if (mon < Date().getMonth()){
 			++year;
-		} else if (mon == Date().getMonth()){
-			
-		if (day < Date().getDay()){
-				++year;
 		}
-	}
+		else if (mon == Date().getMonth()){
+
+			if (day < Date().getDay()){
+				++year;
+			}
+		}
 		return (new Date(year, mon, day, hour, minute));
 	}
 
@@ -562,7 +553,7 @@ Date* Parser::parseTimeString(string timeStr){
 		timeStr = timeStr.substr(timeStr.find_first_of(' ') + 1);
 		if (timeStr != "") {
 			temp = getFirstWord(timeStr);
-		} 
+		}
 		else {
 			if (mon < Date().getMonth()){
 				++year;
@@ -577,11 +568,11 @@ Date* Parser::parseTimeString(string timeStr){
 	}
 
 	bool isTime = parseTime(temp, hour, minute);
-// -------------------------Error Catching-------------------------------
+	// -------------------------Error Catching-------------------------------
 	if (!isTime)
 		throw ParseException(ERROR_MESSAGE_PARSING_INVALIDTIME);
-// ----------------------------------------------------------------------
-	
+	// ----------------------------------------------------------------------
+
 	if (mon < Date().getMonth()){
 		++year;
 	}
@@ -599,19 +590,26 @@ int Parser::parseDayName(string dayName) {
 
 	if (dayName == "sunday" || dayName == "sun") {
 		day = 0;
-	} else if (dayName == "monday" || dayName == "mon") {
+	}
+	else if (dayName == "monday" || dayName == "mon") {
 		day = 1;
-	} else if (dayName == "tuesday" || dayName == "tue" || dayName == "tues") {
+	}
+	else if (dayName == "tuesday" || dayName == "tue" || dayName == "tues") {
 		day = 2;
-	} else if (dayName == "wednesday" || dayName == "wed") {
+	}
+	else if (dayName == "wednesday" || dayName == "wed") {
 		day = 3;
-	} else if (dayName == "thursday" || dayName == "thu" || dayName == "thurs") {
+	}
+	else if (dayName == "thursday" || dayName == "thu" || dayName == "thurs") {
 		day = 4;
-	} else if (dayName == "friday" || dayName == "fri") {
+	}
+	else if (dayName == "friday" || dayName == "fri") {
 		day = 5;
-	} else if (dayName == "saturday" || dayName == "sat") {
+	}
+	else if (dayName == "saturday" || dayName == "sat") {
 		day = 6;
-	} else {
+	}
+	else {
 		throw ParseException(ERROR_MESSAGE_PARSING_DAYNAME);
 	}
 	return day;
@@ -622,29 +620,41 @@ int Parser::parseMonthName(string monthName) {
 
 	if (monthName == "january" || monthName == "jan") {
 		mon = 0;
-	} else if (monthName == "february" || monthName == "feb") {
+	}
+	else if (monthName == "february" || monthName == "feb") {
 		mon = 1;
-	} else if (monthName == "march" || monthName == "mar") {
+	}
+	else if (monthName == "march" || monthName == "mar") {
 		mon = 2;
-	} else if (monthName == "april" || monthName == "apr") {
+	}
+	else if (monthName == "april" || monthName == "apr") {
 		mon = 3;
-	} else if (monthName == "may") {
+	}
+	else if (monthName == "may") {
 		mon = 4;
-	} else if (monthName == "june" || monthName == "jun") {
+	}
+	else if (monthName == "june" || monthName == "jun") {
 		mon = 5;
-	} else if (monthName == "july" || monthName == "jul") {
+	}
+	else if (monthName == "july" || monthName == "jul") {
 		mon = 6;
-	} else if (monthName == "august" || monthName == "aug") {
+	}
+	else if (monthName == "august" || monthName == "aug") {
 		mon = 7;
-	} else if (monthName == "september" || monthName == "sep") {
+	}
+	else if (monthName == "september" || monthName == "sep") {
 		mon = 8;
-	} else if (monthName == "october" || monthName == "oct") {
+	}
+	else if (monthName == "october" || monthName == "oct") {
 		mon = 9;
-	} else if (monthName == "november" || monthName == "nov") {
+	}
+	else if (monthName == "november" || monthName == "nov") {
 		mon = 10;
-	} else if (monthName == "december" || monthName == "dec") {
+	}
+	else if (monthName == "december" || monthName == "dec") {
 		mon = 11;
-	} else {
+	}
+	else {
 		throw ParseException(ERROR_MESSAGE_PARSING_MONTHNAME);
 	}
 	return mon;
@@ -672,7 +682,8 @@ bool Parser::parseTime(string time, int &hour, int &minute){
 	//Checks if time is in format 12pm or 12:00pm
 	if (t / 100 == 0) {
 		hour = t % 100;
-	} else {
+	}
+	else {
 		hour = t / 100;
 		minute = t % 100;
 	}
@@ -758,7 +769,7 @@ Parser::~Parser(){
 *  Error Messages
 * ====================================================================
 */
-const string Parser::ERROR_MESSAGE_PARSING_ADD = "There is no task to add"; 
+const string Parser::ERROR_MESSAGE_PARSING_ADD = "There is no task to add";
 const string Parser::ERROR_MESSAGE_PARSING_UPDATE = "Please enter a task number to update";
 const string Parser::ERROR_MESSAGE_PARSING_UPDATEARGUMENTS = "There are no arguments to update";
 const string Parser::ERROR_MESSAGE_PARSING_MISSINGDETAILS = "Task details cannot be empty";

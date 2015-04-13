@@ -1,11 +1,8 @@
 //@author A0094024M
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
 /*
 This class is to handle the search command. As an object of this class is constructed, it will
-take in the specific attributes as the search objects and search accordingly (e.g. setting 
+take in the specific attributes as the search objects and search accordingly (e.g. setting
 taskDetails will result in searching the TaskVector for a similar task details, etc).
 
 Available searches:
@@ -47,7 +44,7 @@ CommandSearch::CommandSearch(string taskDetails,
 	_taskMarked = taskMarked;
 	_foundMarked = foundMarked;
 	_foundPriority = foundPriority;
-	foundTasksIndices = new vector < int > ;
+	foundTasksIndices = new vector < int >;
 }
 
 //Default destructor
@@ -95,7 +92,7 @@ string CommandSearch::execute() {
 			return searchBeforeDate(*_taskEndTime);
 		}
 	}
-	
+
 	if (_foundPriority == true) {
 		return searchPriority(_taskPriority);
 	}
@@ -141,7 +138,8 @@ string CommandSearch::searchByName(string taskname) {
 		if (containExactMatch(taskname, iter->getTaskDetails())){
 			++count;
 			foundTasksIndices->push_back(position);
-		} else if (containNearMatch(taskname, iter->getTaskDetails())){
+		}
+		else if (containNearMatch(taskname, iter->getTaskDetails())){
 			++count;
 			foundTasksIndices->push_back(position);
 		}
@@ -167,7 +165,7 @@ string CommandSearch::searchDateRange(Date dateFrom, Date dateTo) {
 	int count = 0;
 	int position = 1;
 
-	for (iter = TaskVector.begin(); 
+	for (iter = TaskVector.begin();
 		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING;
 		++iter){
 		if (iter->getTaskType() == Task::DEADLINE) {
@@ -211,8 +209,8 @@ string CommandSearch::searchAfterDate(Date dateAfter) {
 	int count = 0;
 	int position = 1;
 
-	for (iter = TaskVector.begin(); 
-		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING; 
+	for (iter = TaskVector.begin();
+		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING;
 		++iter){
 		if (iter->getTaskType() == Task::DEADLINE) {
 			if (dateAfter.isEarlierThan(*(iter->getTaskDeadline())) >= 0) {
@@ -343,7 +341,7 @@ string CommandSearch::searchMarked(bool marked) {
 //
 //@return: feedback on number of match found
 string CommandSearch::searchNextEmptySlot(string duration){
-	
+
 	int durationInMinutes = parseDurationToMinutes(duration);
 
 	vector<Task> TaskVector = *TaskManager::getAllCurrentTasks();
@@ -351,10 +349,10 @@ string CommandSearch::searchNextEmptySlot(string duration){
 	bool found = false;
 	Date toCompare = Date::Date();
 
-	for (iter = TaskVector.begin(); 
-		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING && found == false; 
+	for (iter = TaskVector.begin();
+		iter != TaskVector.end() && iter->getTaskType() != Task::FLOATING && found == false;
 		++iter){
-		
+
 		if (iter->getTaskType() == Task::TIMED) {
 			if (toCompare.isEarlierThan(*(iter->getTaskStartTime())) == 1){
 				int freeTime = toCompare.diffInMinutes(*(iter->getTaskStartTime()));
@@ -369,7 +367,7 @@ string CommandSearch::searchNextEmptySlot(string duration){
 
 	}
 
-	
+
 	if (toCompare.isEarlierThan(Date::Date()) == 0) {
 		sprintf_s(buffer, MESSAGE_NEXT_AVAILABLE_SLOT.c_str(), duration.c_str(), "now!");
 	}
@@ -377,7 +375,7 @@ string CommandSearch::searchNextEmptySlot(string duration){
 		sprintf_s(buffer, MESSAGE_NEXT_AVAILABLE_SLOT.c_str(), duration.c_str(), toCompare.toString().c_str());
 	}
 	return buffer;
-	
+
 }
 
 /*
@@ -440,7 +438,7 @@ int CommandSearch::parseDurationToMinutes(string duration){
 		if (getFirstWord(duration) == "day" || getFirstWord(duration) == "days"){
 			int days = firstNumber;
 			duration = removeFirstWord(duration);
-			
+
 			int hours = stoi(getFirstWord(duration));
 			duration = removeFirstWord(duration);
 			if (getFirstWord(duration) != "hour" && getFirstWord(duration) != "hours"){
@@ -484,7 +482,8 @@ int CommandSearch::parseDurationToMinutes(string duration){
 		}
 		else if (getFirstWord(duration) == "minutes" || getFirstWord(duration) == "minute"){
 			return firstNumber;
-		} else {
+		}
+		else {
 			throw CommandException(INVALID_DURATION);
 		}
 
@@ -501,7 +500,8 @@ int CommandSearch::parseDurationToMinutes(string duration){
 bool CommandSearch::containExactMatch(string searchName, string taskName){
 	if (taskName.find(searchName) != string::npos){
 		return true;
-	} else {
+	}
+	else {
 		return false;
 	}
 }
@@ -518,7 +518,7 @@ bool CommandSearch::containNearMatch(string searchName, string taskName){
 		CommandSearch::ACCEPTABLE_DISTANCE){
 		nearMatch = true;
 	}
-	
+
 	if (!nearMatch){
 		vector<string> textVec = splitParameters(taskName);
 		vector<string>::iterator iter;
@@ -549,7 +549,7 @@ bool CommandSearch::containNearMatch(string searchName, string taskName){
 
 string CommandSearch::removeFirstWord(string userCommand){
 
-	
+
 	size_t firstSpace = userCommand.find_first_of(' ');
 	return userCommand.substr(firstSpace + 1, userCommand.npos);
 

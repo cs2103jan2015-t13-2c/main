@@ -1,8 +1,5 @@
 //@author A0122357L
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
 #pragma once
 #include <string.h>
 #include <malloc.h>

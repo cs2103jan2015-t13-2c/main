@@ -5,7 +5,7 @@
 
 using namespace std;
 
-class ParseException: public CustomException
+class ParseException : public CustomException
 {
 
 private:

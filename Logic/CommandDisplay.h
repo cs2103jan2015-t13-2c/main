@@ -10,7 +10,7 @@
 
 using namespace std;
 
-class CommandDisplay: public Command
+class CommandDisplay : public Command
 {
 public:
 	CommandDisplay();

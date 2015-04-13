@@ -9,7 +9,7 @@
 #include "CommandUnmark.h"
 #include "CommandException.h"
 
-class CommandMark: public Command
+class CommandMark : public Command
 {
 public:
 
@@ -23,8 +23,6 @@ public:
 	static const string CommandMark::MESSAGE_NOT_MARKED;
 	static const string CommandMark::ERROR_MESSAGE_COMMAND_TASKNUM;
 	static char CommandMark::buffer[255];
-
-	static const string CommandMark::ERROR_MESSAGE_COMMAND_TASKNUM;
 
 private:
 

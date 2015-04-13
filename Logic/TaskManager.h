@@ -11,14 +11,11 @@ using namespace std;
 class TaskManager
 {
 public:
-<<<<<<< HEAD
 
 	enum TaskType {
 		Timed, Floating, MarkedTimed, MarkedFloating
 	};
 
-=======
->>>>>>> origin/master
 	static vector<Task>* getAllCurrentTasks();
 	static vector<Task>* getAllTimedTasks();
 	static vector<Task>* getAllFloatingTasks();
@@ -28,12 +25,7 @@ public:
 	static int getNumberOfTasks();
 	static TaskManager* getInstance();
 
-<<<<<<< HEAD
 	static void addTask(Task task);
-=======
-	//return int value of the index the task was added to
-	static int addTask(Task task);
->>>>>>> origin/master
 	static int addFloatingTask(Task task, vector<Task>* floatingTasks);
 	static int addTimedTask(Task task, vector<Task>* timedTasks);
 
@@ -42,7 +34,6 @@ public:
 	static void TaskManager::saveTasks();
 	static void TaskManager::markTask(int taskNumber);
 	static void TaskManager::unmarkTask(int taskNumber);
-<<<<<<< HEAD
 	static void setAllCurrentTasks();
 	static void loadAllCurrentTasks(vector<Task> allCurrentTasks);
 	static void clearAllCurrentTasks();
@@ -52,17 +43,12 @@ public:
 	static int TaskManager::getIndex(Task task);
 	static vector<Task>* TaskManager::getVector(Task task);
 
-	static int getIndexToInsert(Task task); 
+	static int getIndexToInsert(Task task);
 	static int getFloatingIndexToInsert(Task task, vector<Task>* floatingTasks);
 	static int getTimedIndexToInsert(Task task, vector<Task>* timedTasks);
 	static bool isAlphabeticallyArranged(Task firstTask, Task secondTask);
 	static bool isChronologicallyArranged(Task firstTask, Task secondTask);
 	static bool isChronologicallySame(Task firstTask, Task secondTask);
-=======
-	static void TaskManager::sortTasks();
-	static void setAllCurrentTasks();
-	static void loadAllCurrentTasks(vector<Task> allCurrentTasks);
->>>>>>> origin/master
 
 	static const string TaskManager::ERROR_MESSAGE_COMMAND_TASKNUM;
 
@@ -79,6 +65,6 @@ private:
 	TaskManager& operator=(TaskManager const&){};
 
 	static TaskManager *_instance;
-	};
+};
 
 

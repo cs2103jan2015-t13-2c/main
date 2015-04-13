@@ -9,7 +9,7 @@ namespace LogicTests
 	TEST_CLASS(CommandSearchUnitTest)
 	{
 	public:
-		
+
 		TEST_METHOD(searchExactName1)
 		{
 			clearTasks();
@@ -71,12 +71,12 @@ namespace LogicTests
 		}
 		TEST_METHOD(searchDateRange1){
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
-			CommandSearch test6("", new Date(), new Date(2016,1,2,0,0), NULL, 
-				Task::Priority::NORMAL, "", false,false, false);
+			CommandSearch test6("", new Date(), new Date(2016, 1, 2, 0, 0), NULL,
+				Task::Priority::NORMAL, "", false, false, false);
 
 			Assert::AreEqual<string>("There are 2 tasks found.", test6.execute());
-			
-			
+
+
 			Assert::AreEqual<int>(2, test6.getTasksIndices()->size());
 			vector<int> myVec = *(test6.getTasksIndices());
 			vector<int>::iterator iter = myVec.begin();
@@ -88,7 +88,7 @@ namespace LogicTests
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
 			CommandSearch test7("", new Date(), new Date(2015, 11, 1, 0, 0), NULL,
 				Task::Priority::NORMAL, "", false, false, false);
-			
+
 			Assert::AreEqual<string>("There are 1 tasks found.", test7.execute());
 
 
@@ -99,7 +99,7 @@ namespace LogicTests
 		}
 		TEST_METHOD(searchDateRange3){
 			Assert::AreEqual<int>(4, TaskManager::getAllCurrentTasks()->size());
-			CommandSearch test8("", new Date(2015,11,1,0,0), new Date(2016, 0, 1, 0, 0), NULL,
+			CommandSearch test8("", new Date(2015, 11, 1, 0, 0), new Date(2016, 0, 1, 0, 0), NULL,
 				Task::Priority::NORMAL, "", false, false, false);
 
 			Assert::AreEqual<string>("There are 1 tasks found.", test8.execute());
@@ -176,10 +176,7 @@ namespace LogicTests
 
 			Assert::AreEqual<string>("Next available 365 daysis from 01 Jan 2016 (Fri), 10:00AM.", test14.execute());
 		}
-<<<<<<< HEAD
-		
-=======
->>>>>>> origin/master
+
 	private:
 		void addStandardTasks(){
 			TaskManager::addTask(Task("Marked Task - will be indexed as 4", NULL, NULL, NULL,

@@ -15,11 +15,7 @@ public:
 	};
 
 	enum Priority {
-<<<<<<< HEAD
 		NORMAL, HIGH
-=======
-		LOW, NORMAL, HIGH
->>>>>>> origin/master
 	};
 
 	//Constructor

@@ -1,8 +1,5 @@
 //@author A0122357L
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
 #include "CustomException.h"
 
 CustomException::CustomException(){
@@ -16,14 +13,14 @@ CustomException::CustomException(string message){
 	errorCode = 0;
 	fatal = false;
 }
-string CustomException::getMessage() { 
-	return message; 
+string CustomException::getMessage() {
+	return message;
 }
 
 int CustomException::getErrorCode() {
-	return errorCode; 
+	return errorCode;
 }
 
 bool CustomException::isFatal() {
-	return fatal; 
+	return fatal;
 }

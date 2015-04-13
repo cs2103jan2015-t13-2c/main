@@ -1,5 +1,4 @@
 //@author A0122357L
-<<<<<<< HEAD
 
 /*
 This class contains code that can execute the command "Add",
@@ -12,8 +11,6 @@ the implementation of the Command from the person that uses it,
 in the Controller class
 */
 
-=======
->>>>>>> origin/master
 #include "CommandAdd.h"
 
 
@@ -32,7 +29,7 @@ string CommandAdd::execute(){
 
 	TaskManager instance = *TaskManager::getInstance();
 
-	Task taskToAdd = Task(_taskDetails, _taskStartTime, 
+	Task taskToAdd = Task(_taskDetails, _taskStartTime,
 		_taskEndTime, _taskDeadline, _taskPriority);
 
 	instance.addTask(taskToAdd);
@@ -47,14 +44,14 @@ string CommandAdd::execute(){
 Command* CommandAdd::getInverseCommand(){
 
 	TaskManager* taskManagerInstance = TaskManager::getInstance();
-	
+
 	//getting index to delete
-	Task taskToAdd = Task(_taskDetails, _taskStartTime, 
+	Task taskToAdd = Task(_taskDetails, _taskStartTime,
 		_taskEndTime, _taskDeadline, _taskPriority);
 
 	int indexToDelete = TaskManager::getIndexToInsert(taskToAdd);
 
-	return new CommandDelete(indexToDelete+1);
+	return new CommandDelete(indexToDelete + 1);
 }
 
 
@@ -78,7 +75,6 @@ CommandAdd::CommandAdd(string taskDetails,
 }
 
 
-<<<<<<< HEAD
 /*
 * ====================================================================
 *  Variables and Messages Declaration
@@ -86,27 +82,3 @@ CommandAdd::CommandAdd(string taskDetails,
 */
 
 const string CommandAdd::MESSAGE_ADDED = "Task has been added!";
-=======
-CommandAdd::~CommandAdd(){
-}
-
-string CommandAdd::execute(){
-	TaskManager instance = *TaskManager::getInstance();
-	Task taskToAdd = Task(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
-		_taskPriority);
-	instance.addTask(taskToAdd);
-	return "Task has been added!";
-}
-
-Command* CommandAdd::getInverseCommand(){
-	TaskManager* taskManagerInstance = TaskManager::getInstance();
-	
-	//getting index to delete
-	Task taskToAdd = Task(_taskDetails, _taskStartTime, _taskEndTime, _taskDeadline,
-		_taskPriority);
-	int indexToDelete = TaskManager::addTask(taskToAdd);
-	TaskManager::removeTask(indexToDelete+1);
-
-	return new CommandDelete(indexToDelete+1);
-}
->>>>>>> origin/master

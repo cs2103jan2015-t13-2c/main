@@ -9,8 +9,8 @@ public:
 
 	CommandUndo();
 
-	virtual string execute();
 
+	virtual string execute();
 	virtual Command* getInverseCommand();
 
 	static const string CommandUndo::MESSAGE_NOTHING_TO_UNDO;

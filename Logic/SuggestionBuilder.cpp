@@ -1,8 +1,5 @@
 //@author A0122357L
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
 #include "SuggestionBuilder.h"
 
 
@@ -21,11 +18,6 @@ string SuggestionBuilder::suggestUserInput(string userInput){
 	std::transform(userInput.begin(), userInput.end(), userInput.begin(), ::tolower);
 
 	string commandType = suggestCommandType(userInput);
-<<<<<<< HEAD
-=======
-	
-	//string suggestedCommandArguments = suggestCommandArguments(commandType, userInput);
->>>>>>> origin/master
 
 	string suggestedUserInput = commandType;// +suggestedCommandArguments;
 
@@ -34,7 +26,7 @@ string SuggestionBuilder::suggestUserInput(string userInput){
 
 
 string SuggestionBuilder::suggestCommandType(string userInput){
-	
+
 	if (userInput == ""){
 
 		return "e.g: add, delete, update, search, mark, unmark, undo, checkfilelocation, changefilelocation, help";
@@ -42,7 +34,7 @@ string SuggestionBuilder::suggestCommandType(string userInput){
 	}
 
 	userInput = getFirstWord(userInput);
-	
+
 	if (isPredictedCommandAdd(userInput)){
 		return "add cs2103 from 6 may 13:00 to 7 may 14:00 #high";
 	}
@@ -86,7 +78,7 @@ string SuggestionBuilder::suggestCommandType(string userInput){
 }
 
 string SuggestionBuilder::suggestCommandArguments(string commandType, string userInput){
-	
+
 	if (commandType == "add"){
 		return predictCommandAdd(userInput);
 	}
@@ -143,7 +135,7 @@ string SuggestionBuilder::predictCommandAdd(string userInput){
 
 	bool predictedFrom = false, predictedBy = false, predictedEvery = false;
 	bool predictedThis = false, predictedNext = false, predictedDay = false;
-	string dayValue; 
+	string dayValue;
 
 	while (iter != textVec.end()){
 
@@ -259,7 +251,7 @@ string SuggestionBuilder::predictedString(string text){
 	/*
 	//dates have final priority
 	if (predictString == ""){
-		predictString = predictedDate(text);
+	predictString = predictedDate(text);
 	}*/
 
 	return predictString;
@@ -294,7 +286,7 @@ string SuggestionBuilder::predictedKeyword(string text){
 
 bool SuggestionBuilder::isPredictedFrom(string userInput){
 
-	if (userInput == "f" || userInput == "fr" || 
+	if (userInput == "f" || userInput == "fr" ||
 		userInput == "fro" || userInput == "from"){
 		return true;
 	}
@@ -324,7 +316,7 @@ bool SuggestionBuilder::isPredictedNext(string userInput){
 
 bool SuggestionBuilder::isPredictedBy(string userInput){
 
-	if (userInput == "b" || userInput == "by" ){
+	if (userInput == "b" || userInput == "by"){
 		return true;
 	}
 
@@ -353,7 +345,7 @@ bool SuggestionBuilder::isPredictedEvery(string userInput){
 }
 
 string SuggestionBuilder::predictedDay(string text){
-	
+
 	if (isPredictedMonday(text)){
 		return "monday";
 	}
@@ -395,7 +387,7 @@ bool SuggestionBuilder::isPredictedTuesday(string userInput){
 
 	if (userInput == "t" || userInput == "tu" ||
 		userInput == "tue" || userInput == "tues"
-		|| userInput == "tuesd" || userInput == "tuesda" 
+		|| userInput == "tuesd" || userInput == "tuesda"
 		|| userInput == "tuesday"){
 		return true;
 	}
@@ -463,12 +455,12 @@ bool SuggestionBuilder::isPredictedSunday(string userInput){
 }
 
 bool SuggestionBuilder::isPredictedCommandAdd(string userInput){
-	
+
 	if (userInput == "a" || userInput == "ad" || userInput == "add"){
 		return true;
 	}
 
-	if (StringDistance::LD(userInput.c_str(),"add")<=1){
+	if (StringDistance::LD(userInput.c_str(), "add") <= 1){
 		return true;
 	}
 
@@ -477,8 +469,8 @@ bool SuggestionBuilder::isPredictedCommandAdd(string userInput){
 }
 
 bool SuggestionBuilder::isPredictedCommandDelete(string userInput){
-	
-	if (userInput == "d" || userInput == "de" || 
+
+	if (userInput == "d" || userInput == "de" ||
 		userInput == "del" || userInput == "dele" ||
 		userInput == "delet" || userInput == "delete"){
 		return true;
@@ -493,8 +485,8 @@ bool SuggestionBuilder::isPredictedCommandDelete(string userInput){
 
 
 bool SuggestionBuilder::isPredictedCommandDisplay(string userInput){
-	
-	if (userInput == "d" || userInput == "di" || 
+
+	if (userInput == "d" || userInput == "di" ||
 		userInput == "dis" || userInput == "disp" ||
 		userInput == "displ" || userInput == "display"){
 		return true;
@@ -508,7 +500,7 @@ bool SuggestionBuilder::isPredictedCommandDisplay(string userInput){
 }
 
 bool SuggestionBuilder::isPredictedCommandExit(string userInput){
-	
+
 	if (userInput == "e" || userInput == "ex" ||
 		userInput == "exi" || userInput == "exit"){
 		return true;
@@ -583,10 +575,10 @@ bool SuggestionBuilder::isPredictedCommandUpdate(string userInput){
 
 
 bool SuggestionBuilder::isPredictedCommandCheckSavedFileLocation(string userInput){
-	
+
 	if (userInput == "c" || userInput == "ch" ||
 		userInput == "che" || userInput == "chec" ||
-		userInput == "check" || userInput == "checkf" || 
+		userInput == "check" || userInput == "checkf" ||
 		userInput == "checkfi" || userInput == "checkfil" ||
 		userInput == "checkfile" || userInput == "checkfilel" ||
 		userInput == "checkfilelo" || userInput == "checkfileloc"){

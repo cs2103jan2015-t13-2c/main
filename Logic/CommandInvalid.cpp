@@ -1,8 +1,4 @@
 //@author A0122357L
-<<<<<<< HEAD
-=======
-#include "CommandInvalid.h"
->>>>>>> origin/master
 
 /*
 This class contains code that can execute the command "Invalid",
@@ -34,7 +30,6 @@ string CommandInvalid::execute(){
 
 }
 
-<<<<<<< HEAD
 
 //No undo Command exists for the Command
 Command* CommandInvalid::getInverseCommand(){
@@ -64,12 +59,6 @@ CommandInvalid::CommandInvalid(string userInput){
 * ====================================================================
 */
 
-=======
-Command* CommandInvalid::getInverseCommand(){
-	return nullptr;
-}
-
->>>>>>> origin/master
 char CommandInvalid::buffer[255];
-const string CommandInvalid::INVALID_MESSAGE_FORMAT 
-	= "Invalid command format: %s";
+const string CommandInvalid::INVALID_MESSAGE_FORMAT
+= "Invalid command format: %s";
