@@ -12,7 +12,7 @@ Taskky is a desktop based CLI Task Management Planner, accepting input commands 
 - Github, to fork and work on the software.
 
 ## Contributors
-- Kai Yi ([@kaiyisg](https://github.com/kaiyisg)
-- Adi ([@anataprawira](https://github.com/anataprawira)
+- Kai Yi [@kaiyisg](https://github.com/kaiyisg)
+- Adi [@anataprawira](https://github.com/anataprawira)
 - Steven Nilam [@stevennilam](https://github.com/stevennilam)
 - Kelvin Koa [@kelvinkoa](https://github.com/kelvinkoa)
